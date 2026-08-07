@@ -1,11 +1,11 @@
 /**
- * HƯỚNG DẪN TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO 3 TAB SHEET & GỬI EMAIL XÁC NHẬN KÈM POSTER VÀ TRÌNH SOẠN THẢO RICH TEXT TÙY CHỈNH
+ * HƯỚNG DẪN TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO 3 TAB SHEET, GỬI EMAIL KÈM POSTER VÀ GHI TRẠNG THÁI MAIL VÀO GOOGLE SHEET & TELEGRAM
  * 
- * Tính năng chính:
+ * Tính năng nổi bật:
  *  1. Phân loại ghi dữ liệu vào 3 Tab Google Sheet: "Đại biểu", "Tài trợ", "Gian hàng".
- *  2. GỬI EMAIL HTML CHUYÊN NGHIỆP VỚI ANH POSTER ĐÍNH KÈM TẢI LÊN TỪ CMS ADMIN.
- *  3. HỖ TRỢ TRÌNH SOẠN THẢO VĂN BẢN RICH TEXT (In đậm, In nghiêng, Chèn màu, Chèn tên khách hàng...).
- *  4. LẶP LẠI ĐẦY ĐỦ BẢNG THÔNG TIN XÁC NHẬN CỦA KHÁCH HÀNG (Họ tên, SĐT, Email, Công ty, Chức vụ, Chi tiết gói, Ghi chú).
+ *  2. Ghi cột thứ 9: "Trạng Thái Gửi Email" (✅ Đã gửi mail thành công / ⚠️ Không có email / ❌ Lỗi gửi).
+ *  3. Gửi Email HTML chuyên nghiệp kèm Poster Banner & Bảng lặp thông tin khách hàng.
+ *  4. Trả về trạng thái gửi Email cho Telegram hiển thị thông báo.
  * 
  * BƯỚC 1: Mở file Google Sheet của bạn trên trình duyệt.
  * BƯỚC 2: Vào menu: Tiện ích mở rộng (Extensions) -> Apps Script.
@@ -38,6 +38,7 @@ function doPost(e) {
       sheet = ss.insertSheet(targetSheetName);
     }
 
+    // Tự động tạo 9 cột tiêu đề (bao gồm Trạng Thái Gửi Email)
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
         "Thời Gian Đăng Ký",
@@ -47,9 +48,10 @@ function doPost(e) {
         "Tên Doanh Nghiệp / Đơn Vị",
         "Chức Vụ",
         "Chi Tiết Đăng Ký",
-        "Ghi Chú / Nhu Cầu"
+        "Ghi Chú / Nhu Cầu",
+        "Trạng Thái Gửi Email"
       ]);
-      var headerRange = sheet.getRange("A1:H1");
+      var headerRange = sheet.getRange("A1:I1");
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#1e293b");
       headerRange.setFontColor("#ffffff");
@@ -67,53 +69,40 @@ function doPost(e) {
     var customBody = data.emailBody || "";
     var posterImgUrl = data.emailPosterUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80";
 
-    // 1. Ghi vào Google Sheet
-    sheet.appendRow([
-      timestamp,
-      fullName,
-      phone,
-      email,
-      company,
-      position,
-      detailInfo,
-      notes
-    ]);
+    var emailStatusText = "⚠️ Khách không nhập Email";
+    var emailSentSuccess = false;
 
-    // Replace các biến động trong Custom Body từ Rich Text Editor
-    if (customBody) {
-      customBody = customBody.replace(/\{\{fullName\}\}/g, fullName)
-                             .replace(/\{\{company\}\}/g, company)
-                             .replace(/\{\{phone\}\}/g, phone)
-                             .replace(/\{\{position\}\}/g, position)
-                             .replace(/\{\{email\}\}/g, email);
-    }
-
-    // 2. Gửi Email Xác Nhận Tự Động tới Email Khách Hàng (Kèm Poster Banner & Bảng Lặp Thông Tin)
+    // 1. Thử gửi Email Xác Nhận Tự Động tới Email Khách Hàng
     if (email && email.indexOf("@") !== -1) {
       try {
         var regId = "SME2026-" + Math.floor(100000 + Math.random() * 900000);
         var subject = customSubject || ("[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + fullName.toUpperCase());
+
+        if (customBody) {
+          customBody = customBody.replace(/\{\{fullName\}\}/g, fullName)
+                                 .replace(/\{\{company\}\}/g, company)
+                                 .replace(/\{\{phone\}\}/g, phone)
+                                 .replace(/\{\{position\}\}/g, position)
+                                 .replace(/\{\{email\}\}/g, email);
+        }
+
         var introMessage = customBody || "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
 
         var htmlTemplate = 
           '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">' +
-            '<!-- Poster Banner Đính Kèm Top Tải Tới Từ CMS -->' +
             '<div style="width: 100%; text-align: center; background-color: #0D3B2E;">' +
               '<img src="' + posterImgUrl + '" alt="Poster Diễn Đàn SME Việt Nam 2026" style="width: 100%; max-height: 260px; object-fit: cover; display: block;" />' +
             '</div>' +
 
-            '<!-- Header Tiêu Đề -->' +
             '<div style="background-color: #0D3B2E; color: #ffffff; padding: 20px 24px; text-align: center;">' +
               '<h2 style="margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; color: #ffffff;">DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026</h2>' +
               '<p style="margin: 6px 0 0 0; font-size: 13px; color: #a7f3d0; font-weight: 600;">📍 May Plaza Hotel Thái Nguyên | 18 - 20/09/2026</p>' +
             '</div>' +
 
-            '<!-- Nội dung Thư từ Rich Text Editor -->' +
             '<div style="padding: 28px; color: #334155; line-height: 1.6; font-size: 14px;">' +
               '<p style="margin-top: 0; font-size: 15px;">Kính gửi Quý khách <b>' + fullName + '</b>,</p>' +
               '<div style="margin-bottom: 20px; line-height: 1.6;">' + introMessage + '</div>' +
 
-              '<!-- Bảng Lặp Lại Đầy Đủ Thông Tin Xác Nhận -->' +
               '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #22c55e; border-radius: 12px; padding: 20px; margin: 20px 0;">' +
                 '<div style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 14px;">' +
                   '<h3 style="margin: 0; font-size: 14px; color: #0D3B2E; text-transform: uppercase; font-weight: 800;">📋 THÔNG TIN XÁC NHẬN ĐĂNG KÝ (MÃ VÉ: ' + regId + ')</h3>' +
@@ -130,7 +119,6 @@ function doPost(e) {
                 '</table>' +
               '</div>' +
 
-              '<!-- Khung Địa Điểm & Thời Gian -->' +
               '<div style="background-color: #eff6ff; border-radius: 12px; padding: 16px; margin: 20px 0; font-size: 13px; color: #1e40af; border: 1px solid #bfdbfe;">' +
                 '<div style="font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #1e3a8a;">📅 THỜI GIAN & ĐỊA ĐIỂM SỰ KIỆN:</div>' +
                 '• <b>Thời gian:</b> 18 - 20 tháng 09 năm 2026<br>' +
@@ -145,7 +133,6 @@ function doPost(e) {
               '</div>' +
             '</div>' +
 
-            '<!-- Footer Email -->' +
             '<div style="background-color: #f8fafc; padding: 18px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0;">' +
               'Email xác nhận tự động từ Hệ thống Đăng ký Diễn đàn SME Việt Nam 2026.<br>Hotline hỗ trợ: <b>0815.340.488</b> | Email: <b>contact@tasmethainguyen.vn</b>' +
             '</div>' +
@@ -156,13 +143,35 @@ function doPost(e) {
           subject: subject,
           htmlBody: htmlTemplate
         });
+
+        emailStatusText = "✅ Đã gửi mail thành công (" + new Date().toLocaleTimeString("vi-VN") + ")";
+        emailSentSuccess = true;
       } catch (mailErr) {
+        emailStatusText = "❌ Lỗi gửi mail: " + mailErr.toString();
         Logger.log("Lỗi gửi email: " + mailErr.toString());
       }
     }
 
+    // 2. Ghi 9 cột vào Google Sheet (bao gồm Trạng Thái Gửi Email)
+    sheet.appendRow([
+      timestamp,
+      fullName,
+      phone,
+      email,
+      company,
+      position,
+      detailInfo,
+      notes,
+      emailStatusText
+    ]);
+
     return ContentService.createTextOutput(
-      JSON.stringify({ status: "success", message: "Đã ghi dữ liệu vào tab " + targetSheetName + " & gửi email xác nhận kèm poster!" })
+      JSON.stringify({
+        status: "success",
+        message: "Đã ghi dữ liệu vào tab " + targetSheetName,
+        emailStatus: emailStatusText,
+        emailSuccess: emailSentSuccess
+      })
     ).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(

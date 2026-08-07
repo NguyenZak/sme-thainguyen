@@ -112,7 +112,31 @@ export async function POST(request: Request) {
     const ticketType = data.registrationType || data.intentTab || "standard";
     const notes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : null);
 
-    // 2. Send Telegram Notification Alert to Specific Forum Topic if enabled
+    // 2. Forward to Google Apps Script (Google Sheets) & Send Confirmation Email
+    let emailStatusText = email && email.includes("@")
+      ? "✅ Đã gửi Email xác nhận kèm Poster"
+      : "⚠️ Khách không điền Email";
+
+    if (googleSheetEnabled && googleSheetUrl && googleSheetUrl !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+      try {
+        const gsRes = await fetch(googleSheetUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            timestamp: new Date().toISOString(),
+          }),
+        });
+        const gsData = await gsRes.json().catch(() => ({}));
+        if (gsData.emailStatus) {
+          emailStatusText = gsData.emailStatus;
+        }
+      } catch (gsErr) {
+        console.warn("Failed to forward to Google Apps Script:", gsErr);
+      }
+    }
+
+    // 3. Send Telegram Notification Alert to Specific Forum Topic if enabled
     if (telegramEnabled && telegramToken && telegramChatId) {
       try {
         const category = getFormCategory(ticketType);
@@ -138,6 +162,7 @@ export async function POST(request: Request) {
           `💼 <b>Chức vụ:</b> ${position}\n` +
           `📞 <b>Số điện thoại:</b> ${phone}\n` +
           `📧 <b>Email:</b> ${email}\n` +
+          `📨 <b>Trạng thái Mail:</b> ${emailStatusText}\n` +
           `📋 <b>Chi tiết nhu cầu:</b> ${ticketType}\n` +
           `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n` +
           `⏰ <i>Thời gian: ${new Date().toLocaleString("vi-VN")}</i>`;
@@ -160,22 +185,6 @@ export async function POST(request: Request) {
         });
       } catch (tgErr) {
         console.warn("Failed to send Telegram alert:", tgErr);
-      }
-    }
-
-    // 3. Forward to Google Apps Script (Google Sheets) if configured & enabled
-    if (googleSheetEnabled && googleSheetUrl && googleSheetUrl !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-      try {
-        await fetch(googleSheetUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...data,
-            timestamp: new Date().toISOString(),
-          }),
-        });
-      } catch (gsErr) {
-        console.warn("Failed to forward to Google Apps Script:", gsErr);
       }
     }
 
