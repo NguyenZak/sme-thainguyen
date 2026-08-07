@@ -70,7 +70,7 @@ export default function Navbar({ content }: { content?: NavbarContent }) {
           <div className="hidden lg:flex items-center gap-4">
             <div className="flex items-center gap-2 text-xs text-emerald-200 font-medium pr-3 border-r border-emerald-700/50">
               <Calendar className="w-3.5 h-3.5 text-[#F59E0B]" />
-              <span>{data.brandSub}</span>
+              <span>{data.eventDateText || "18 - 20/09/2026"}</span>
             </div>
             <a
               href={data.ctaLink}

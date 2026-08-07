@@ -59,6 +59,7 @@ export interface NavbarContent {
   brandName: string;
   brandSub: string;
   logoSrc: string;
+  eventDateText?: string;
   navLinks: NavbarLink[];
   ctaText: string;
   ctaLink: string;
@@ -297,6 +298,7 @@ export const DEFAULT_NAVBAR: NavbarContent = {
   brandName: "SME VIỆT NAM 2026",
   brandSub: "TASME THÁI NGUYÊN",
   logoSrc: "/logo.png",
+  eventDateText: "18 - 20/09/2026",
   navLinks: [
     { name: "Giới thiệu", href: "#about" },
     { name: "Chương trình", href: "#timeline" },

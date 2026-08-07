@@ -110,6 +110,16 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
             />
           </div>
           <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Ngày diễn ra sự kiện (Hiển thị góc Lịch Header)</label>
+            <input
+              type="text"
+              value={navbar.eventDateText || ""}
+              placeholder="VD: 18 - 20/09/2026"
+              onChange={(e) => setNavbar({ ...navbar, eventDateText: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+          <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Nút CTA Văn Bản</label>
             <input
               type="text"

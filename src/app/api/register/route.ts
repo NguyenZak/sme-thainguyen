@@ -167,10 +167,24 @@ export async function POST(request: Request) {
           `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n` +
           `⏰ <i>Thời gian: ${new Date().toLocaleString("vi-VN")}</i>`;
 
+        const cleanPhone = phone.replace(/[^0-9]/g, "");
+        const zaloUrl = cleanPhone ? `https://zalo.me/${cleanPhone}` : null;
+
+        const actionButtons: Array<{ text: string; url: string }> = [];
+        if (zaloUrl) {
+          actionButtons.push({ text: "💬 Chat Zalo Khách", url: zaloUrl });
+        }
+        if (cleanPhone) {
+          actionButtons.push({ text: "📞 Gọi Ngay", url: `tel:${cleanPhone}` });
+        }
+
         const payload: Record<string, any> = {
           chat_id: formattedChatId,
           text: tgMsg,
           parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [actionButtons],
+          },
         };
 
         // Determine Telegram Group Forum Topic (message_thread_id)

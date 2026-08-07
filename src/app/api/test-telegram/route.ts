@@ -52,6 +52,14 @@ export async function POST(request: Request) {
       chat_id: formattedChatId,
       text: testMsg,
       parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "💬 Test Nút Zalo", url: "https://zalo.me/0388925432" },
+            { text: "🌐 Mở Trang CMS Admin", url: "https://smevietnam2026.vn/admin" },
+          ],
+        ],
+      },
     };
 
     if (formattedThreadId !== undefined) {
