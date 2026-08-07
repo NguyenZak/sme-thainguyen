@@ -141,7 +141,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
           className="hero-title space-y-3 sm:space-y-4"
         >
           <h1
-            className="text-2xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
+            className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             DIỄN ĐÀN <br />
