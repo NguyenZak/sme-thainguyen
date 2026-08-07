@@ -10,13 +10,16 @@ export default function Footer({ content }: { content?: any }) {
   const [isMapInteractive, setIsMapInteractive] = useState(true);
 
   return (
-    <footer className="bg-slate-950 text-white pt-16 pb-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <footer className="bg-gradient-to-b from-[#071F18] via-[#0B3026] to-[#041711] text-white pt-16 pb-12 border-t border-emerald-800/60 relative overflow-hidden">
+      {/* Ambient Bottom Glow */}
+      <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-[#22C55E]/10 blur-3xl rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Col 1: Organizer Brand (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-xl bg-white p-1 shadow-sm">
+              <div className="relative w-12 h-12 rounded-xl bg-white p-1 shadow-md">
                 <Image
                   src="/logo.png"
                   alt="TASME Logo"
@@ -31,44 +34,44 @@ export default function Footer({ content }: { content?: any }) {
                 >
                   TASME THÁI NGUYÊN
                 </h3>
-                <p className="text-xs text-[#F4B400] font-semibold">
+                <p className="text-xs text-[#F59E0B] font-semibold">
                   Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên
                 </p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-400 leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed max-w-md">
               Ban tổ chức Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026 — Đơn vị đồng hành cùng sự phát triển bền vững và hội nhập quốc tế của cộng đồng doanh nghiệp vừa và nhỏ Việt Nam.
             </p>
 
-            <div className="space-y-3 text-xs text-slate-300">
+            <div className="space-y-3 text-xs text-emerald-100/90">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#F4B400] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#F59E0B] shrink-0 mt-0.5" />
                 <span>
-                  <strong>Địa điểm sự kiện:</strong> May Plaza Hotel, Số 668 Phan Đình Phùng, Phường Đồng Quang, TP. Thái Nguyên, Việt Nam
+                  <strong className="text-white">Địa điểm sự kiện:</strong> May Plaza Hotel, Số 668 Phan Đình Phùng, Phường Đồng Quang, TP. Thái Nguyên, Việt Nam
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-[#0B5ED7] shrink-0" />
+                <Phone className="w-4 h-4 text-[#22C55E] shrink-0" />
                 <span>
-                  <strong>Hotline Ban tổ chức:</strong> 0815 340 488 / 0912 888 999
+                  <strong className="text-white">Hotline Ban tổ chức:</strong> 0815 340 488 / 0912 888 999
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-[#0B5ED7] shrink-0" />
+                <Mail className="w-4 h-4 text-[#22C55E] shrink-0" />
                 <span>
-                  <strong>Email:</strong> contact@tasmethainguyen.vn
+                  <strong className="text-white">Email:</strong> contact@tasmethainguyen.vn
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Globe className="w-4 h-4 text-[#F4B400] shrink-0" />
+                <Globe className="w-4 h-4 text-[#F59E0B] shrink-0" />
                 <span>
-                  <strong>Website chính thức:</strong>{" "}
+                  <strong className="text-white">Website chính thức:</strong>{" "}
                   <a
                     href="https://tasmethainguyen.vn"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
+                    className="text-emerald-300 hover:text-white underline font-semibold"
                   >
                     https://tasmethainguyen.vn
                   </a>
@@ -80,47 +83,47 @@ export default function Footer({ content }: { content?: any }) {
           {/* Col 2: Quick Links (3 cols) */}
           <div className="lg:col-span-3 space-y-4">
             <h4
-              className="text-sm font-bold text-slate-200 uppercase tracking-wider"
+              className="text-sm font-bold text-white uppercase tracking-wider border-b border-emerald-800/60 pb-2 inline-block"
               style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
             >
               Điều hướng Sự kiện
             </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400 font-medium">
+            <ul className="space-y-2.5 text-xs text-emerald-200/80 font-medium">
               <li>
-                <a href="#about" className="hover:text-white transition-colors">
+                <a href="#about" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Giới thiệu Diễn đàn
                 </a>
               </li>
               <li>
-                <a href="#timeline" className="hover:text-white transition-colors">
+                <a href="#timeline" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Chương trình 03 ngày (18-20/09)
                 </a>
               </li>
               <li>
-                <a href="#sponsors" className="hover:text-white transition-colors">
+                <a href="#sponsors" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Gói Nhà tài trợ (Kim Cương / Vàng / Bạc / Đồng)
                 </a>
               </li>
               <li>
-                <a href="#booths" className="hover:text-white transition-colors">
+                <a href="#booths" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Sơ đồ &amp; Đăng ký Gian hàng Triển lãm
                 </a>
               </li>
               <li>
-                <a href="#register" className="hover:text-white transition-colors">
+                <a href="#register" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Cổng Đăng ký Đại biểu Trực tuyến
                 </a>
               </li>
             </ul>
 
             <div className="pt-3 space-y-2">
-              <span className="text-xs font-bold text-slate-300 block">Theo dõi kênh truyền thông:</span>
+              <span className="text-xs font-bold text-emerald-300 block">Theo dõi kênh truyền thông:</span>
               <div className="flex items-center gap-3">
                 <a
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-blue-400 hover:border-blue-400 transition-all"
+                  className="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-300 hover:text-white hover:border-[#22C55E] hover:bg-emerald-900 transition-all"
                   aria-label="Facebook"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -131,7 +134,7 @@ export default function Footer({ content }: { content?: any }) {
                   href="https://zalo.me"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-blue-400 hover:border-blue-400 font-bold text-xs transition-all"
+                  className="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-300 hover:text-white hover:border-[#22C55E] hover:bg-emerald-900 font-bold text-xs transition-all"
                   aria-label="Zalo"
                 >
                   Zalo
@@ -140,7 +143,7 @@ export default function Footer({ content }: { content?: any }) {
                   href="https://youtube.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-red-400 hover:border-red-400 transition-all"
+                  className="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-300 hover:text-white hover:border-red-500 hover:bg-emerald-900 transition-all"
                   aria-label="Youtube"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -155,7 +158,7 @@ export default function Footer({ content }: { content?: any }) {
           <div className="lg:col-span-4 space-y-3">
             <div className="flex items-center justify-between">
               <h4
-                className="text-sm font-bold text-slate-200 uppercase tracking-wider"
+                className="text-sm font-bold text-white uppercase tracking-wider"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
                 Bản đồ May Plaza Hotel
@@ -164,7 +167,7 @@ export default function Footer({ content }: { content?: any }) {
                 href="https://www.google.com/maps/place/May+Plaza+Hotel/@21.5782896,105.8327195,17z"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-bold text-[#22C55E] hover:underline flex items-center gap-1 bg-emerald-950/80 border border-emerald-700/60 px-2.5 py-1 rounded-full shadow-sm"
+                className="text-[11px] font-bold text-[#22C55E] hover:underline flex items-center gap-1 bg-emerald-950 border border-emerald-700 px-2.5 py-1 rounded-full shadow-sm"
               >
                 Mở Google Maps <ExternalLink className="w-3 h-3" />
               </a>
@@ -191,7 +194,7 @@ export default function Footer({ content }: { content?: any }) {
                 <button
                   type="button"
                   onClick={() => setIsMapInteractive((prev) => !prev)}
-                  className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/90 text-white text-[11px] font-bold border border-emerald-500/50 shadow-md backdrop-blur-md hover:bg-slate-900 cursor-pointer"
+                  className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/90 text-white text-[11px] font-bold border border-emerald-500/50 shadow-md backdrop-blur-md hover:bg-emerald-900 cursor-pointer"
                 >
                   <Move className="w-3.5 h-3.5 text-[#22C55E]" />
                   <span>{isMapInteractive ? "Bản đồ đang bật di chuyển" : "Bấm để bật di chuyển"}</span>
@@ -202,15 +205,15 @@ export default function Footer({ content }: { content?: any }) {
         </div>
 
         {/* Bottom Bar Copyright & Back to Top */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        <div className="pt-8 border-t border-emerald-900/80 flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-200/70 gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-            <span className="text-slate-400 font-medium">BTC đang tiếp nhận hồ sơ đăng ký tham dự &amp; tài trợ</span>
+            <span className="text-emerald-300 font-medium">BTC đang tiếp nhận hồ sơ đăng ký tham dự &amp; tài trợ</span>
           </div>
           <p>© 2026 TASME THÁI NGUYÊN. All rights reserved.</p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-300 text-[11px] font-bold border border-slate-800 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-950 hover:bg-emerald-900 text-emerald-200 text-[11px] font-bold border border-emerald-700/60 transition-colors cursor-pointer"
           >
             <span>Về đầu trang ↑</span>
           </button>
