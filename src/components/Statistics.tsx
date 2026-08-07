@@ -35,7 +35,7 @@ function Counter({ end, duration = 2.8, suffix = "", formatZero = true }: { end:
 
 export default function Statistics({ content }: { content?: any }) {
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 -mb-20 sm:-mb-24 relative z-50">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-12 mb-10 relative z-10">
       <div className="bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-5 sm:p-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
         {/* Stat 1: 34 tỉnh */}
         <motion.div

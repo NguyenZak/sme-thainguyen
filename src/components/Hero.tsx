@@ -7,7 +7,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Calendar, MapPin, Ticket, Award, Store, ArrowRight, Clock } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
-import Statistics from "./Statistics";
 import AddToCalendar from "./AddToCalendar";
 
 import { HeroContent, DEFAULT_HERO } from "@/constants/defaultContent";
@@ -16,7 +15,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
-export default function Hero({ content, statsContent }: { content?: HeroContent; statsContent?: any }) {
+export default function Hero({ content }: { content?: HeroContent }) {
   const data = content || DEFAULT_HERO;
   const words = data.keywords && data.keywords.length > 0 ? data.keywords : DEFAULT_HERO.keywords;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -105,7 +104,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
   }, [data.targetDateISO]);
 
   return (
-    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
+    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
       {/* 3D Depth Layer Engine & Cyber Grid Background */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#071F18]">
         {/* 3D Perspective Horizon Grid */}
@@ -323,7 +322,6 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
         </div>
 
         {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}
-        <Statistics content={statsContent} />
       </div>
     </section>
   );
