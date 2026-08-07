@@ -266,7 +266,7 @@ export const DEFAULT_ABOUT: AboutContent = {
 
 export const DEFAULT_BENEFITS: BenefitsContent = {
   badge: "GIÁ TRỊ ĐỒNG HÀNH",
-  title: "5 GIÁ TRỊ CỐT LÕI DÀNH CHO ĐỐI TÁC & NHÀ TÀI TRỢ",
+  title: "5 Giá Trị Cốt Lõi Dành Cho Đối Tác & Nhà Tài Trợ",
   subtitle: "Tối ưu hóa cơ hội hiện diện thương hiệu, kết nối B2B và mở rộng thị trường tại Diễn đàn.",
   items: [
     {
@@ -306,7 +306,7 @@ export const DEFAULT_BENEFITS: BenefitsContent = {
 
 export const DEFAULT_TIMELINE: TimelineContent = {
   badge: "LỊCH TRÌNH CHUYÊN NGHIỆP",
-  title: "CHƯƠNG TRÌNH CHI TIẾT 3 NGÀY DIỄN ĐÀN",
+  title: "Chương Trình Chi Tiết 3 Ngày Diễn Đàn",
   subtitle: "Chuỗi hoạt động phong phú gồm Triển lãm, Diễn đàn cấp cao, B2B Matching, Gala Dinner và Đại hội TASME.",
   days: [
     { dayNumber: 1, dayTitle: "Ngày 1: National Business Matching Day", dateText: "18/09/2026" },
@@ -399,7 +399,7 @@ export const DEFAULT_TIMELINE: TimelineContent = {
 
 export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   badge: "CHI PHÍ THAM DỰ",
-  title: "ĐĂNG KÝ VÉ THAM DỰ DIỄN ĐÀN",
+  title: "Đăng Ký Vé Tham Dự Diễn Đàn",
   subtitle: "Trọn gói quyền lợi tham dự chuỗi hoạt động 3 ngày tại Thái Nguyên.",
   priceVND: 1450000,
   originalPriceVND: 2000000,
@@ -418,7 +418,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
 
 export const DEFAULT_SPONSORS: SponsorsContent = {
   badge: "ĐỐI TÁC & NHÀ TÀI TRỢ",
-  title: "DANH SÁCH NHÀ TÀI TRỢ & ĐƠN VỊ ĐỒNG HÀNH",
+  title: "Danh Sách Nhà Tài Trợ & Đơn Vị Đồng Hành",
   subtitle: "Xin chân thành cảm ơn các Tập đoàn, Ngân hàng, Doanh nghiệp và Đơn vị truyền thông đã tin tưởng và đồng hành cùng Diễn đàn SME Việt Nam 2026.",
   items: [
     {
@@ -473,8 +473,8 @@ export const DEFAULT_SPONSORS: SponsorsContent = {
 };
 
 export const DEFAULT_BOOTHS: BoothsContent = {
-  badge: "KIEU HÀNG TRIỂN LÃM",
-  title: "SƠ ĐỒ & ĐĂNG KÝ GIAN HÀNG",
+  badge: "GIAN HÀNG TRIỂN LÃM",
+  title: "Sơ Đồ & Đăng Ký Gian Hàng",
   subtitle: "100+ gian hàng tiêu chuẩn & đặc biệt dành cho các doanh nghiệp giới thiệu sản phẩm dịch vụ.",
   mapImageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop",
   totalBooths: 100,
@@ -510,6 +510,9 @@ export interface SpeakerItem {
   topic: string;
   imageUrl: string;
   badge?: string;
+  achievements?: string;
+  whyListen?: string;
+  speechValue?: string;
 }
 
 export interface SpeakersContent {
@@ -521,7 +524,7 @@ export interface SpeakersContent {
 
 export const DEFAULT_SPEAKERS: SpeakersContent = {
   badge: "DIỄN GIẢ & KHÁCH MỜI DANH DỰ",
-  title: "ĐỘI NGŨ DIỄN GIẢ VÀ CHUYÊN GIA ĐẦU NGÀNH",
+  title: "Đội Ngũ Diễn Giả Và Chuyên Gia Đầu Ngành",
   subtitle: "Lắng nghe các bài chia sẻ chiến lược và góc nhìn chuyên sâu từ các nhà quản lý, diễn giả hàng đầu.",
   items: [
     {
@@ -531,7 +534,10 @@ export const DEFAULT_SPEAKERS: SpeakersContent = {
       organization: "Viện Nghiên cứu Quản lý Kinh tế Trung ương",
       topic: "Xu hướng phát triển kinh tế SME & Cơ hội bứt phá chuỗi giá trị 2026",
       imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
-      badge: "Diễn giả Keynote"
+      badge: "Diễn giả Keynote",
+      achievements: "20+ năm nghiên cứu chính sách kinh tế vĩ mô và tư vấn chiến lược cho hàng trăm SME trong nước.",
+      whyListen: "Hiểu rõ bối cảnh kinh tế 2026 và các cơ hội tăng trưởng thực tế cho doanh nghiệp vừa và nhỏ.",
+      speechValue: "Bài nói cung cấp lộ trình hành động cần thiết để chuyển đổi cơ hội thành hợp đồng và đầu tư.",
     },
     {
       id: "spk-2",
@@ -540,7 +546,10 @@ export const DEFAULT_SPEAKERS: SpeakersContent = {
       organization: "Bộ Công Thương",
       topic: "Chiến lược xúc tiến xuất khẩu & Mở rộng thị trường quốc tế cho doanh nghiệp vừa và nhỏ",
       imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
-      badge: "Khách mời Danh dự"
+      badge: "Khách mời Danh dự",
+      achievements: "Đã triển khai nhiều chương trình xuất khẩu thành công, mở ra thị trường châu Á và châu Âu cho các SME Việt.",
+      whyListen: "Nắm bắt các cơ hội xuất khẩu thực tế và cách doanh nghiệp triển khai kênh quốc tế ngay trong 2026.",
+      speechValue: "Bài chia sẻ hướng đến bộ công cụ hành động để tăng doanh số xuất khẩu và gia tăng giá trị chuỗi cung ứng.",
     },
     {
       id: "spk-3",
@@ -549,7 +558,10 @@ export const DEFAULT_SPEAKERS: SpeakersContent = {
       organization: "Tập đoàn Viễn thông VNPT",
       topic: "Ứng dụng AI và Công nghệ số nâng cao năng suất quản trị cho SME",
       imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80",
-      badge: "Chuyên gia Công nghệ"
+      badge: "Chuyên gia Công nghệ",
+      achievements: "Dẫn dắt các sáng kiến chuyển đổi số cho tập đoàn lớn và SME, giúp tăng hiệu suất vận hành đến 40%.",
+      whyListen: "Hiểu cách áp dụng AI thực tiễn cho doanh nghiệp nhỏ mà không cần đầu tư quá lớn.",
+      speechValue: "Bài nói khai thác 3 bước chuyển đổi số nhanh, giảm chi phí và nâng cao khả năng cạnh tranh.",
     },
     {
       id: "spk-4",
@@ -558,7 +570,10 @@ export const DEFAULT_SPEAKERS: SpeakersContent = {
       organization: "Hiệp hội Doanh nghiệp NV Tỉnh Thái Nguyên (TASME)",
       topic: "Kết nối nguồn lực địa phương & Hỗ trợ doanh nghiệp phát triển bền vững",
       imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
-      badge: "Ban Tổ Chức"
+      badge: "Ban Tổ Chức",
+      achievements: "Lãnh đạo tổ chức nhiều chương trình đồng hành SME, hỗ trợ doanh nghiệp khởi nghiệp và bền vững tại Thái Nguyên.",
+      whyListen: "Cập nhật các cơ chế phối hợp nguồn lực địa phương và ưu đãi giúp doanh nghiệp tối ưu hoá đầu tư.",
+      speechValue: "Bài trình bày hướng đến cách kết nối doanh nghiệp với chính sách và nguồn lực để hiện thực hoá dự án phát triển.",
     }
   ]
 };

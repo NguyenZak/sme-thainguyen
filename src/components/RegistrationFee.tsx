@@ -13,9 +13,12 @@ const INCLUSIONS = [
   "Thẻ Đại biểu trọn gói tham dự 100+ phiên B2B Matching",
 ];
 
-import { TicketFeeContent } from "@/constants/defaultContent";
+import { TicketFeeContent, DEFAULT_TICKET_FEE } from "@/constants/defaultContent";
 
 export default function RegistrationFee({ content }: { content?: TicketFeeContent }) {
+  const badge = content?.badge || DEFAULT_TICKET_FEE.badge;
+  const title = content?.title || DEFAULT_TICKET_FEE.title;
+  const subtitle = content?.subtitle || DEFAULT_TICKET_FEE.subtitle;
   return (
     <section className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -28,16 +31,16 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
           className="text-center max-w-3xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            Chi phí Tham dự
+            {badge}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Lệ phí Đăng ký Đại biểu Trọn gói
+            {title}
           </h2>
           <p className="text-slate-600 text-base">
-            Gói quyền lợi cao cấp đã bao gồm toàn bộ dịch vụ ăn ở, gala dinner và truyền thông cho 01 đại biểu.
+            {subtitle}
           </p>
         </motion.div>
 

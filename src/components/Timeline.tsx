@@ -1,8 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Clock, MapPin, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Clock, MapPin, Sparkles, Users, Utensils, LayoutList, BookOpen, Mic2 } from "lucide-react";
+
+/** Animated counter that counts up when scrolled into view */
+function AnimatedValue({ raw }: { raw: string }) {
+  // Extract numeric part and suffix (e.g. "100+" → 100, "+")
+  const match = raw.match(/^(\d+)(.*)$/);
+  if (!match) return <span>{raw}</span>;
+  const end = parseInt(match[1], 10);
+  const suffix = match[2] ?? "";
+
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+    let start: number | null = null;
+    const duration = 1800;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setCount(Math.round(eased * end));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [isInView, end]);
+
+  const display = end < 10 ? String(count).padStart(2, "0") : count;
+  return <span ref={ref}>{display}{suffix}</span>;
+}
 
 interface ScheduleItem {
   time: string;
@@ -101,9 +131,12 @@ const SCHEDULE_DATA: DaySchedule[] = [
   },
 ];
 
-import { TimelineContent } from "@/constants/defaultContent";
+import { TimelineContent, DEFAULT_TIMELINE } from "@/constants/defaultContent";
 
 export default function Timeline({ content }: { content?: TimelineContent }) {
+  const badge = content?.badge || DEFAULT_TIMELINE.badge;
+  const title = content?.title || DEFAULT_TIMELINE.title;
+  const subtitle = content?.subtitle || DEFAULT_TIMELINE.subtitle;
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -118,17 +151,160 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
           className="text-center max-w-3xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            02 · HÀNH TRÌNH 3 NGÀY - Chương trình sự kiện
+            {badge}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Lịch trình diễn ra sự kiện (18–20/09/2026)
+            {title}
           </h2>
           <p className="text-slate-600 text-base">
-            Lịch trình làm việc bài bản, tối ưu hóa cơ hội giao thương và gắn kết doanh nhân.
+            {subtitle}
           </p>
+        </motion.div>
+
+        {/* Event Scale Summary — PREMIUM banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="relative overflow-hidden rounded-3xl shadow-2xl"
+          style={{
+            background: "linear-gradient(135deg, #071f18 0%, #0D3B2E 45%, #0a2d22 100%)",
+          }}
+        >
+          {/* Animated rotating conic border */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 rounded-3xl z-0"
+            style={{
+              background:
+                "conic-gradient(from var(--angle,0deg), transparent 65%, #22C55E 75%, #F59E0B 80%, #22C55E 85%, transparent 95%)",
+              padding: "2px",
+              WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+            }}
+            animate={{ "--angle": ["0deg", "360deg"] } as never}
+            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+          />
+
+          {/* Background glow blobs */}
+          <div className="pointer-events-none absolute inset-0 z-0">
+            <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-emerald-500/10 blur-[80px]" />
+            <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-amber-500/10 blur-[60px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 rounded-full bg-emerald-700/10 blur-[50px]" />
+          </div>
+
+          {/* Dot pattern overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]"
+            style={{
+              backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+
+          {/* Top gold accent line */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-[2px] bg-gradient-to-r from-transparent via-[#F59E0B] to-transparent z-10" />
+
+          <div className="relative z-10 px-6 pt-8 pb-6">
+
+            {/* Eyebrow */}
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="flex items-center justify-center gap-3 mb-7"
+            >
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/40" />
+              <span className="text-[11px] font-extrabold uppercase tracking-[0.28em] text-emerald-400 whitespace-nowrap">
+                ✦ Quy mô sự kiện · 3 ngày sôi động ✦
+              </span>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/40" />
+            </motion.div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+              {[
+                { icon: Users,      value: "100+", label: "Phiên B2B",      sub: "Kết nối 1:1 trực tiếp",  accent: "#22C55E" },
+                { icon: Utensils,   value: "02",   label: "Gala Dinner",    sub: "Đẳng cấp & nghệ thuật",  accent: "#F59E0B" },
+                { icon: LayoutList, value: "01",   label: "Diễn đàn chính", sub: "Quy mô quốc gia",         accent: "#22C55E" },
+                { icon: BookOpen,   value: "05",   label: "Chuyên đề",      sub: "Nội dung chuyên sâu",     accent: "#F59E0B" },
+                { icon: Mic2,       value: "20+",  label: "Diễn giả",       sub: "Chuyên gia hàng đầu",     accent: "#22C55E" },
+              ].map(({ icon: Icon, value, label, sub, accent }, i) => (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className="relative flex flex-col items-center gap-3 rounded-2xl px-3 py-5 text-center cursor-default group"
+                  style={{ background: "rgba(255,255,255,0.04)" }}
+                >
+                  {/* Hover highlight */}
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: "rgba(255,255,255,0.06)", boxShadow: `0 0 24px ${accent}22` }} />
+
+                  {/* Icon ring */}
+                  <div className="relative z-10">
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl blur-lg"
+                      style={{ backgroundColor: accent }}
+                      animate={{ opacity: [0.15, 0.35, 0.15] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                    />
+                    <div
+                      className="relative flex items-center justify-center w-12 h-12 rounded-2xl"
+                      style={{ background: `${accent}22`, border: `1.5px solid ${accent}55` }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: accent }} />
+                    </div>
+                  </div>
+
+                  {/* Number */}
+                  <motion.span
+                    className="relative z-10 text-5xl font-black leading-none tracking-tight text-white"
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: "spring", stiffness: 220, damping: 14, delay: 0.4 + i * 0.1 }}
+                  >
+                    <AnimatedValue raw={value} />
+                  </motion.span>
+
+                  {/* Gold underline */}
+                  <div className="relative z-10 w-8 h-[2px] rounded-full" style={{ backgroundColor: accent }} />
+
+                  {/* Label */}
+                  <span className="relative z-10 text-[12px] font-extrabold uppercase tracking-[0.18em] text-white/90 leading-tight">
+                    {label}
+                  </span>
+
+                  {/* Sub-label */}
+                  <span className="relative z-10 text-[11px] text-white/40 leading-snug">
+                    {sub}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Bottom strip */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 1.0 }}
+              className="mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6"
+            >
+              <span className="text-[11px] text-white/35 tracking-widest uppercase">📅 18 – 20 / 09 / 2026</span>
+              <div className="hidden sm:block w-px h-3 bg-white/20" />
+              <span className="text-[11px] text-white/35 tracking-widest uppercase">📍 May Plaza Hotel, Thái Nguyên</span>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Day Tabs Switcher */}

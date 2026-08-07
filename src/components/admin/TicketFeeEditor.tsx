@@ -74,7 +74,41 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
         </div>
       )}
 
-      {/* Giá Vé & Tiêu Đề */}
+      {/* Tiêu Đề Section */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">CẤU HÌNH TIÊU ĐỀ PHẦN LỆ PHÍ</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Badge Thẻ</label>
+            <input
+              type="text"
+              value={fee.badge}
+              onChange={(e) => setFee({ ...fee, badge: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Tiêu Đề Chính</label>
+            <input
+              type="text"
+              value={fee.title}
+              onChange={(e) => setFee({ ...fee, title: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-medium text-slate-300 mb-1">Phụ Đề Mô Tả Ngắn</label>
+            <input
+              type="text"
+              value={fee.subtitle}
+              onChange={(e) => setFee({ ...fee, subtitle: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Giá Vé & Thông Tin Ưu Đãi */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
         <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">GIÁ VÉ & THÔNG TIN ƯU ĐÃI</h3>
 

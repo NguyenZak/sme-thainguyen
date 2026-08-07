@@ -120,6 +120,15 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
             />
           </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-medium text-slate-300 mb-1">Phụ Đề Mô Tả Ngắn</label>
+            <input
+              type="text"
+              value={sponsors.subtitle}
+              onChange={(e) => setSponsors({ ...sponsors, subtitle: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
         </div>
       </div>
 

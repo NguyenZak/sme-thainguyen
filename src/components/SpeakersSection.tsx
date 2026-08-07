@@ -15,6 +15,7 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
   return (
     <section id="speakers" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -47,56 +48,98 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               onClick={() => setSelectedSpeaker(spk)}
-              className="bg-[#F8FAFC] rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all flex flex-col justify-between group cursor-pointer"
+              className="bg-[#F8FAFC] rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all flex flex-col group cursor-pointer"
             >
-              <div>
-                {/* Speaker Portrait Image Container */}
-                <div className="relative h-64 sm:h-72 w-full bg-slate-900 overflow-hidden">
-                  <Image
-                    src={spk.imageUrl}
-                    alt={spk.name}
-                    fill
-                    className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B3026] via-transparent to-transparent opacity-80" />
+              {/* Portrait */}
+              <div className="relative h-60 w-full bg-slate-900 overflow-hidden shrink-0">
+                <Image
+                  src={spk.imageUrl}
+                  alt={spk.name}
+                  fill
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B3026] via-transparent to-transparent opacity-80" />
 
-                  {/* Badge */}
-                  {spk.badge && (
-                    <span className="absolute top-3 left-3 bg-[#22C55E] text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
-                      <Sparkles className="w-3 h-3 text-amber-300 fill-amber-300" />
-                      <span>{spk.badge}</span>
-                    </span>
-                  )}
+                {spk.badge && (
+                  <span className="absolute top-3 left-3 bg-[#22C55E] text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+                    <Sparkles className="w-3 h-3 text-amber-300 fill-amber-300" />
+                    <span>{spk.badge}</span>
+                  </span>
+                )}
 
-                  {/* Name & Title on image overlay */}
-                  <div className="absolute bottom-3 left-4 right-4 text-white space-y-0.5">
-                    <h3
-                      className="text-lg font-bold truncate leading-snug group-hover:text-emerald-300 transition-colors"
-                      style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
-                    >
-                      {spk.name}
-                    </h3>
-                    <p className="text-xs text-emerald-300 font-medium truncate">
-                      {spk.title}
-                    </p>
-                  </div>
+                <div className="absolute bottom-3 left-4 right-4 text-white space-y-0.5">
+                  <h3
+                    className="text-lg font-bold truncate leading-snug group-hover:text-emerald-300 transition-colors"
+                    style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
+                  >
+                    {spk.name}
+                  </h3>
+                  <p className="text-xs text-emerald-300 font-medium truncate">{spk.title}</p>
+                </div>
+              </div>
+
+              {/* Card body — 3 blocks + topic + CTA */}
+              <div className="flex flex-col divide-y divide-slate-100 flex-1">
+
+                {/* Tổ chức */}
+                <div className="flex items-center gap-2 px-4 py-3 text-xs font-semibold text-slate-700">
+                  <Building2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="truncate">{spk.organization}</span>
                 </div>
 
-                {/* Organization & Topic Details */}
-                <div className="p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                    <Building2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span className="truncate">{spk.organization}</span>
-                  </div>
-
-                  {spk.topic && (
-                    <div className="pt-2 border-t border-slate-200/60 flex items-start gap-2">
-                      <Mic className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed font-medium">
-                        &quot;{spk.topic}&quot;
-                      </p>
+                {/* Thành tựu nổi bật */}
+                {spk.achievements && (
+                  <div className="px-4 py-3 space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-amber-700">
+                      <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      Thành tựu nổi bật
                     </div>
-                  )}
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                      {spk.achievements}
+                    </p>
+                  </div>
+                )}
+
+                {/* Vì sao nên nghe */}
+                {spk.whyListen && (
+                  <div className="px-4 py-3 space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-emerald-700">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      Vì sao nên nghe
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                      {spk.whyListen}
+                    </p>
+                  </div>
+                )}
+
+                {/* Giá trị bài nói */}
+                {spk.speechValue && (
+                  <div className="px-4 py-3 space-y-1 bg-emerald-50/60">
+                    <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-emerald-800">
+                      <Mic className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      Giá trị bài nói
+                    </div>
+                    <p className="text-xs text-slate-700 leading-relaxed line-clamp-2 italic">
+                      {spk.speechValue}
+                    </p>
+                  </div>
+                )}
+
+                {/* Topic */}
+                {spk.topic && (
+                  <div className="px-4 py-3 mt-auto">
+                    <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">
+                      🎤 &quot;{spk.topic}&quot;
+                    </p>
+                  </div>
+                )}
+
+                {/* CTA hint */}
+                <div className="px-4 py-3">
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider group-hover:underline">
+                    Xem chi tiết →
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -104,10 +147,10 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
         </div>
       </div>
 
-      {/* Interactive Speaker Bio Modal */}
+      {/* Speaker Bio Modal */}
       {selectedSpeaker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl border border-emerald-100 animate-in zoom-in-95">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 relative shadow-2xl border border-emerald-100 animate-in zoom-in-95">
             <button
               onClick={() => setSelectedSpeaker(null)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 transition-colors"
@@ -115,6 +158,7 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
               <X className="w-5 h-5" />
             </button>
 
+            {/* Header */}
             <div className="flex items-center gap-4">
               <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 border-emerald-500">
                 <Image
@@ -134,22 +178,62 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
               </div>
             </div>
 
-            <div className="space-y-3 bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100">
+            {/* Chủ đề */}
+            <div className="space-y-2 bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100">
               <div className="flex items-center gap-2 text-xs font-bold text-[#0D3B2E]">
                 <Mic className="w-4 h-4 text-amber-500" />
-                <span>Chủ đề phát biểu chính tại Diễn đàn:</span>
+                <span>Chủ đề phát biểu tại Diễn đàn</span>
               </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium italic">
                 &quot;{selectedSpeaker.topic}&quot;
               </p>
             </div>
 
-            <div className="pt-2 flex justify-end">
+            {/* Thành tựu */}
+            {selectedSpeaker.achievements && (
+              <div className="space-y-2 bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-800">
+                  <Award className="w-4 h-4 text-amber-500" />
+                  <span>Thành tựu nổi bật</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  {selectedSpeaker.achievements}
+                </p>
+              </div>
+            )}
+
+            {/* Vì sao nên nghe */}
+            {selectedSpeaker.whyListen && (
+              <div className="space-y-2 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span>Vì sao nên nghe</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  {selectedSpeaker.whyListen}
+                </p>
+              </div>
+            )}
+
+            {/* Giá trị bài nói */}
+            {selectedSpeaker.speechValue && (
+              <div className="space-y-2 bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#0D3B2E]">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Giá trị bài nói</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  {selectedSpeaker.speechValue}
+                </p>
+              </div>
+            )}
+
+            <div className="pt-1 flex justify-end">
               <button
                 onClick={() => setSelectedSpeaker(null)}
                 className="px-5 py-2 rounded-xl text-xs font-bold bg-[#0D3B2E] text-white hover:bg-emerald-800 transition-colors"
               >
-                Đóng thông tin
+                Đóng
               </button>
             </div>
           </div>
@@ -158,4 +242,3 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
     </section>
   );
 }
-

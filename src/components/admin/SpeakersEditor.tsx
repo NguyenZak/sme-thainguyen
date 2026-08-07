@@ -234,6 +234,39 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
                       className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Thành tựu nổi bật</label>
+                    <textarea
+                      value={spk.achievements || ""}
+                      onChange={(e) => handleItemChange(idx, "achievements", e.target.value)}
+                      rows={2}
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      placeholder="Ví dụ: 20+ năm tư vấn chính sách kinh tế..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Vì sao nên nghe</label>
+                    <textarea
+                      value={spk.whyListen || ""}
+                      onChange={(e) => handleItemChange(idx, "whyListen", e.target.value)}
+                      rows={2}
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      placeholder="Ví dụ: Cung cấp chiến lược triển khai thực tế..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Giá trị bài nói</label>
+                    <textarea
+                      value={spk.speechValue || ""}
+                      onChange={(e) => handleItemChange(idx, "speechValue", e.target.value)}
+                      rows={2}
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      placeholder="Ví dụ: Hướng dẫn mô hình kết nối đầu tư và đột phá doanh thu..."
+                    />
+                  </div>
                 </div>
               </div>
             </div>

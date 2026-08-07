@@ -13,9 +13,12 @@ const BOOTH_INCLUSIONS = [
   "Hỗ trợ vận chuyển, sắp xếp hàng hóa ngày lắp đặt (18/9)",
 ];
 
-import { BoothsContent } from "@/constants/defaultContent";
+import { BoothsContent, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 
-export default function BoothSection({ content }: { content?: any }) {
+export default function BoothSection({ content }: { content?: BoothsContent }) {
+  const badge = content?.badge || DEFAULT_BOOTHS.badge;
+  const title = content?.title || DEFAULT_BOOTHS.title;
+  const subtitle = content?.subtitle || DEFAULT_BOOTHS.subtitle;
   const [floorPlanOpen, setFloorPlanOpen] = useState(false);
   const [selectedBooth, setSelectedBooth] = useState<number | null>(5);
 
@@ -29,16 +32,16 @@ export default function BoothSection({ content }: { content?: any }) {
         {/* Section Header */}
         <div className="space-y-3">
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            05 · GIAN HÀNG TRIỂN LÃM
+            {badge}
           </span>
           <h2
             className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Thông tin &amp; đăng ký gian hàng
+            {title}
           </h2>
           <p className="text-sm sm:text-lg text-slate-700 leading-relaxed max-w-4xl">
-            Khu triển lãm quy mô 100 gian hàng, hoạt động liên tục trong 03 ngày — không gian trưng bày sản phẩm, giải pháp, dịch vụ và kết nối trực tiếp với đại biểu, nhà mua hàng, nhà đầu tư.
+            {subtitle}
           </p>
         </div>
 
