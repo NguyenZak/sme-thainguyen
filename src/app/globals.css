@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-dark: #0B3026;
+  --color-primary: #0D3B2E;
+  --color-primary-light: #166534;
+  --color-emerald-vibrant: #22C55E;
+  --color-emerald-hover: #16A34A;
+  --color-gold-accent: #F59E0B;
+  --color-gold-hover: #D97706;
+  --color-sme-bg: #F4FBF7;
+  --color-sme-card: #FFFFFF;
+  --color-sme-text: #0F172A;
+  --color-sme-border: #E2E8F0;
+  
+  --font-display: var(--font-wix-display), var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+
+  --radius-2xl: 16px;
+}
+
+:root {
+  --background: #F4FBF7;
+  --foreground: #0F172A;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: #F4FBF7;
+  color: #0F172A;
+}
+
+body {
+  background-color: #F4FBF7;
+  color: #0F172A;
+  overflow-x: hidden;
+}
+
+/* Glass effect ON Hero */
+.hero-glass {
+  background: rgba(11, 48, 38, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hero-glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Unified Soft Shadows */
+.shadow-sme {
+  box-shadow: 0 10px 30px -5px rgba(13, 59, 46, 0.08), 0 4px 12px -2px rgba(34, 197, 94, 0.04);
+}
+
+.shadow-sme-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shadow-sme-hover:hover {
+  box-shadow: 0 20px 40px -10px rgba(13, 59, 46, 0.15), 0 8px 24px -4px rgba(245, 158, 11, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Ergonomic focus ring utility */
+.input-focus-ring {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.input-focus-ring:focus {
+  outline: none;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  background-color: #FFFFFF;
+}
