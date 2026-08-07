@@ -297,6 +297,93 @@ export default function RegistrationEditor({ initialRegistration }: Registration
         </div>
       </div>
 
+      {/* ── Custom Email Templates for 3 Form Types ───────────────────── */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+        <div>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            ✉️ CẤU HÌNH MẪU EMAIL XÁC NHẬN TỰ ĐỘNG CHO 3 FORM
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Tùy chỉnh tiêu đề & đoạn văn lời cảm ơn gửi tự động tới Email của người đăng ký sau khi điền Form.
+          </p>
+        </div>
+
+        {/* 1. Email Đại Biểu */}
+        <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+          <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wider">
+            🎟️ 1. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ ĐẠI BIỂU
+          </h4>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tiêu đề Email (Subject)</label>
+            <input
+              type="text"
+              value={registration.delegateEmailSubject || ""}
+              onChange={(e) => setRegistration({ ...registration, delegateEmailSubject: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-semibold"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Nội dung lời chúc / Cảm ơn trong Email</label>
+            <textarea
+              rows={3}
+              value={registration.delegateEmailBody || ""}
+              onChange={(e) => setRegistration({ ...registration, delegateEmailBody: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none resize-none leading-relaxed"
+            />
+          </div>
+        </div>
+
+        {/* 2. Email Nhà Tài Trợ */}
+        <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+          <h4 className="text-xs font-bold text-purple-700 uppercase tracking-wider">
+            💎 2. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ NHÀ TÀI TRỢ
+          </h4>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tiêu đề Email (Subject)</label>
+            <input
+              type="text"
+              value={registration.sponsorEmailSubject || ""}
+              onChange={(e) => setRegistration({ ...registration, sponsorEmailSubject: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-semibold"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Nội dung lời chúc / Cảm ơn trong Email</label>
+            <textarea
+              rows={3}
+              value={registration.sponsorEmailBody || ""}
+              onChange={(e) => setRegistration({ ...registration, sponsorEmailBody: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none resize-none leading-relaxed"
+            />
+          </div>
+        </div>
+
+        {/* 3. Email Gian Hàng */}
+        <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+          <h4 className="text-xs font-bold text-amber-800 uppercase tracking-wider">
+            🎪 3. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM
+          </h4>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tiêu đề Email (Subject)</label>
+            <input
+              type="text"
+              value={registration.boothEmailSubject || ""}
+              onChange={(e) => setRegistration({ ...registration, boothEmailSubject: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-semibold"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">Nội dung lời chúc / Cảm ơn trong Email</label>
+            <textarea
+              rows={3}
+              value={registration.boothEmailBody || ""}
+              onChange={(e) => setRegistration({ ...registration, boothEmailBody: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none resize-none leading-relaxed"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Submit Button Text */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG NÚT GỬI ĐĂNG KÝ</h3>

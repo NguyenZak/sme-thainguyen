@@ -81,6 +81,12 @@ export interface RegistrationContent {
   mobileDelegateLabel: string;
   mobileSponsorLabel: string;
   mobileBoothLabel: string;
+  delegateEmailSubject?: string;
+  delegateEmailBody?: string;
+  sponsorEmailSubject?: string;
+  sponsorEmailBody?: string;
+  boothEmailSubject?: string;
+  boothEmailBody?: string;
 }
 
 export interface StatisticItem {
@@ -327,6 +333,12 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
   mobileDelegateLabel: "Đăng ký Đại biểu",
   mobileSponsorLabel: "Tài trợ",
   mobileBoothLabel: "Gian hàng",
+  delegateEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ ĐẠI BIỂU THAM DỰ",
+  delegateEmailBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý đại biểu đã đăng ký tham dự chuỗi sự kiện trọng điểm xúc tiến thương mại 2026. Bộ phận Thư ký sẽ liên hệ hỗ trợ Quý đại biểu trong vòng 24 giờ làm việc.",
+  sponsorEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỒNG HÀNH",
+  sponsorEmailBody: "Trân trọng cảm ơn Quý Doanh nghiệp đã đăng ký đồng hành cùng Diễn đàn SME Việt Nam 2026. Ban Thư ký sẽ liên hệ trao đổi chi tiết về các quyền lợi tài trợ & hiện diện thương hiệu.",
+  boothEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM",
+  boothEmailBody: "Cảm ơn Quý đơn vị đã đăng ký gian hàng triển lãm tại May Plaza Hotel Thái Nguyên. Bộ phận tư vấn sơ đồ gian hàng sẽ liên hệ xác nhận vị trí gian hàng của Quý đơn vị.",
 };
 
 export const DEFAULT_STATISTICS: StatisticsContent = {
