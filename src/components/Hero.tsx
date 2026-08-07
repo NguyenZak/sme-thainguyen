@@ -92,7 +92,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
   }, [data.targetDateISO]);
 
   return (
-    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-6 sm:pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0B3026]">
+    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0B3026]">
       {/* 3D Depth Layer Engine & Cyber Grid Background */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#071F18]">
         {/* 3D Perspective Horizon Grid */}
@@ -241,9 +241,6 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
           </div>
         </motion.div>
 
-        {/* Key Event Statistics Counter (Placed right under Ticket Fee card) */}
-        <Statistics content={statsContent} />
-
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -285,6 +282,9 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
             <span>Sơ đồ 100 Gian hàng</span>
           </a>
         </motion.div>
+
+        {/* Key Event Statistics Counter (Overlapping bottom edge of Hero) */}
+        <Statistics content={statsContent} />
       </div>
     </section>
   );

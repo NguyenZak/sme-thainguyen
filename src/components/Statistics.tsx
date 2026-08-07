@@ -35,8 +35,8 @@ function Counter({ end, duration = 2.8, suffix = "", formatZero = true }: { end:
 
 export default function Statistics({ content }: { content?: any }) {
   return (
-    <div className="w-full max-w-4xl mx-auto my-4 sm:my-6">
-      <div className="bg-white text-slate-800 sm:bg-[#0B3026] sm:text-white rounded-2xl shadow-xl sm:shadow-sme border border-slate-100 sm:border-emerald-800/60 p-4 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 -mb-20 sm:-mb-16 relative z-20">
+      <div className="bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-5 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
         {/* Stat 1: 100+ Business Matching */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
