@@ -8,6 +8,32 @@ function getFormCategory(ticketType: string): "delegate" | "sponsor" | "booth" {
   return "delegate";
 }
 
+function normalizeTelegramChatId(input: string): string {
+  if (!input) return "";
+  let clean = input.trim();
+  const linkMatch = clean.match(/t\.me\/c\/(\d+)/);
+  if (linkMatch) {
+    clean = linkMatch[1];
+  }
+  clean = clean.replace(/[^0-9-]/g, "");
+  if (/^\d{9,}$/.test(clean)) {
+    return `-100${clean}`;
+  }
+  return clean;
+}
+
+function normalizeTelegramThreadId(input: any): number | undefined {
+  if (input === undefined || input === null || input === "") return undefined;
+  const str = String(input).trim();
+  const linkMatch = str.match(/t\.me\/c\/\d+\/(\d+)/);
+  if (linkMatch) {
+    const num = parseInt(linkMatch[1], 10);
+    return isNaN(num) ? undefined : num;
+  }
+  const cleanNum = parseInt(str.replace(/[^0-9]/g, ""), 10);
+  return isNaN(cleanNum) ? undefined : cleanNum;
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
@@ -101,6 +127,9 @@ export async function POST(request: Request) {
           targetThreadIdStr = threadIdBooth;
         }
 
+        const formattedChatId = normalizeTelegramChatId(telegramChatId);
+        const formattedThreadId = normalizeTelegramThreadId(targetThreadIdStr);
+
         const tgMsg =
           `🔔 <b>${categoryTitle}</b>\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
@@ -114,14 +143,14 @@ export async function POST(request: Request) {
           `⏰ <i>Thời gian: ${new Date().toLocaleString("vi-VN")}</i>`;
 
         const payload: Record<string, any> = {
-          chat_id: telegramChatId,
+          chat_id: formattedChatId,
           text: tgMsg,
           parse_mode: "HTML",
         };
 
         // Determine Telegram Group Forum Topic (message_thread_id)
-        if (targetThreadIdStr && !isNaN(parseInt(targetThreadIdStr, 10))) {
-          payload.message_thread_id = parseInt(targetThreadIdStr, 10);
+        if (formattedThreadId !== undefined) {
+          payload.message_thread_id = formattedThreadId;
         }
 
         await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {

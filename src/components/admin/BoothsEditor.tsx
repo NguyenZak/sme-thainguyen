@@ -184,16 +184,20 @@ export default function BoothsEditor({ initialBooths }: BoothsEditorProps) {
 
         <div className="space-y-4">
           {booths.items.map((b, idx) => (
-            <div key={b.id || idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 relative">
-              <button
-                type="button"
-                onClick={() => removeBooth(idx)}
-                className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+            <div key={b.id || idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <span className="text-xs font-bold text-slate-900">GIAN HÀNG #{idx + 1} ({b.boothCode})</span>
+                <button
+                  type="button"
+                  onClick={() => removeBooth(idx)}
+                  className="inline-flex items-center gap-1 text-[11px] text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg font-semibold transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Xóa</span>
+                </button>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pr-8">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                   <label className="block text-[11px] font-semibold text-slate-700 mb-1">Mã Gian Hàng</label>
                   <input

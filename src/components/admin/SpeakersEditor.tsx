@@ -155,14 +155,18 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
 
         <div className="space-y-4">
           {items.map((spk, idx) => (
-            <div key={spk.id || idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 relative">
-              <button
-                type="button"
-                onClick={() => removeSpeaker(idx)}
-                className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+            <div key={spk.id || idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+                <span className="text-xs font-bold text-slate-900">DIỄN GIẢ #{idx + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeSpeaker(idx)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg text-xs font-semibold transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Xóa diễn giả</span>
+                </button>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div className="sm:col-span-3 flex flex-col items-center gap-2">

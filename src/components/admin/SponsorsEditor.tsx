@@ -147,14 +147,20 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
 
         <div className="space-y-4">
           {sponsors.items.map((sp, idx) => (
-            <div key={sp.id || idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start relative">
-              <button
-                type="button"
-                onClick={() => removeSponsor(idx)}
-                className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+            <div key={sp.id || idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <span className="text-xs font-bold text-slate-900">NHÀ TÀI TRỢ #{idx + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeSponsor(idx)}
+                  className="inline-flex items-center gap-1 text-[11px] text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg font-semibold transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Xóa</span>
+                </button>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4 items-start">
 
               {/* Logo preview */}
               <div className="w-28 h-20 bg-white border border-slate-200 rounded-lg flex items-center justify-center p-2 shrink-0 relative overflow-hidden shadow-sm">
@@ -166,7 +172,7 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
               </div>
 
               {/* Form fields */}
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 w-full pr-8">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                 <div>
                   <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tên Nhà Tài Trợ / Doanh Nghiệp</label>
                   <input
@@ -213,7 +219,8 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
         </div>
       </div>
     </form>

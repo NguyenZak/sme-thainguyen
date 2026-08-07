@@ -140,16 +140,20 @@ export default function TimelineEditor({ initialTimeline }: TimelineEditorProps)
               {daySlots.map((slot) => {
                 const globalIndex = timeline.slots.findIndex((s) => s.id === slot.id);
                 return (
-                  <div key={slot.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 relative">
-                    <button
-                      type="button"
-                      onClick={() => removeSlot(slot.id)}
-                      className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div key={slot.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">Mốc thời gian</span>
+                      <button
+                        type="button"
+                        onClick={() => removeSlot(slot.id)}
+                        className="inline-flex items-center gap-1 text-[11px] text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg font-semibold transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Xóa</span>
+                      </button>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pr-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div>
                         <label className="block text-[11px] font-semibold text-slate-700 mb-1">Khung Giờ</label>
                         <input
