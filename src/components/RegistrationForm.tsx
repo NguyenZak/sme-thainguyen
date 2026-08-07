@@ -150,9 +150,25 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
           ? `Nhà tài trợ: ${values.sponsorTier}`
           : `Gian hàng triển lãm: ${values.boothNumber} (${values.attendeesCount} gian)`;
 
+      const emailSubject =
+        values.intentTab === "delegate"
+          ? registration.delegateEmailSubject
+          : values.intentTab === "sponsor"
+          ? registration.sponsorEmailSubject
+          : registration.boothEmailSubject;
+
+      const emailBody =
+        values.intentTab === "delegate"
+          ? registration.delegateEmailBody
+          : values.intentTab === "sponsor"
+          ? registration.sponsorEmailBody
+          : registration.boothEmailBody;
+
       const payload = {
         ...values,
         registrationType: typeLabel,
+        emailSubject,
+        emailBody,
         timestamp: new Date().toISOString(),
         status: "Pending",
       };
