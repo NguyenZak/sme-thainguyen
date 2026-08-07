@@ -347,25 +347,34 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
               onClick={() => {
                 const codeStr = `function doPost(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
     var data = JSON.parse(e.postData.contents);
+    var ticketType = (data.registrationType || data.intentTab || "").toLowerCase();
+    var targetSheetName = "Đại biểu";
+    if (ticketType.indexOf("booth") !== -1 || ticketType.indexOf("gian hàng") !== -1 || ticketType.indexOf("gian") !== -1) {
+      targetSheetName = "Gian hàng";
+    } else if (ticketType.indexOf("sponsor") !== -1 || ticketType.indexOf("tài trợ") !== -1) {
+      targetSheetName = "Tài trợ";
+    }
+    var sheet = ss.getSheetByName(targetSheetName);
+    if (!sheet) { sheet = ss.insertSheet(targetSheetName); }
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Thời Gian", "Họ và Tên", "Số Điện Thoại", "Email", "Tên Doanh Nghiệp", "Chức Vụ", "Loại Đăng Ký", "Ghi Chú"]);
+      sheet.appendRow(["Thời Gian Đăng Ký", "Họ và Tên", "Số Điện Thoại", "Email", "Tên Doanh Nghiệp / Đơn Vị", "Chức Vụ", "Chi Tiết Đăng Ký", "Ghi Chú / Nhu Cầu"]);
       sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#1e293b").setFontColor("#ffffff");
     }
     var timestamp = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
     sheet.appendRow([timestamp, data.fullName||data.full_name||"N/A", data.phone||"N/A", data.email||"N/A", data.company||data.company_name||"N/A", data.position||"N/A", data.registrationType||data.intentTab||"N/A", data.notes||data.networkingNeeds||""]);
-    return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({status:"success", message:"Đã ghi vào " + targetSheetName})).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
     return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }`;
                 navigator.clipboard.writeText(codeStr);
-                toast.success("Đã copy mã Google Apps Script! 📋", "Dán mã này vào Apps Script của Google Sheet.");
+                toast.success("Đã copy mã Google Apps Script 3 Tab! 📋", "Dán mã này vào Apps Script của Google Sheet.");
               }}
               className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[11px] font-bold transition-colors"
             >
-              📋 Copy Mã Script 1-Click
+              📋 Copy Mã Script 3 Tab (Đại biểu, Tài trợ, Gian hàng)
             </button>
           </div>
 
