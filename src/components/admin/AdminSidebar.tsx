@@ -11,13 +11,11 @@ import {
   Award,
   Store,
   Users,
-  ArrowRight,
 } from "lucide-react";
 
 export type AdminTab =
   | "general"
   | "hero"
-  | "page_builder"
   | "statistics"
   | "about"
   | "speakers"
@@ -42,7 +40,6 @@ export default function AdminSidebar({
   const menuItems: { id: AdminTab; label: string; icon: any; badge?: number }[] = [
     { id: "general", label: "Cấu hình chung & SEO", icon: Globe },
     { id: "hero", label: "Hero Banner & Countdown", icon: Flame },
-    { id: "page_builder", label: "Page Builder Hero", icon: ArrowRight },
     { id: "statistics", label: "Con số Thống kê", icon: BarChart3 },
     { id: "about", label: "Về Diễn Đàn (About)", icon: Info },
     { id: "speakers", label: "Diễn Giả Keynote", icon: Users },

@@ -25,7 +25,7 @@ export default function AddToCalendar({
 
   const isBrowser = typeof window !== "undefined";
   const userAgent = isBrowser ? navigator.userAgent || "" : "";
-  const isIOS = isBrowser && /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  const isIOS = isBrowser && /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
   const isAndroid = isBrowser && /Android/.test(userAgent);
 
   const defaultCalendarOption: "google" | "apple" | "menu" = isAndroid
