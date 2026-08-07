@@ -5,6 +5,7 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar, { AdminTab } from "@/components/admin/AdminSidebar";
 import GeneralEditor from "@/components/admin/GeneralEditor";
 import HeroEditor from "@/components/admin/HeroEditor";
+import PageBuilderEditor from "@/components/admin/PageBuilderEditor";
 import StatisticsEditor from "@/components/admin/StatisticsEditor";
 import AboutEditor from "@/components/admin/AboutEditor";
 import SpeakersEditor from "@/components/admin/SpeakersEditor";
@@ -137,6 +138,7 @@ export default function AdminPage() {
                 <GeneralEditor initialConfig={data.site_config} initialFooter={data.footer} />
               )}
               {activeTab === "hero" && <HeroEditor initialHero={data.hero} />}
+              {activeTab === "page_builder" && <PageBuilderEditor initialHero={data.hero} />}
               {activeTab === "statistics" && (
                 <StatisticsEditor initialStats={data.statistics} />
               )}
