@@ -18,6 +18,7 @@ export type AdminTab =
   | "hero"
   | "statistics"
   | "about"
+  | "speakers"
   | "benefits"
   | "timeline"
   | "ticket_fee"
@@ -41,6 +42,7 @@ export default function AdminSidebar({
     { id: "hero", label: "Hero Banner & Countdown", icon: Flame },
     { id: "statistics", label: "Con số Thống kê", icon: BarChart3 },
     { id: "about", label: "Về Diễn Đàn (About)", icon: Info },
+    { id: "speakers", label: "Diễn Giả Keynote", icon: Users },
     { id: "benefits", label: "Giá trị & Quyền lợi", icon: Sparkles },
     { id: "timeline", label: "Lịch trình 3 Ngày", icon: CalendarDays },
     { id: "ticket_fee", label: "Chi phí & Giá Vé", icon: Ticket },

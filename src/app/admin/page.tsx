@@ -7,6 +7,7 @@ import GeneralEditor from "@/components/admin/GeneralEditor";
 import HeroEditor from "@/components/admin/HeroEditor";
 import StatisticsEditor from "@/components/admin/StatisticsEditor";
 import AboutEditor from "@/components/admin/AboutEditor";
+import SpeakersEditor from "@/components/admin/SpeakersEditor";
 import BenefitsEditor from "@/components/admin/BenefitsEditor";
 import TimelineEditor from "@/components/admin/TimelineEditor";
 import TicketFeeEditor from "@/components/admin/TicketFeeEditor";
@@ -20,6 +21,7 @@ import {
   DEFAULT_HERO,
   DEFAULT_STATISTICS,
   DEFAULT_ABOUT,
+  DEFAULT_SPEAKERS,
   DEFAULT_BENEFITS,
   DEFAULT_TIMELINE,
   DEFAULT_TICKET_FEE,
@@ -37,6 +39,7 @@ export default function AdminPage() {
     hero: any;
     statistics: any;
     about: any;
+    speakers: any;
     benefits: any;
     timeline: any;
     ticket_fee: any;
@@ -48,6 +51,7 @@ export default function AdminPage() {
     hero: DEFAULT_HERO,
     statistics: DEFAULT_STATISTICS,
     about: DEFAULT_ABOUT,
+    speakers: DEFAULT_SPEAKERS,
     benefits: DEFAULT_BENEFITS,
     timeline: DEFAULT_TIMELINE,
     ticket_fee: DEFAULT_TICKET_FEE,
@@ -83,6 +87,7 @@ export default function AdminPage() {
             hero: { ...DEFAULT_HERO, ...(loadedMap.hero || {}) },
             statistics: { ...DEFAULT_STATISTICS, ...(loadedMap.statistics || {}) },
             about: { ...DEFAULT_ABOUT, ...(loadedMap.about || {}) },
+            speakers: { ...DEFAULT_SPEAKERS, ...(loadedMap.speakers || {}) },
             benefits: { ...DEFAULT_BENEFITS, ...(loadedMap.benefits || {}) },
             timeline: { ...DEFAULT_TIMELINE, ...(loadedMap.timeline || {}) },
             ticket_fee: { ...DEFAULT_TICKET_FEE, ...(loadedMap.ticket_fee || {}) },
@@ -136,6 +141,9 @@ export default function AdminPage() {
                 <StatisticsEditor initialStats={data.statistics} />
               )}
               {activeTab === "about" && <AboutEditor initialAbout={data.about} />}
+              {activeTab === "speakers" && (
+                <SpeakersEditor initialSpeakers={data.speakers} />
+              )}
               {activeTab === "benefits" && (
                 <BenefitsEditor initialBenefits={data.benefits} />
               )}
