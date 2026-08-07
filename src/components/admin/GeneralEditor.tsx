@@ -363,18 +363,33 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
       sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#1e293b").setFontColor("#ffffff");
     }
     var timestamp = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-    sheet.appendRow([timestamp, data.fullName||data.full_name||"N/A", data.phone||"N/A", data.email||"N/A", data.company||data.company_name||"N/A", data.position||"N/A", data.registrationType||data.intentTab||"N/A", data.notes||data.networkingNeeds||""]);
-    return ContentService.createTextOutput(JSON.stringify({status:"success", message:"Đã ghi vào " + targetSheetName})).setMimeType(ContentService.MimeType.JSON);
+    var fullName = data.fullName || data.full_name || "Quý khách";
+    var phone = data.phone || "N/A";
+    var email = data.email || "";
+    var company = data.company || data.company_name || "N/A";
+    var position = data.position || "N/A";
+    var detailInfo = data.registrationType || data.intentTab || "N/A";
+    var notes = data.notes || data.networkingNeeds || "Không có";
+    sheet.appendRow([timestamp, fullName, phone, email, company, position, detailInfo, notes]);
+    if (email && email.indexOf("@") !== -1) {
+      try {
+        var regId = "SME2026-" + Math.floor(100000 + Math.random() * 900000);
+        var subject = "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + fullName.toUpperCase();
+        var htmlTemplate = '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background-color: #ffffff;"><div style="background-color: #0D3B2E; color: #ffffff; padding: 24px; text-align: center;"><h1 style="margin: 0; font-size: 18px; text-transform: uppercase; font-weight: bold;">DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026</h1><p style="margin: 6px 0 0 0; font-size: 13px; color: #a7f3d0;">May Plaza Hotel Thái Nguyên | 18 - 20/09/2026</p></div><div style="padding: 24px; color: #334155; line-height: 1.6; font-size: 14px;"><p>Kính gửi <b>' + fullName + '</b>,</p><p>Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện.</p><div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #22c55e; border-radius: 8px; padding: 16px; margin: 20px 0;"><h3 style="margin: 0 0 12px 0; font-size: 14px; color: #0f172a; text-transform: uppercase;">📋 THÔNG TIN ĐĂNG KÝ CỦA QUÝ KHÁCH:</h3><table style="width: 100%; border-collapse: collapse; font-size: 13px;"><tr><td style="padding: 4px 0; color: #64748b; width: 140px;">Mã xác nhận:</td><td style="padding: 4px 0; font-weight: bold; color: #0D3B2E;">' + regId + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Họ và Tên:</td><td style="padding: 4px 0; font-weight: bold;">' + fullName + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Số điện thoại:</td><td style="padding: 4px 0; font-weight: bold;">' + phone + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Email:</td><td style="padding: 4px 0; font-weight: bold;">' + email + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Doanh nghiệp:</td><td style="padding: 4px 0; font-weight: bold;">' + company + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Chức vụ:</td><td style="padding: 4px 0; font-weight: bold;">' + position + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Nội dung đăng ký:</td><td style="padding: 4px 0; font-weight: bold; color: #d97706;">' + detailInfo + '</td></tr><tr><td style="padding: 4px 0; color: #64748b;">Ghi chú / Nhu cầu:</td><td style="padding: 4px 0; font-style: italic;">' + notes + '</td></tr></table></div><div style="background-color: #eff6ff; border-radius: 8px; padding: 14px; margin: 16px 0; font-size: 13px; color: #1e40af;">📍 <b>THỜI GIAN & ĐỊA ĐIỂM SỰ KIỆN:</b><br>• <b>Thời gian:</b> 18 - 20 tháng 09 năm 2026<br>• <b>Địa điểm:</b> May Plaza Hotel Thái Nguyên (Số 668 Phan Đình Phùng, TP. Thái Nguyên)</div><p>Bộ phận Thư ký Ban Tổ Chức sẽ liên hệ với Quý khách trong vòng <b>24 giờ làm việc</b> để hỗ trợ hoàn tất thủ tục.</p><p>Trân trọng,<br><b>BAN TỔ CHỨC DIỄN ĐÀN SME VIỆT NAM 2026</b></p></div></div>';
+        MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlTemplate });
+      } catch (mErr) {}
+    }
+    return ContentService.createTextOutput(JSON.stringify({status:"success", message:"Đã ghi vào " + targetSheetName + " & gửi email xác nhận!"})).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
     return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }`;
                 navigator.clipboard.writeText(codeStr);
-                toast.success("Đã copy mã Google Apps Script 3 Tab! 📋", "Dán mã này vào Apps Script của Google Sheet.");
+                toast.success("Đã copy mã Google Apps Script (+ Tự Động Gửi Email)! 📋", "Dán mã này vào Apps Script của Google Sheet.");
               }}
               className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[11px] font-bold transition-colors"
             >
-              📋 Copy Mã Script 3 Tab (Đại biểu, Tài trợ, Gian hàng)
+              📋 Copy Mã Script 3 Tab + Tự Động Gửi Email Xác Nhận
             </button>
           </div>
 
