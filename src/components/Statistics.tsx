@@ -35,7 +35,7 @@ function Counter({ end, duration = 2.8, suffix = "", formatZero = true }: { end:
 
 export default function Statistics({ content }: { content?: any }) {
   return (
-    <section className="relative -mt-8 z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative -mt-12 sm:-mt-8 z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="bg-[#0B3026] text-white rounded-2xl shadow-sme border border-emerald-800/60 p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         {/* Stat 1: 100+ Business Matching */}
         <motion.div
