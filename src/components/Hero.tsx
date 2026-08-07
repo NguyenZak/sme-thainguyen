@@ -32,10 +32,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
       tl.from(".hero-badge", { opacity: 0, y: -25, duration: 0.9 })
         .from(".hero-title", { opacity: 0, y: 35, duration: 1.1 }, "-=0.5")
         .from(".hero-countdown", { opacity: 0, scale: 0.92, duration: 0.9 }, "-=0.6")
-        .from(".hero-details", { opacity: 0, y: 30, duration: 0.9 }, "-=0.5")
-        .from(".hero-cta-1", { opacity: 0, y: 25, duration: 0.7 }, "-=0.4")
-        .from(".hero-cta-2", { opacity: 0, y: 25, duration: 0.7 }, "-=0.5")
-        .from(".hero-cta-3", { opacity: 0, y: 25, duration: 0.7 }, "-=0.5");
+        .from(".hero-details", { opacity: 0, y: 30, duration: 0.9 }, "-=0.5");
     },
     { scope: containerRef }
   );
@@ -242,18 +239,13 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
         </motion.div>
 
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 pb-4 sm:pb-6 w-full max-w-xl sm:max-w-none mx-auto relative z-50"
-        >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3 pb-6 sm:pb-8 w-full max-w-xl sm:max-w-none mx-auto relative z-50">
           {/* 1st Order Primary CTA */}
           <a
             id="cta-1"
             href="#register"
             onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
-            className="hero-cta-1 w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
           >
             <Ticket className="w-4 h-4" />
             <span>Đăng ký Vé Đại biểu (1.450.000 VNĐ)</span>
@@ -265,7 +257,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
             id="cta-2"
             href="#register"
             onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } }))}
-            className="hero-cta-2 w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
           >
             <Award className="w-4 h-4" />
             <span>Hồ sơ Nhà tài trợ</span>
@@ -276,12 +268,12 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
             id="cta-3"
             href="#register"
             onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } }))}
-            className="hero-cta-3 w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
           >
             <Store className="w-4 h-4 text-emerald-400" />
             <span>Sơ đồ 100 Gian hàng</span>
           </a>
-        </motion.div>
+        </div>
 
         {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}
         <Statistics content={statsContent} />
