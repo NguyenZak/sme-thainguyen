@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
-import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot } from "lucide-react";
+import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot, Mail } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
 interface GeneralEditorProps {
@@ -104,6 +104,42 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
       toast.error("Lỗi kết nối!", err?.message || "Không thể kết nối Google Apps Script");
     } finally {
       setTestingGs(false);
+    }
+  };
+
+  const [testEmailInput, setTestEmailInput] = useState("");
+  const [testingEmail, setTestingEmail] = useState(false);
+
+  const handleTestEmail = async () => {
+    if (!config.googleSheetScriptUrl) {
+      toast.warning("Thiếu thông tin!", "Vui lòng nhập Google Apps Script URL trước!");
+      return;
+    }
+    if (!testEmailInput || !testEmailInput.includes("@")) {
+      toast.warning("Email không hợp lệ!", "Vui lòng nhập địa chỉ Email của bạn để nhận Mail thử nghiệm.");
+      return;
+    }
+
+    setTestingEmail(true);
+    try {
+      const res = await fetch("/api/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scriptUrl: config.googleSheetScriptUrl,
+          testEmail: testEmailInput,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Đã gửi Mail thử nghiệm thành công! ✉️", data.message);
+      } else {
+        toast.error("Gửi Mail thất bại!", data.message);
+      }
+    } catch (err: any) {
+      toast.error("Lỗi kết nối!", err?.message || "Không thể kết nối API Test Email");
+    } finally {
+      setTestingEmail(false);
     }
   };
 
@@ -334,6 +370,34 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
               Gửi Thử Nghiệm
             </button>
           </div>
+        </div>
+
+        {/* ── Test Email Box ───────────────────────────────────────────── */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+          <label className="block text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+            ✉️ TEST GỬI EMAIL XÁC NHẬN TỰ ĐỘNG THỬ NGHIỆM
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="email"
+              placeholder="Nhập email của bạn (VD: zak@gmail.com)"
+              value={testEmailInput}
+              onChange={(e) => setTestEmailInput(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleTestEmail}
+              disabled={testingEmail}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shrink-0 shadow-sm"
+            >
+              {testingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
+              Test Gửi Mail Ngay
+            </button>
+          </div>
+          <p className="text-[10px] text-slate-500">
+            Bấm nút để hệ thống thử bắn 1 Email xác nhận đính kèm Poster tới địa chỉ Email của bạn nhằm kiểm tra việc cấp quyền và kiểm tra hòm thư!
+          </p>
         </div>
 
         {/* ── Hướng dẫn 4 Bước cài đặt Google Apps Script ─────────────────── */}
