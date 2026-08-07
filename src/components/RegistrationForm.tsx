@@ -546,94 +546,138 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
 
         {/* Success Modal / Digital Ticket Receipt */}
         {successModal.open && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 border border-slate-200">
-              <button
-                onClick={() => setSuccessModal({ open: false })}
-                className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800"
-              >
-                <X className="w-5 h-5" />
-              </button>
+          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+            {(() => {
+              const tab = successModal.data?.intentTab || "delegate";
+              let modalTitle = "Ghi nhận Đăng ký Thành Công!";
+              let cardTagline = "THẺ ĐẠI BIỂU DỰ HỘI NGHỊ & B2B MATCHING";
+              let cardBg = "bg-[#0D3B2E] border-emerald-800 text-white";
+              let accentText = "text-emerald-300";
+              let detailLabel = "Số lượng vé";
+              let detailVal = `${successModal.data?.attendeesCount || 1} vé tham dự`;
 
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                  <CheckCircle2 className="w-10 h-10" />
-                </div>
-                <h3
-                  className="text-2xl font-extrabold text-[#0D3B2E]"
-                  style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
-                >
-                  Ghi nhận Đăng ký Thành Công!
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Cảm ơn bạn đã đăng ký tham dự Diễn đàn SME Việt Nam 2026.
-                </p>
-              </div>
+              if (tab === "sponsor") {
+                modalTitle = "Xác Nhận Đăng Ký Nhà Tài Trợ & Đồng Hành!";
+                cardTagline = "THẺ ĐỐI TÁC / NHÀ TÀI TRỢ CHÍNH THỨC";
+                cardBg = "bg-purple-950 border-purple-800 text-white";
+                accentText = "text-purple-300";
+                detailLabel = "Gói Tài Trợ Chọn";
+                detailVal = successModal.data?.sponsorTier || "Gói Đồng Hành";
+              } else if (tab === "booth") {
+                modalTitle = "Xác Nhận Đăng Ký Gian Hàng Triển Lãm!";
+                cardTagline = "THẺ ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM SME 2026";
+                cardBg = "bg-amber-950 border-amber-800 text-white";
+                accentText = "text-amber-300";
+                detailLabel = "Gian Hàng";
+                detailVal = `${successModal.data?.boothNumber || "Mã Gian Hàng"} (${successModal.data?.attendeesCount || 1} gian)`;
+              }
 
-              {/* Electronic Ticket Card */}
-              <div className="bg-[#0D3B2E] text-white rounded-2xl p-5 border border-emerald-800 space-y-4 relative overflow-hidden">
-                <div className="flex items-center justify-between border-b border-emerald-800 pb-3">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-emerald-400 tracking-wider block">
-                      Thẻ Điện Tử Check-in Sự Kiện
-                    </span>
-                    <span className="text-xs font-mono font-bold text-white">
-                      MÃ VÉ: {successModal.registrationId}
-                    </span>
-                  </div>
-                  <Ticket className="w-6 h-6 text-[#F59E0B]" />
-                </div>
+              return (
+                <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 border border-slate-200 my-8">
+                  <button
+                    onClick={() => setSuccessModal({ open: false })}
+                    className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
 
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <span className="text-emerald-200/80 block text-[10px] uppercase">Họ và tên</span>
-                    <span className="font-bold text-white block">{successModal.data?.fullName}</span>
-                  </div>
-                  <div>
-                    <span className="text-emerald-200/80 block text-[10px] uppercase">Đơn vị</span>
-                    <span className="font-bold text-white block truncate">{successModal.data?.company}</span>
-                  </div>
-                  <div>
-                    <span className="text-emerald-200/80 block text-[10px] uppercase">Số điện thoại</span>
-                    <span className="font-bold text-white block">{successModal.data?.phone}</span>
-                  </div>
-                  <div>
-                    <span className="text-emerald-200/80 block text-[10px] uppercase">Mục đích</span>
-                    <span className="font-bold text-amber-300 block uppercase">
-                      {successModal.data?.intentTab}
-                    </span>
-                  </div>
-                </div>
-
-                {/* QR Placeholder */}
-                <div className="pt-3 border-t border-emerald-800 flex items-center justify-between bg-[#071F18] p-3 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white p-1 rounded-lg flex items-center justify-center">
-                      <QrCode className="w-10 h-10 text-slate-900" />
+                  <div className="text-center space-y-2">
+                    <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                      <CheckCircle2 className="w-10 h-10" />
                     </div>
-                    <div>
-                      <span className="text-[10px] font-semibold text-emerald-300 block">QR Code Sự kiện</span>
-                      <span className="text-[11px] font-bold text-[#22C55E] block">Trạng thái: Đã xác nhận</span>
+                    <h3
+                      className="text-xl sm:text-2xl font-black text-slate-900"
+                      style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
+                    >
+                      {modalTitle}
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Cảm ơn bạn đã gửi thông tin. Ban tổ chức Diễn đàn SME 2026 đã ghi nhận dữ liệu!
+                    </p>
+                  </div>
+
+                  {/* Electronic Ticket Card with Full Details */}
+                  <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg`}>
+                    <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                      <div>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider block ${accentText}`}>
+                          {cardTagline}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-white">
+                          MÃ ĐĂNG KÝ: {successModal.registrationId}
+                        </span>
+                      </div>
+                      <Ticket className="w-6 h-6 text-[#F59E0B] shrink-0" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">Họ và tên</span>
+                        <span className="font-bold text-white block">{successModal.data?.fullName || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">Số điện thoại</span>
+                        <span className="font-bold font-mono text-white block">{successModal.data?.phone || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">Email</span>
+                        <span className="font-bold text-white block truncate">{successModal.data?.email || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">Đơn vị / Công ty</span>
+                        <span className="font-bold text-white block truncate">{successModal.data?.company || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">Chức vụ</span>
+                        <span className="font-bold text-white block truncate">{successModal.data?.position || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-white/70 block text-[10px] uppercase">{detailLabel}</span>
+                        <span className="font-bold text-amber-300 block font-mono">{detailVal}</span>
+                      </div>
+                    </div>
+
+                    {/* Networking Needs / Notes if entered */}
+                    {(successModal.data?.networkingNeeds || successModal.data?.notes) && (
+                      <div className="pt-2.5 border-t border-white/20 text-xs">
+                        <span className="text-white/70 block text-[10px] uppercase mb-0.5">Nhu cầu / Ghi chú</span>
+                        <p className="text-white/90 text-[11px] italic bg-black/20 p-2 rounded-lg leading-relaxed">
+                          {successModal.data?.networkingNeeds || successModal.data?.notes}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* QR Code & Status */}
+                    <div className="pt-3 border-t border-white/20 flex items-center justify-between bg-black/20 p-3 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-white p-1 rounded-lg flex items-center justify-center shrink-0">
+                          <QrCode className="w-10 h-10 text-slate-900" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-semibold text-white/80 block">QR Code Check-in Sự kiện</span>
+                          <span className="text-[11px] font-bold text-emerald-400 block">Trạng thái: Đã ghi nhận</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => window.print()}
-                  className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5"
-                >
-                  <Download className="w-4 h-4" /> In Thẻ điện tử
-                </button>
-                <button
-                  onClick={() => setSuccessModal({ open: false })}
-                  className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-[#22C55E] hover:bg-[#16A34A] text-white"
-                >
-                  Hoàn tất
-                </button>
-              </div>
-            </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => window.print()}
+                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Download className="w-4 h-4" /> In Thẻ điện tử
+                    </button>
+                    <button
+                      onClick={() => setSuccessModal({ open: false })}
+                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-900 hover:bg-black text-white transition-colors"
+                    >
+                      Hoàn tất
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
