@@ -65,15 +65,15 @@ export default function RegistrationEditor({ initialRegistration }: Registration
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Nội dung Đăng ký</h2>
-          <p className="text-xs text-slate-400">Chỉnh sửa nội dung, tiêu đề, tab, mô tả, gói tài trợ và tùy chọn gian hàng.</p>
+          <h2 className="text-xl font-bold text-slate-900">Nội dung Form Đăng ký</h2>
+          <p className="text-xs text-slate-500 mt-1">Chỉnh sửa nội dung, tiêu đề, các tab lựa chọn, gói tài trợ và các tùy chọn gian hàng.</p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -84,122 +84,127 @@ export default function RegistrationEditor({ initialRegistration }: Registration
         <div
           className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
             msg.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border border-red-800 text-red-300"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-red-50 border border-red-200 text-red-800"
           }`}
         >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
           {msg.text}
         </div>
       )}
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      {/* Header Form */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH TIÊU ĐỀ PHẦN ĐĂNG KÝ</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Badge Section</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Badge Section</label>
             <input
               type="text"
               value={registration.sectionBadge}
               onChange={(e) => setRegistration({ ...registration, sectionBadge: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Tiêu đề section</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Tiêu đề Section</label>
             <input
               type="text"
               value={registration.sectionTitle}
               onChange={(e) => setRegistration({ ...registration, sectionTitle: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-slate-300 mb-1">Mô tả ngắn</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Phụ đề mô tả ngắn</label>
             <textarea
               rows={3}
               value={registration.sectionDescription}
               onChange={(e) => setRegistration({ ...registration, sectionDescription: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-3.5 py-3 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none resize-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">Tên tab lựa chọn</h3>
+      {/* Tabs Title */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÊN 3 TAB ĐĂNG KÝ MẪU</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Tab Đại biểu</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Tab 1: Đại biểu</label>
             <input
               type="text"
               value={registration.delegateTab}
               onChange={(e) => setRegistration({ ...registration, delegateTab: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Tab Nhà tài trợ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">💎 Tab 2: Nhà tài trợ</label>
             <input
               type="text"
               value={registration.sponsorTab}
               onChange={(e) => setRegistration({ ...registration, sponsorTab: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Tab Gian hàng</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">🎪 Tab 3: Gian hàng</label>
             <input
               type="text"
               value={registration.boothTab}
               onChange={(e) => setRegistration({ ...registration, boothTab: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">Nội dung giới thiệu</h3>
+      {/* Tab Introductions */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG GIỚI THIỆU TỪNG TAB</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Giới thiệu Đại biểu</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Đại biểu</label>
             <input
               type="text"
               value={registration.delegateIntro}
               onChange={(e) => setRegistration({ ...registration, delegateIntro: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Giới thiệu Nhà tài trợ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Nhà tài trợ</label>
             <input
               type="text"
               value={registration.sponsorIntro}
               onChange={(e) => setRegistration({ ...registration, sponsorIntro: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Giới thiệu Gian hàng</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Gian hàng</label>
             <input
               type="text"
               value={registration.boothIntro}
               onChange={(e) => setRegistration({ ...registration, boothIntro: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      {/* Sponsor Tiers Option List */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">Gói tài trợ</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">DANH SÁCH CÁC GÓI TÀI TRỢ TRONG DROPDOWN</h3>
           <button
             type="button"
             onClick={addSponsorTier}
-            className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-900 hover:text-black bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" /> Thêm gói
+            <Plus className="w-3.5 h-3.5" /> Thêm Gói
           </button>
         </div>
         <div className="space-y-3">
@@ -209,12 +214,13 @@ export default function RegistrationEditor({ initialRegistration }: Registration
                 type="text"
                 value={tier}
                 onChange={(e) => handleTierChange(index, e.target.value)}
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => removeSponsorTier(index)}
-                className="p-2 rounded-xl bg-red-950 border border-red-800 text-red-400 hover:bg-red-900"
+                className="p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors"
+                title="Xóa gói tài trợ này"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -223,15 +229,16 @@ export default function RegistrationEditor({ initialRegistration }: Registration
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      {/* Booth Options List */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">Tùy chọn gian hàng</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÙY CHỌN GIAN HÀNG TRONG DROPDOWN</h3>
           <button
             type="button"
             onClick={addBoothOption}
-            className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-900 hover:text-black bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" /> Thêm gian hàng
+            <Plus className="w-3.5 h-3.5" /> Thêm Gian Hàng
           </button>
         </div>
         <div className="space-y-3">
@@ -241,12 +248,13 @@ export default function RegistrationEditor({ initialRegistration }: Registration
                 type="text"
                 value={option}
                 onChange={(e) => handleBoothChange(index, e.target.value)}
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => removeBoothOption(index)}
-                className="p-2 rounded-xl bg-red-950 border border-red-800 text-red-400 hover:bg-red-900"
+                className="p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors"
+                title="Xóa tùy chọn này"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -255,45 +263,48 @@ export default function RegistrationEditor({ initialRegistration }: Registration
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      {/* Mobile Labels */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NHÃN CÁC PHÂN LOẠI TRÊN MOBILE</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Nhãn Đại biểu Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Đại biểu Mobile</label>
             <input
               type="text"
               value={registration.mobileDelegateLabel}
               onChange={(e) => setRegistration({ ...registration, mobileDelegateLabel: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Nhãn Tài trợ Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Tài trợ Mobile</label>
             <input
               type="text"
               value={registration.mobileSponsorLabel}
               onChange={(e) => setRegistration({ ...registration, mobileSponsorLabel: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Nhãn Gian hàng Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Gian hàng Mobile</label>
             <input
               type="text"
               value={registration.mobileBoothLabel}
               onChange={(e) => setRegistration({ ...registration, mobileBoothLabel: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <label className="block text-xs font-medium text-slate-300 mb-1">Nội dung nút gửi</label>
+      {/* Submit Button Text */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG NÚT GỬI ĐĂNG KÝ</h3>
         <input
           type="text"
           value={registration.submitButtonText}
           onChange={(e) => setRegistration({ ...registration, submitButtonText: e.target.value })}
-          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
         />
       </div>
     </form>
