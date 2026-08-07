@@ -63,7 +63,7 @@ export default async function Home() {
       />
 
       {/* 1. Navigation Bar */}
-      <Navbar />
+      <Navbar content={content.navbar} />
 
       {/* 2. Hero Section with Embedded Countdown */}
       <Hero content={content.hero} />
@@ -91,13 +91,13 @@ export default async function Home() {
       <RegistrationFee content={content.ticketFee} />
 
       {/* 10. Direct Online Registration Form (Action Destination) */}
-      <RegistrationForm />
+      <RegistrationForm content={content.registration} />
 
       {/* 11. Footer & Location Google Maps */}
       <Footer content={content.footer} />
 
       {/* 12. Mobile Floating Sticky CTA */}
-      <MobileStickyCTA />
+      <MobileStickyCTA content={content.registration} />
     </main>
   );
 }

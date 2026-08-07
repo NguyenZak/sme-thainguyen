@@ -64,15 +64,15 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Về Diễn Đàn (About Event)</h2>
-          <p className="text-xs text-slate-400">Quản lý tiêu đề, bài viết giới thiệu, danh sách gạch đầu dòng nổi bật và hình ảnh minh họa.</p>
+          <h2 className="text-xl font-bold text-slate-900">Về Diễn Đàn (About Event)</h2>
+          <p className="text-xs text-slate-500 mt-1">Quản lý tiêu đề, bài viết giới thiệu, danh sách gạch đầu dòng nổi bật và hình ảnh minh họa.</p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -83,78 +83,78 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
         <div
           className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
             msg.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border border-red-800 text-red-300"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-red-50 border border-red-200 text-red-800"
           }`}
         >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
           {msg.text}
         </div>
       )}
 
       {/* Nội dung bài viết */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">TIÊU ĐỀ & VĂN BẢN MÔ TẢ</h3>
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TIÊU ĐỀ & VĂN BẢN MÔ TẢ</h3>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Huy Hiệu (Badge)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu (Badge)</label>
           <input
             type="text"
             value={about.badge}
             onChange={(e) => setAbout({ ...about, badge: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Tiêu Đề Lớn (Title)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Tiêu Đề Lớn (Title)</label>
           <input
             type="text"
             value={about.title}
             onChange={(e) => setAbout({ ...about, title: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Cụm Từ Nổi Bật (Highlight Text)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Cụm Từ Nổi Bật (Highlight Text)</label>
           <input
             type="text"
             value={about.highlightText}
             onChange={(e) => setAbout({ ...about, highlightText: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Đoạn Văn Mô Tả 1</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Đoạn Văn Mô Tả 1</label>
           <textarea
             rows={3}
             value={about.descriptionParagraph1}
             onChange={(e) => setAbout({ ...about, descriptionParagraph1: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Đoạn Văn Mô Tả 2</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Đoạn Văn Mô Tả 2</label>
           <textarea
             rows={3}
             value={about.descriptionParagraph2}
             onChange={(e) => setAbout({ ...about, descriptionParagraph2: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
       </div>
 
       {/* Gạch đầu dòng nổi bật */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">GẠCH ĐẦU DÒNG NỔI BẬT</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">GẠCH ĐẦU DÒNG NỔI BẬT</h3>
           <button
             type="button"
             onClick={addBullet}
-            className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
+            className="inline-flex items-center gap-1 text-[11px] text-slate-900 hover:text-black font-bold"
           >
             <Plus className="w-3.5 h-3.5" /> Thêm Ý Nổi Bật
           </button>
@@ -167,12 +167,12 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
                 type="text"
                 value={b}
                 onChange={(e) => handleBulletChange(idx, e.target.value)}
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => removeBullet(idx)}
-                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-950/50 rounded-lg transition-colors"
+                className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -182,29 +182,29 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
       </div>
 
       {/* Hình ảnh sự kiện */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">HÌNH ẢNH SỰ KIỆN MINH HỌA</h3>
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">HÌNH ẢNH SỰ KIỆN MINH HỌA</h3>
 
         <div className="flex flex-col sm:flex-row items-start gap-4">
           {about.imageUrl && (
-            <div className="relative w-40 h-28 rounded-xl overflow-hidden border border-slate-800 shrink-0">
+            <div className="relative w-40 h-28 rounded-xl overflow-hidden border border-slate-200 shrink-0">
               <Image src={about.imageUrl} alt="About preview" fill className="object-cover" />
             </div>
           )}
 
           <div className="flex-1 space-y-3">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">URL Hình Ảnh</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">URL Hình Ảnh</label>
               <input
                 type="text"
                 value={about.imageUrl}
                 onChange={(e) => setAbout({ ...about, imageUrl: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold cursor-pointer transition-colors">
+              <label className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-semibold cursor-pointer transition-colors">
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                 <span>{uploading ? "Đang tải ảnh..." : "Tải ảnh từ máy tính"}</span>
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />

@@ -75,17 +75,17 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Diễn Giả & Khách Mời VIP (Keynote Speakers)</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-xl font-bold text-slate-900">Diễn Giả & Khách Mời VIP (Keynote Speakers)</h2>
+          <p className="text-xs text-slate-500 mt-1">
             Quản lý danh sách các diễn giả, chuyên gia kinh tế, bài phát biểu & hình ảnh chân dung.
           </p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -96,58 +96,58 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
         <div
           className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
             msg.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border border-red-800 text-red-300"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-red-50 border border-red-200 text-red-800"
           }`}
         >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
           {msg.text}
         </div>
       )}
 
       {/* Header Info */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">TIÊU ĐỀ PHẦN DIỄN GIẢ</h3>
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TIÊU ĐỀ PHẦN DIỄN GIẢ</h3>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Huy Hiệu (Badge)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu (Badge)</label>
           <input
             type="text"
             value={speakersContent.badge || ""}
             onChange={(e) => setSpeakersContent({ ...speakersContent, badge: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Tiêu Đề (Title)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Tiêu Đề (Title)</label>
           <input
             type="text"
             value={speakersContent.title || ""}
             onChange={(e) => setSpeakersContent({ ...speakersContent, title: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Mô Tả Phụ (Subtitle)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Mô Tả Phụ (Subtitle)</label>
           <input
             type="text"
             value={speakersContent.subtitle || ""}
             onChange={(e) => setSpeakersContent({ ...speakersContent, subtitle: e.target.value })}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
           />
         </div>
       </div>
 
       {/* Speakers List */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">DANH SÁCH DIỄN GIẢ</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">DANH SÁCH DIỄN GIẢ</h3>
           <button
             type="button"
             onClick={addSpeaker}
-            className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 font-semibold"
+            className="inline-flex items-center gap-1 text-xs text-slate-900 hover:text-black font-bold"
           >
             <Plus className="w-4 h-4" /> Thêm Diễn Giả
           </button>
@@ -155,21 +155,21 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
 
         <div className="space-y-4">
           {items.map((spk, idx) => (
-            <div key={spk.id || idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3 relative">
+            <div key={spk.id || idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 relative">
               <button
                 type="button"
                 onClick={() => removeSpeaker(idx)}
-                className="absolute top-3 right-3 p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/50 rounded-lg transition-colors"
+                className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
 
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div className="sm:col-span-3 flex flex-col items-center gap-2">
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-slate-800 shrink-0">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-slate-300 shrink-0">
                     <Image src={spk.imageUrl} alt={spk.name} fill className="object-cover object-top" />
                   </div>
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[11px] font-semibold cursor-pointer transition-colors">
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-lg text-[11px] font-semibold cursor-pointer transition-colors shadow-sm">
                     {uploadingIdx === idx ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
                     <span>Đổi ảnh</span>
                     <input
@@ -185,85 +185,85 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
                 <div className="sm:col-span-9 space-y-2.5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Họ & Tên</label>
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Họ & Tên</label>
                       <input
                         type="text"
                         value={spk.name}
                         onChange={(e) => handleItemChange(idx, "name", e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Huy Hiệu (Badge)</label>
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Huy Hiệu (Badge)</label>
                       <input
                         type="text"
                         value={spk.badge || ""}
                         onChange={(e) => handleItemChange(idx, "badge", e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Chức Vụ</label>
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Chức Vụ</label>
                       <input
                         type="text"
                         value={spk.title}
                         onChange={(e) => handleItemChange(idx, "title", e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Tổ Chức / Đơn Vị</label>
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Tổ Chức / Đơn Vị</label>
                       <input
                         type="text"
                         value={spk.organization}
                         onChange={(e) => handleItemChange(idx, "organization", e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Chủ Đề Phát Biểu Main Keynote</label>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Chủ Đề Phát Biểu Main Keynote</label>
                     <input
                       type="text"
                       value={spk.topic || ""}
                       onChange={(e) => handleItemChange(idx, "topic", e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Thành tựu nổi bật</label>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Thành tựu nổi bật</label>
                     <textarea
                       value={spk.achievements || ""}
                       onChange={(e) => handleItemChange(idx, "achievements", e.target.value)}
                       rows={2}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none resize-none"
                       placeholder="Ví dụ: 20+ năm tư vấn chính sách kinh tế..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Vì sao nên nghe</label>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Vì sao nên nghe</label>
                     <textarea
                       value={spk.whyListen || ""}
                       onChange={(e) => handleItemChange(idx, "whyListen", e.target.value)}
                       rows={2}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none resize-none"
                       placeholder="Ví dụ: Cung cấp chiến lược triển khai thực tế..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-slate-400 mb-0.5">Giá trị bài nói</label>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Giá trị bài nói</label>
                     <textarea
                       value={spk.speechValue || ""}
                       onChange={(e) => handleItemChange(idx, "speechValue", e.target.value)}
                       rows={2}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none resize-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none resize-none"
                       placeholder="Ví dụ: Hướng dẫn mô hình kết nối đầu tư và đột phá doanh thu..."
                     />
                   </div>

@@ -1,5 +1,6 @@
 export type SectionKey =
   | "site_config"
+  | "navbar"
   | "hero"
   | "statistics"
   | "about"
@@ -8,6 +9,7 @@ export type SectionKey =
   | "ticket_fee"
   | "sponsors"
   | "booths"
+  | "registration"
   | "footer";
 
 export interface SiteConfig {
@@ -33,6 +35,7 @@ export interface HeroContent {
   mainTitle: string;
   subTitle: string;
   keywords: string[];
+  tickerMessages: string[];
   eventDateText: string;
   targetDateISO: string;
   venueText: string;
@@ -42,6 +45,39 @@ export interface HeroContent {
   secondaryCtaLink: string;
   tertiaryCtaText: string;
   tertiaryCtaLink: string;
+}
+
+export interface NavbarLink {
+  name: string;
+  href: string;
+}
+
+export interface NavbarContent {
+  brandName: string;
+  brandSub: string;
+  logoSrc: string;
+  navLinks: NavbarLink[];
+  ctaText: string;
+  ctaLink: string;
+  mobileRegisterText: string;
+}
+
+export interface RegistrationContent {
+  sectionBadge: string;
+  sectionTitle: string;
+  sectionDescription: string;
+  delegateTab: string;
+  sponsorTab: string;
+  boothTab: string;
+  delegateIntro: string;
+  sponsorIntro: string;
+  boothIntro: string;
+  sponsorTiers: string[];
+  boothOptions: string[];
+  submitButtonText: string;
+  mobileDelegateLabel: string;
+  mobileSponsorLabel: string;
+  mobileBoothLabel: string;
 }
 
 export interface StatisticItem {
@@ -57,6 +93,26 @@ export interface StatisticsContent {
   items: StatisticItem[];
 }
 
+export interface FeatureCard {
+  id: string;
+  rank: string;
+  title: string;
+  description: string;
+  footerLabel: string;
+  footerText: string;
+  iconName: string;
+}
+
+export interface AttendeeTag {
+  id: string;
+  rank: string;
+  label: string;
+  sub: string;
+  tier: "vip" | "gold" | "standard";
+  iconName: string;
+  count: string;
+}
+
 export interface AboutContent {
   badge: string;
   title: string;
@@ -67,6 +123,8 @@ export interface AboutContent {
   imageUrl: string;
   statCardNumber: string;
   statCardLabel: string;
+  featureCards: FeatureCard[];
+  attendeeTags: AttendeeTag[];
 }
 
 export interface BenefitItem {
@@ -153,6 +211,10 @@ export interface BoothsContent {
   mapImageUrl: string;
   totalBooths: number;
   availableBooths: number;
+  priceVND: number;
+  boothPackageTitle: string;
+  boothPackageSubtitle: string;
+  inclusions: string[];
   items: BoothItem[];
 }
 
@@ -199,6 +261,12 @@ export const DEFAULT_HERO: HeroContent = {
     "XÚC TIẾN ĐẦU TƯ FDI",
     "LIÊN KẾT CHUỖI CUNG ỨNG"
   ],
+  tickerMessages: [
+    "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Đại biểu (2 phút trước)",
+    "⚡ Công ty Cổ phần Công nghệ ABC vừa đăng ký Gian hàng Triển lãm A-05",
+    "⭐ Tập đoàn May Plaza công bố trở thành Nhà tài trợ Kim Cương chính thức",
+    "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói",
+  ],
   eventDateText: "18 - 20 tháng 09, 2026",
   targetDateISO: "2026-09-18T08:00:00+07:00",
   venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
@@ -208,6 +276,51 @@ export const DEFAULT_HERO: HeroContent = {
   secondaryCtaLink: "#sponsors",
   tertiaryCtaText: "SƠ ĐỒ 100 GIAN HÀNG",
   tertiaryCtaLink: "#booths",
+};
+
+export const DEFAULT_NAVBAR: NavbarContent = {
+  brandName: "SME VIỆT NAM 2026",
+  brandSub: "TASME THÁI NGUYÊN",
+  logoSrc: "/logo.png",
+  navLinks: [
+    { name: "Giới thiệu", href: "#about" },
+    { name: "Chương trình", href: "#timeline" },
+    { name: "Thư mời tài trợ", href: "#sponsors" },
+    { name: "Gian hàng", href: "#booths" },
+    { name: "Đăng ký", href: "#register" },
+  ],
+  ctaText: "Đăng ký ngay",
+  ctaLink: "#register",
+  mobileRegisterText: "Đăng ký",
+};
+
+export const DEFAULT_REGISTRATION: RegistrationContent = {
+  sectionBadge: "06 · ĐĂNG KÝ THAM DỰ",
+  sectionTitle: "Cổng Đăng ký Trực tuyến Sự kiện",
+  sectionDescription: "Chọn mục đích đăng ký bên dưới. Ban tổ chức sẽ liên hệ và xác nhận trực tiếp trong 24h.",
+  delegateTab: "Vé Đại biểu",
+  sponsorTab: "Nhà Tài trợ",
+  boothTab: "Gian hàng",
+  delegateIntro: "Đại biểu tham dự chương trình với quyền lợi trọn gói, kết nối B2B và Gala Dinner.",
+  sponsorIntro: "Đăng ký tài trợ, quảng bá thương hiệu và tiếp cận nhà đầu tư.",
+  boothIntro: "Đăng ký gian hàng tiêu chuẩn 3m x 3m tại khu triển lãm trung tâm.",
+  sponsorTiers: [
+    "Nhà tài trợ Chiến lược (100.000.000 đ)",
+    "Nhà tài trợ Kim Cương (70.000.000 đ)",
+    "Nhà tài trợ Vàng (50.000.000 đ)",
+    "Nhà tài trợ Bạc (30.000.000 đ)",
+    "Nhà tài trợ Đồng (15.000.000 đ)",
+    "Đơn vị Đồng hành (10.000.000 đ)",
+  ],
+  boothOptions: [
+    "Gian #05 (3m x 3m)",
+    "Gian #12 (3m x 3m)",
+    "Gian #19 (3m x 3m)",
+  ],
+  submitButtonText: "Gửi đăng ký",
+  mobileDelegateLabel: "Đăng ký Đại biểu",
+  mobileSponsorLabel: "Tài trợ",
+  mobileBoothLabel: "Gian hàng",
 };
 
 export const DEFAULT_STATISTICS: StatisticsContent = {
@@ -261,7 +374,101 @@ export const DEFAULT_ABOUT: AboutContent = {
   ],
   imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop",
   statCardNumber: "100%",
-  statCardLabel: "Không gian kết nối giao thương thực tế"
+  statCardLabel: "Không gian kết nối giao thương thực tế",
+  featureCards: [
+    {
+      id: "about-card-1",
+      rank: "01",
+      title: "Kết nối giao thương",
+      description: "Tổ chức 100+ phiên gặp gỡ B2B trực tiếp 1:1 theo nhu cầu ngành nghề giữa các đại biểu doanh nghiệp toàn quốc.",
+      footerLabel: "Giao thương B2B trực tiếp",
+      footerText: "Được thiết kế để tạo ra cơ hội hợp tác ngay tại sự kiện.",
+      iconName: "Target",
+    },
+    {
+      id: "about-card-2",
+      rank: "02",
+      title: "Xúc tiến đầu tư – tài chính",
+      description: "Giới thiệu danh mục các dự án ưu đãi đầu tư, hạ tầng KCN & giải pháp tài chính xanh hỗ trợ DNNVV.",
+      footerLabel: "Tiếp cận Quỹ đầu tư",
+      footerText: "Kết nối doanh nghiệp với nhà đầu tư trong nước và quốc tế.",
+      iconName: "Users",
+    },
+    {
+      id: "about-card-3",
+      rank: "03",
+      title: "Ký kết hợp tác (MOU)",
+      description: "Nơi diễn ra các nghi thức ký kết Biên bản ghi nhớ hợp tác chiến lược, hợp đồng kinh tế giá trị cao.",
+      footerLabel: "Ký kết hợp đồng ngay sự kiện",
+      footerText: "Hỗ trợ quan hệ đối tác chiến lược, hợp tác đầu tư và thỏa thuận mới.",
+      iconName: "ShieldCheck",
+    },
+    {
+      id: "about-card-4",
+      rank: "04",
+      title: "Quảng bá Thái Nguyên",
+      description: "Tôn vinh văn hóa Trà Đệ nhất danh sơn, giới thiệu môi trường đầu tư năng động của tỉnh Thái Nguyên.",
+      footerLabel: "Quảng bá thương hiệu địa phương",
+      footerText: "Tiếp cận đối tác, khách hàng và nhà đầu tư tiềm năng.",
+      iconName: "Award",
+    },
+  ],
+  attendeeTags: [
+    {
+      id: "about-tag-1",
+      rank: "01",
+      label: "Lãnh đạo Chính phủ & Bộ ngành",
+      sub: "Đại diện cơ quan quản lý Nhà nước cấp Trung ương",
+      tier: "vip",
+      iconName: "Landmark",
+      count: "Cấp Bộ trưởng trở lên",
+    },
+    {
+      id: "about-tag-2",
+      rank: "02",
+      label: "500+ CEO, Chủ tịch Doanh nghiệp",
+      sub: "Lãnh đạo cấp cao doanh nghiệp trên toàn quốc",
+      tier: "vip",
+      iconName: "Crown",
+      count: "500+ lãnh đạo",
+    },
+    {
+      id: "about-tag-3",
+      rank: "03",
+      label: "Nhà đầu tư & Quỹ đầu tư",
+      sub: "Quỹ mạo hiểm, Angel Investor & Private Equity",
+      tier: "gold",
+      iconName: "TrendingUp",
+      count: "50+ quỹ đầu tư",
+    },
+    {
+      id: "about-tag-4",
+      rank: "04",
+      label: "Hiệp hội Doanh nghiệp Toàn quốc",
+      sub: "Đại diện hiệp hội ngành nghề 34 tỉnh thành",
+      tier: "gold",
+      iconName: "Building2",
+      count: "63 tỉnh thành",
+    },
+    {
+      id: "about-tag-5",
+      rank: "05",
+      label: "Đối tác FDI Quốc tế",
+      sub: "Doanh nghiệp nước ngoài & tổ chức quốc tế",
+      tier: "standard",
+      iconName: "Globe2",
+      count: "10+ quốc gia",
+    },
+    {
+      id: "about-tag-6",
+      rank: "06",
+      label: "Ban quản lý KCN & Khu kinh tế",
+      sub: "Đại diện khu công nghiệp & khu kinh tế trọng điểm",
+      tier: "standard",
+      iconName: "Factory",
+      count: "20+ KCN",
+    },
+  ],
 };
 
 export const DEFAULT_BENEFITS: BenefitsContent = {

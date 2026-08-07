@@ -4,16 +4,10 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X, ArrowRight, Calendar } from "lucide-react";
+import { NavbarContent, DEFAULT_NAVBAR } from "@/constants/defaultContent";
 
-const NAV_LINKS = [
-  { name: "Giới thiệu", href: "#about" },
-  { name: "Chương trình", href: "#timeline" },
-  { name: "Thư mời tài trợ", href: "#sponsors" },
-  { name: "Gian hàng", href: "#booths" },
-  { name: "Đăng ký", href: "#register" },
-];
-
-export default function Navbar() {
+export default function Navbar({ content }: { content?: NavbarContent }) {
+  const data = content || DEFAULT_NAVBAR;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -39,8 +33,8 @@ export default function Navbar() {
           <Link href="#" className="flex items-center gap-2 sm:gap-3 group shrink min-w-0 pr-1">
             <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white p-1 shadow-sm border border-emerald-100 transition-transform group-hover:scale-105 shrink-0">
               <Image
-                src="/logo.png"
-                alt="TASME Logo"
+                src={data.logoSrc}
+                alt="Logo"
                 fill
                 className="object-contain p-0.5"
                 priority
@@ -51,17 +45,17 @@ export default function Navbar() {
                 className="font-extrabold text-xs sm:text-base tracking-tight leading-tight text-white truncate"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
-                SME VIỆT NAM 2026
+                {data.brandName}
               </span>
               <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-emerald-300 truncate">
-                TASME THÁI NGUYÊN
+                {data.brandSub}
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
+            {data.navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
@@ -76,14 +70,14 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-4">
             <div className="flex items-center gap-2 text-xs text-emerald-200 font-medium pr-3 border-r border-emerald-700/50">
               <Calendar className="w-3.5 h-3.5 text-[#F59E0B]" />
-              <span>18-20/09/2026</span>
+              <span>{data.brandSub}</span>
             </div>
             <a
-              href="#register"
+              href={data.ctaLink}
               onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-md transition-all transform hover:-translate-y-0.5"
             >
-              <span>Đăng ký ngay</span>
+              <span>{data.ctaText}</span>
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
@@ -91,11 +85,11 @@ export default function Navbar() {
           {/* Mobile Hamburger Toggle */}
           <div className="flex md:hidden items-center gap-2 shrink-0">
             <a
-              href="#register"
+              href={data.ctaLink}
               onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
               className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#22C55E] text-white whitespace-nowrap shrink-0 shadow-sm"
             >
-              Đăng ký
+              {data.mobileRegisterText}
             </a>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -112,7 +106,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#0B3026] border-b border-emerald-800 px-4 pt-4 pb-6 mt-3 space-y-4 shadow-2xl">
           <div className="flex flex-col gap-2">
-            {NAV_LINKS.map((link) => (
+            {data.navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
@@ -126,7 +120,7 @@ export default function Navbar() {
 
           <div className="pt-3 border-t border-emerald-800 flex flex-col gap-3">
             <a
-              href="#register"
+              href={data.ctaLink}
               onClick={() => {
                 setMobileMenuOpen(false);
                 if (typeof window !== "undefined") {
@@ -135,7 +129,7 @@ export default function Navbar() {
               }}
               className="w-full text-center py-3 rounded-xl font-bold bg-[#22C55E] text-white shadow-md"
             >
-              Đăng ký ngay
+              {data.ctaText}
             </a>
           </div>
         </div>

@@ -18,6 +18,7 @@ import {
   Store,
   Sparkles,
 } from "lucide-react";
+import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 
 // Form validation schema with Zod
 const formSchema = z.object({
@@ -40,7 +41,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ content }: { content?: RegistrationContent }) {
+  const registration = content || DEFAULT_REGISTRATION;
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor" | "booth">("delegate");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
@@ -66,8 +68,8 @@ export default function RegistrationForm() {
       sector: "",
       phone: "",
       email: "",
-      sponsorTier: "Gói Kim Cương (70.000.000 đ)",
-      boothNumber: "Gian #05 (3m x 3m)",
+      sponsorTier: registration.sponsorTiers[0] || "",
+      boothNumber: registration.boothOptions[0] || "",
       attendeesCount: "1",
       networkingNeeds: "",
       notes: "",
@@ -203,17 +205,17 @@ export default function RegistrationForm() {
           transition={{ duration: 0.6 }}
           className="space-y-3 text-center"
         >
-          <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            06 · ĐĂNG KÝ THAM DỰ
+              <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
+            {registration.sectionBadge}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Cổng Đăng ký Trực tuyến Sự kiện
+            {registration.sectionTitle}
           </h2>
           <p className="text-slate-600 text-xs sm:text-sm max-w-xl mx-auto">
-            Chọn mục đích đăng ký bên dưới. Ban tổ chức sẽ liên hệ và xác nhận trực tiếp trong 24h.
+            {registration.sectionDescription}
           </p>
         </motion.div>
 
@@ -230,7 +232,7 @@ export default function RegistrationForm() {
               }`}
             >
               <Ticket className="w-4 h-4 shrink-0" />
-              <span className="truncate">Vé Đại biểu</span>
+              <span className="truncate">{registration.delegateTab}</span>
             </button>
 
             <button
@@ -243,7 +245,7 @@ export default function RegistrationForm() {
               }`}
             >
               <Award className="w-4 h-4 shrink-0" />
-              <span className="truncate">Nhà Tài trợ</span>
+              <span className="truncate">{registration.sponsorTab}</span>
             </button>
 
             <button
@@ -256,7 +258,7 @@ export default function RegistrationForm() {
               }`}
             >
               <Store className="w-4 h-4 shrink-0" />
-              <span className="truncate">Gian hàng</span>
+              <span className="truncate">{registration.boothTab}</span>
             </button>
           </div>
 
@@ -290,22 +292,22 @@ export default function RegistrationForm() {
           {/* Dynamic Form Header Badge */}
           <div className="pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">
                 {activeTab === "delegate"
-                  ? "ĐĂNG KÝ VÉ ĐẠI BIỂU TRỌN GÓI"
+                  ? registration.delegateTab
                   : activeTab === "sponsor"
-                  ? "ĐĂNG KÝ GÓI NHÀ TÀI TRỢ"
-                  : "ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM"}
+                  ? registration.sponsorTab
+                  : registration.boothTab}
               </span>
               <h3
                 className="text-xl font-bold text-[#0D3B2E] mt-0.5"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
                 {activeTab === "delegate"
-                  ? "Phiếu Đăng ký Đại biểu Tham dự"
+                  ? registration.delegateIntro
                   : activeTab === "sponsor"
-                  ? "Phiếu Đăng ký Đơn vị Đồng hành Tài trợ"
-                  : "Phiếu Giữ vị trí Gian hàng Triển lãm"}
+                  ? registration.sponsorIntro
+                  : registration.boothIntro}
               </h3>
             </div>
 
@@ -328,12 +330,11 @@ export default function RegistrationForm() {
                   {...register("sponsorTier")}
                   className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
                 >
-                  <option value="Nhà tài trợ Chiến lược (100.000.000 đ)">Nhà tài trợ Chiến lược (Từ 100.000.000 đ - Tối đa 01)</option>
-                  <option value="Nhà tài trợ Kim Cương (70.000.000 đ)">Nhà tài trợ Kim Cương (Từ 70.000.000 đ - Tối đa 02)</option>
-                  <option value="Nhà tài trợ Vàng (50.000.000 đ)">Nhà tài trợ Vàng (Từ 50.000.000 đ - Tối đa 03)</option>
-                  <option value="Nhà tài trợ Bạc (30.000.000 đ)">Nhà tài trợ Bạc (Từ 30.000.000 đ - Tối đa 05)</option>
-                  <option value="Nhà tài trợ Đồng (15.000.000 đ)">Nhà tài trợ Đồng (Từ 15.000.000 đ - Tối đa 10)</option>
-                  <option value="Đơn vị Đồng hành (10.000.000 đ)">Đơn vị Đồng hành (Từ 10.000.000 đ)</option>
+                  {registration.sponsorTiers.map((tier) => (
+                    <option key={tier} value={tier}>
+                      {tier}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}
@@ -347,12 +348,11 @@ export default function RegistrationForm() {
                   {...register("boothNumber")}
                   className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
                 >
-                  <option value="Gian #02 (VIP Sảnh A)">Gian #02 (Vị trí VIP Sảnh chính)</option>
-                  <option value="Gian #04 (VIP Sảnh A)">Gian #04 (Vị trí VIP Sảnh chính)</option>
-                  <option value="Gian #05 (Tiêu chuẩn 3m x 3m)">Gian #05 (Tiêu chuẩn 3m x 3m)</option>
-                  <option value="Gian #06 (Tiêu chuẩn 3m x 3m)">Gian #06 (Tiêu chuẩn 3m x 3m)</option>
-                  <option value="Gian #07 (Tiêu chuẩn 3m x 3m)">Gian #07 (Tiêu chuẩn 3m x 3m)</option>
-                  <option value="Gian #09 (Tiêu chuẩn 3m x 3m)">Gian #09 (Tiêu chuẩn 3m x 3m)</option>
+                  {registration.boothOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}

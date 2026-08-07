@@ -12,7 +12,10 @@ import {
   DEFAULT_SPONSORS,
   DEFAULT_BOOTHS,
   DEFAULT_FOOTER,
+  DEFAULT_NAVBAR,
+  DEFAULT_REGISTRATION,
   SiteConfig,
+  NavbarContent,
   HeroContent,
   StatisticsContent,
   AboutContent,
@@ -22,11 +25,13 @@ import {
   TicketFeeContent,
   SponsorsContent,
   BoothsContent,
+  RegistrationContent,
   FooterContent,
 } from "@/constants/defaultContent";
 
 const DEFAULTS: Record<string, any> = {
   site_config: DEFAULT_SITE_CONFIG,
+  navbar: DEFAULT_NAVBAR,
   hero: DEFAULT_HERO,
   statistics: DEFAULT_STATISTICS,
   about: DEFAULT_ABOUT,
@@ -36,6 +41,7 @@ const DEFAULTS: Record<string, any> = {
   ticket_fee: DEFAULT_TICKET_FEE,
   sponsors: DEFAULT_SPONSORS,
   booths: DEFAULT_BOOTHS,
+  registration: DEFAULT_REGISTRATION,
   footer: DEFAULT_FOOTER,
 };
 
@@ -63,6 +69,7 @@ export async function getSectionContent<T>(key: string): Promise<T> {
 export async function getAllLandingPageContent() {
   const [
     siteConfig,
+    navbar,
     hero,
     statistics,
     about,
@@ -72,9 +79,11 @@ export async function getAllLandingPageContent() {
     ticketFee,
     sponsors,
     booths,
+    registration,
     footer,
   ] = await Promise.all([
     getSectionContent<SiteConfig>("site_config"),
+    getSectionContent<NavbarContent>("navbar"),
     getSectionContent<HeroContent>("hero"),
     getSectionContent<StatisticsContent>("statistics"),
     getSectionContent<AboutContent>("about"),
@@ -84,11 +93,13 @@ export async function getAllLandingPageContent() {
     getSectionContent<TicketFeeContent>("ticket_fee"),
     getSectionContent<SponsorsContent>("sponsors"),
     getSectionContent<BoothsContent>("booths"),
+    getSectionContent<RegistrationContent>("registration"),
     getSectionContent<FooterContent>("footer"),
   ]);
 
   return {
     siteConfig,
+    navbar,
     hero,
     statistics,
     about,
@@ -98,6 +109,7 @@ export async function getAllLandingPageContent() {
     ticketFee,
     sponsors,
     booths,
+    registration,
     footer,
   };
 }

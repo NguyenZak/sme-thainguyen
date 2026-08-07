@@ -37,15 +37,15 @@ export default function StatisticsEditor({ initialStats }: StatisticsEditorProps
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Con Số Thống Kê Nổi Bật</h2>
-          <p className="text-xs text-slate-400">Thay đổi giá trị các con số ấn tượng (500+ Doanh chủ, 100+ Gian hàng, 50+ B2B matching...).</p>
+          <h2 className="text-xl font-bold text-slate-900">Con Số Thống Kê Nổi Bật</h2>
+          <p className="text-xs text-slate-500 mt-1">Thay đổi giá trị các con số ấn tượng (500+ Doanh chủ, 100+ Gian hàng, 50+ B2B matching...).</p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -56,61 +56,61 @@ export default function StatisticsEditor({ initialStats }: StatisticsEditorProps
         <div
           className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
             msg.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border border-red-800 text-red-300"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-red-50 border border-red-200 text-red-800"
           }`}
         >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
           {msg.text}
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {stats.items.map((item, idx) => (
-          <div key={item.id || idx} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-            <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
+          <div key={item.id || idx} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-sm">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-900">
               <span>MỤC THỐNG KÊ #{idx + 1}</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-slate-400 mb-1">Giá Trị Số (Number)</label>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Giá Trị Số (Number)</label>
                 <input
                   type="number"
                   value={item.value}
                   onChange={(e) => handleItemChange(idx, "value", Number(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-400 mb-1">Hậu Vị (Suffix: +, NGÀY...)</label>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Hậu Vị (Suffix: +, NGÀY...)</label>
                 <input
                   type="text"
                   value={item.suffix}
                   onChange={(e) => handleItemChange(idx, "suffix", e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-400 mb-1">Nhãn Tiêu Đề (Label)</label>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Nhãn Tiêu Đề (Label)</label>
               <input
                 type="text"
                 value={item.label}
                 onChange={(e) => handleItemChange(idx, "label", e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-400 mb-1">Dòng Mô Tả Phụ (Subtext)</label>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Dòng Mô Tả Phụ (Subtext)</label>
               <input
                 type="text"
                 value={item.subtext}
                 onChange={(e) => handleItemChange(idx, "subtext", e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
               />
             </div>
           </div>

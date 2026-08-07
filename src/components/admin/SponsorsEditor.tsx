@@ -70,15 +70,15 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Nhà Tài Trợ & Đối Tác Đồng Hành</h2>
-          <p className="text-xs text-slate-400">Thêm, chỉnh sửa danh sách logo nhà tài trợ theo từng phân cấp (Kim cương, Vàng, Bạc, Đồng).</p>
+          <h2 className="text-xl font-bold text-slate-900">Nhà Tài Trợ & Đối Tác Đồng Hành</h2>
+          <p className="text-xs text-slate-500 mt-1">Thêm, chỉnh sửa danh sách logo nhà tài trợ theo từng phân cấp (Kim cương, Vàng, Bạc, Đồng).</p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -89,57 +89,57 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
         <div
           className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
             msg.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border border-red-800 text-red-300"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-red-50 border border-red-200 text-red-800"
           }`}
         >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
           {msg.text}
         </div>
       )}
 
       {/* Header Info */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">CẤU HÌNH TIÊU ĐỀ SECTION</h3>
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH TIÊU ĐỀ SECTION</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Badge</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Badge</label>
             <input
               type="text"
               value={sponsors.badge}
               onChange={(e) => setSponsors({ ...sponsors, badge: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Tiêu Đề Phân Đoạn</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Tiêu Đề Phân Đoạn</label>
             <input
               type="text"
               value={sponsors.title}
               onChange={(e) => setSponsors({ ...sponsors, title: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-slate-300 mb-1">Phụ Đề Mô Tả Ngắn</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Phụ Đề Mô Tả Ngắn</label>
             <input
               type="text"
               value={sponsors.subtitle}
               onChange={(e) => setSponsors({ ...sponsors, subtitle: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
         </div>
       </div>
 
       {/* Danh sách Nhà tài trợ */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">DANH SÁCH NHÀ TÀI TRỢ ({sponsors.items.length})</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">DANH SÁCH NHÀ TÀI TRỢ ({sponsors.items.length})</h3>
           <button
             type="button"
             onClick={addSponsor}
-            className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800"
+            className="inline-flex items-center gap-1 text-[11px] text-slate-900 hover:text-black font-bold bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-300 transition-colors"
           >
             <Plus className="w-3.5 h-3.5" /> Thêm Nhà Tài Trợ
           </button>
@@ -147,42 +147,42 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
 
         <div className="space-y-4">
           {sponsors.items.map((sp, idx) => (
-            <div key={sp.id || idx} className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start relative">
+            <div key={sp.id || idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start relative">
               <button
                 type="button"
                 onClick={() => removeSponsor(idx)}
-                className="absolute top-3 right-3 p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/50 rounded-lg transition-colors"
+                className="absolute top-3 right-3 p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
 
               {/* Logo preview */}
-              <div className="w-28 h-20 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-center p-2 shrink-0 relative overflow-hidden">
+              <div className="w-28 h-20 bg-white border border-slate-200 rounded-lg flex items-center justify-center p-2 shrink-0 relative overflow-hidden shadow-sm">
                 {sp.logoUrl ? (
                   <Image src={sp.logoUrl} alt={sp.name} width={100} height={60} className="object-contain max-h-16" />
                 ) : (
-                  <span className="text-[10px] text-slate-500">Chưa có logo</span>
+                  <span className="text-[10px] text-slate-400">Chưa có logo</span>
                 )}
               </div>
 
               {/* Form fields */}
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 w-full pr-8">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">Tên Nhà Tài Trợ / Doanh Nghiệp</label>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tên Nhà Tài Trợ / Doanh Nghiệp</label>
                   <input
                     type="text"
                     value={sp.name}
                     onChange={(e) => handleItemChange(idx, "name", e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">Hạng Tài Trợ (Tier)</label>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">Hạng Tài Trợ (Tier)</label>
                   <select
                     value={sp.tier}
                     onChange={(e) => handleItemChange(idx, "tier", e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
                   >
                     <option value="diamond">💎 Kim Cương (Diamond)</option>
                     <option value="gold">🥇 Vàng (Gold)</option>
@@ -194,18 +194,18 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">URL Website Doanh Nghiệp</label>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">URL Website Doanh Nghiệp</label>
                   <input
                     type="text"
                     value={sp.websiteUrl || ""}
                     onChange={(e) => handleItemChange(idx, "websiteUrl", e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-400 mb-1">Tải Logo Lên</label>
-                  <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium cursor-pointer transition-colors border border-slate-800 w-full justify-center">
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tải Logo Lên</label>
+                  <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 rounded-lg text-xs font-medium cursor-pointer transition-colors border border-slate-300 w-full justify-center shadow-sm">
                     {uploadingIdx === idx ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
                     <span>{uploadingIdx === idx ? "Đang upload..." : "Chọn file logo"}</span>
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(idx, e)} disabled={uploadingIdx === idx} />

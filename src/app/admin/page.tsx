@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar, { AdminTab } from "@/components/admin/AdminSidebar";
 import GeneralEditor from "@/components/admin/GeneralEditor";
+import NavbarEditor from "@/components/admin/NavbarEditor";
 import HeroEditor from "@/components/admin/HeroEditor";
 import StatisticsEditor from "@/components/admin/StatisticsEditor";
 import AboutEditor from "@/components/admin/AboutEditor";
@@ -13,11 +14,13 @@ import TimelineEditor from "@/components/admin/TimelineEditor";
 import TicketFeeEditor from "@/components/admin/TicketFeeEditor";
 import SponsorsEditor from "@/components/admin/SponsorsEditor";
 import BoothsEditor from "@/components/admin/BoothsEditor";
+import RegistrationEditor from "@/components/admin/RegistrationEditor";
 import RegistrationsManager from "@/components/admin/RegistrationsManager";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import {
   DEFAULT_SITE_CONFIG,
+  DEFAULT_NAVBAR,
   DEFAULT_HERO,
   DEFAULT_STATISTICS,
   DEFAULT_ABOUT,
@@ -27,6 +30,7 @@ import {
   DEFAULT_TICKET_FEE,
   DEFAULT_SPONSORS,
   DEFAULT_BOOTHS,
+  DEFAULT_REGISTRATION,
   DEFAULT_FOOTER,
 } from "@/constants/defaultContent";
 
@@ -36,6 +40,7 @@ export default function AdminPage() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [data, setData] = useState<{
     site_config: any;
+    navbar: any;
     hero: any;
     statistics: any;
     about: any;
@@ -45,9 +50,11 @@ export default function AdminPage() {
     ticket_fee: any;
     sponsors: any;
     booths: any;
+    registration: any;
     footer: any;
   }>({
     site_config: DEFAULT_SITE_CONFIG,
+    navbar: DEFAULT_NAVBAR,
     hero: DEFAULT_HERO,
     statistics: DEFAULT_STATISTICS,
     about: DEFAULT_ABOUT,
@@ -57,6 +64,7 @@ export default function AdminPage() {
     ticket_fee: DEFAULT_TICKET_FEE,
     sponsors: DEFAULT_SPONSORS,
     booths: DEFAULT_BOOTHS,
+    registration: DEFAULT_REGISTRATION,
     footer: DEFAULT_FOOTER,
   });
 
@@ -75,15 +83,16 @@ export default function AdminPage() {
           setUserEmail(user.email);
         }
 
-        // Fetch sections
         const { data: sections } = await supabase.from("site_sections").select("id, content");
         if (sections && sections.length > 0) {
           const loadedMap: any = {};
           sections.forEach((sec) => {
             loadedMap[sec.id] = sec.content;
           });
-          setData((prev) => ({
+
+          setData({
             site_config: { ...DEFAULT_SITE_CONFIG, ...(loadedMap.site_config || {}) },
+            navbar: { ...DEFAULT_NAVBAR, ...(loadedMap.navbar || {}) },
             hero: { ...DEFAULT_HERO, ...(loadedMap.hero || {}) },
             statistics: { ...DEFAULT_STATISTICS, ...(loadedMap.statistics || {}) },
             about: { ...DEFAULT_ABOUT, ...(loadedMap.about || {}) },
@@ -93,14 +102,12 @@ export default function AdminPage() {
             ticket_fee: { ...DEFAULT_TICKET_FEE, ...(loadedMap.ticket_fee || {}) },
             sponsors: { ...DEFAULT_SPONSORS, ...(loadedMap.sponsors || {}) },
             booths: { ...DEFAULT_BOOTHS, ...(loadedMap.booths || {}) },
+            registration: { ...DEFAULT_REGISTRATION, ...(loadedMap.registration || {}) },
             footer: { ...DEFAULT_FOOTER, ...(loadedMap.footer || {}) },
-          }));
+          });
         }
 
-        // Count pending registrations
-        const { count } = await supabase
-          .from("registrations")
-          .select("*", { count: "exact", head: true });
+        const { count } = await supabase.from("registrations").select("*", { count: "exact", head: true });
         if (count !== null) {
           setRegistrationsCount(count);
         }
@@ -115,7 +122,7 @@ export default function AdminPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
       <AdminHeader userEmail={userEmail} />
 
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
@@ -125,17 +132,18 @@ export default function AdminPage() {
           registrationsCount={registrationsCount}
         />
 
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-950">
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-100">
           {loading ? (
-            <div className="h-96 flex flex-col items-center justify-center gap-3 text-slate-400">
-              <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
-              <span className="text-xs">Đang tải dữ liệu cấu hình CMS...</span>
+            <div className="h-96 flex flex-col items-center justify-center gap-3 text-slate-500">
+              <Loader2 className="w-8 h-8 animate-spin text-slate-900" />
+              <span className="text-xs font-medium">Đang tải dữ liệu cấu hình CMS...</span>
             </div>
           ) : (
             <>
               {activeTab === "general" && (
                 <GeneralEditor initialConfig={data.site_config} initialFooter={data.footer} />
               )}
+              {activeTab === "navbar" && <NavbarEditor initialNavbar={data.navbar} />}
               {activeTab === "hero" && <HeroEditor initialHero={data.hero} />}
               {activeTab === "statistics" && (
                 <StatisticsEditor initialStats={data.statistics} />
@@ -152,6 +160,9 @@ export default function AdminPage() {
               )}
               {activeTab === "ticket_fee" && (
                 <TicketFeeEditor initialFee={data.ticket_fee} />
+              )}
+              {activeTab === "registration" && (
+                <RegistrationEditor initialRegistration={data.registration} />
               )}
               {activeTab === "sponsors" && (
                 <SponsorsEditor initialSponsors={data.sponsors} />

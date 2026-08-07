@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { ArrowRight, Award, Store, Ticket } from "lucide-react";
+import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 
-export default function MobileStickyCTA() {
+export default function MobileStickyCTA({ content }: { content?: RegistrationContent }) {
+  const data = content || DEFAULT_REGISTRATION;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function MobileStickyCTA() {
           className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-extrabold text-xs bg-[#22C55E] text-white shadow-md active:scale-95 transition-transform truncate"
         >
           <Ticket className="w-4 h-4 shrink-0" />
-          <span className="truncate">Đăng ký Đại biểu</span>
+          <span className="truncate">{data.mobileDelegateLabel}</span>
         </a>
 
         <a
@@ -48,7 +50,7 @@ export default function MobileStickyCTA() {
           className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-xs bg-[#F59E0B] text-slate-950 shadow-md active:scale-95 transition-transform shrink-0"
         >
           <Award className="w-4 h-4 shrink-0" />
-          <span>Tài trợ</span>
+          <span>{data.mobileSponsorLabel}</span>
         </a>
       </div>
     </div>
