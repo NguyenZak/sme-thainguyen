@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot } from "lucide-react";
+import { toast } from "@/components/ui/Toast";
 
 interface GeneralEditorProps {
   initialConfig: SiteConfig;
@@ -37,16 +38,18 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
 
     setSaving(false);
     if (res1.success && res2.success) {
+      toast.success("Lưu thành công!", "Đã cập nhật cấu hình chung, Telegram & Google Sheets.");
       setMsg({ type: "success", text: "Đã cập nhật cấu hình chung, Telegram & Google Sheets thành công!" });
       onSaveSuccess?.(config, footer);
     } else {
+      toast.error("Lưu thất bại!", res1.error || res2.error || "Lỗi khi lưu dữ liệu.");
       setMsg({ type: "error", text: res1.error || res2.error || "Lỗi khi lưu dữ liệu." });
     }
   };
 
   const handleTestTelegram = async (threadId?: string) => {
     if (!config.telegramBotToken || !config.telegramChatId) {
-      alert("Vui lòng nhập Telegram Bot Token và Chat ID trước khi bấm thử nghiệm!");
+      toast.warning("Thiếu thông tin!", "Vui lòng nhập Telegram Bot Token và Chat ID trước khi thử nghiệm.");
       return;
     }
 
@@ -64,12 +67,12 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
 
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        toast.success("Test thành công! 🤖", data.message);
       } else {
-        alert(`Lỗi thử nghiệm: ${data.message}`);
+        toast.error("Thử nghiệm thất bại!", data.message);
       }
     } catch (err: any) {
-      alert(`Không thể gửi thử tin nhắn: ${err?.message || "Lỗi kết nối"}`);
+      toast.error("Lỗi kết nối Telegram!", err?.message || "Không thể kết nối Telegram API");
     } finally {
       setTestingTg(false);
     }

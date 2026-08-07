@@ -19,6 +19,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
+import { toast } from "@/components/ui/Toast";
 
 // Form validation schema with Zod
 const formSchema = z.object({
@@ -177,6 +178,11 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
         responseData.registrationId ||
         `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
 
+      toast.success(
+        "Đăng ký thành công!",
+        "Ban tổ chức đã ghi nhận thông tin & sẽ liên hệ với bạn trong 24h."
+      );
+
       setSuccessModal({
         open: true,
         registrationId: regId,
@@ -186,7 +192,10 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
       reset();
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Đăng ký thành công! Ban tổ chức đã ghi nhận thông tin của bạn.");
+      toast.success(
+        "Đăng ký thành công!",
+        "Ban tổ chức đã ghi nhận thông tin của bạn."
+      );
     } finally {
       setIsSubmitting(false);
     }

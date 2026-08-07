@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Trash2,
 } from "lucide-react";
+import { toast } from "@/components/ui/Toast";
 
 export interface RegistrationRecord {
   id: string;
@@ -106,9 +107,22 @@ export default function RegistrationsManager() {
         setRegistrations((prev) =>
           prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
         );
+
+        const statusTitle =
+          newStatus === "completed"
+            ? "Đã đánh dấu xử lý xong! ✅"
+            : newStatus === "confirmed"
+            ? "Đã xác nhận lượt đăng ký! 🔵"
+            : newStatus === "cancelled"
+            ? "Đã chuyển sang trạng thái Hủy! 🔴"
+            : "Đã chuyển sang trạng thái Chờ xử lý! 🟡";
+        toast.success(statusTitle);
+      } else {
+        toast.error("Cập nhật thất bại!", error.message);
       }
     } catch (err) {
       console.error("Failed to update status", err);
+      toast.error("Lỗi kết nối!", "Không thể cập nhật trạng thái.");
     }
   };
 
@@ -119,11 +133,13 @@ export default function RegistrationsManager() {
       const { error } = await supabase.from("registrations").delete().eq("id", id);
       if (!error) {
         setRegistrations((prev) => prev.filter((item) => item.id !== id));
+        toast.info("Đã xóa lượt đăng ký!", `Đã xóa thông tin đăng ký của "${name}".`);
       } else {
-        alert("Xóa thất bại: " + error.message);
+        toast.error("Xóa thất bại!", error.message);
       }
     } catch (err) {
       console.error("Failed to delete registration", err);
+      toast.error("Lỗi xóa dữ liệu!", "Không thể thực hiện yêu cầu.");
     }
   };
 

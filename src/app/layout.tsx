@@ -73,6 +73,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import { ToastContainer } from "@/components/ui/Toast";
+
 export default function RootLayout({
   children,
 }: {
@@ -88,6 +90,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-[#F8FAFC] text-[#1A1A1A] antialiased selection:bg-[#0B5ED7] selection:text-white">
         {children}
+        <ToastContainer />
       </body>
     </html>
   );
