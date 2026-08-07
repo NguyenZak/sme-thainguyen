@@ -16,51 +16,62 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://sme-thainguyen.vercel.app"),
-  title: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026 | May Plaza Hotel Thai Nguyen",
-  description:
-    "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam. 18-20/09/2026 tại May Plaza Hotel Thái Nguyên.",
-  keywords: [
-    "Diễn đàn SME Việt Nam 2026",
-    "TASME Thái Nguyên",
-    "Kết nối giao thương SME",
-    "Xúc tiến thương mại",
-    "May Plaza Hotel Thai Nguyen",
-    "B2B Matching",
-    "Đăng ký gian hàng",
-    "Tài trợ diễn đàn SME",
-  ],
-  authors: [{ name: "Hiệp hội DNNVV tỉnh Thái Nguyên (TASME)" }],
-  openGraph: {
-    title: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026",
-    description:
-      "Kết nối doanh nghiệp - Xúc tiến đầu tư - Mở rộng thị trường. Sự kiện quy tụ 100+ phiên B2B Matching, lãnh đạo chính phủ và hàng nghìn cơ hội kinh doanh.",
-    url: "https://sme-thainguyen.vercel.app",
-    siteName: "DIỄN ĐÀN SME VIỆT NAM 2026",
-    images: [
-      {
-        url: "/images/hero-bg.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Diễn đàn kết nối giao thương SME Việt Nam 2026",
-      },
+import { getSectionContent } from "@/lib/cmsServer";
+import { SiteConfig } from "@/constants/defaultContent";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSectionContent<SiteConfig>("site_config");
+
+  const title =
+    siteConfig.metaTitle ||
+    "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026 | May Plaza Hotel Thai Nguyen";
+  const description =
+    siteConfig.metaDescription ||
+    "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam. 18-20/09/2026 tại May Plaza Hotel Thái Nguyên.";
+
+  return {
+    metadataBase: new URL("https://sme-thainguyen.vercel.app"),
+    title,
+    description,
+    keywords: [
+      "Diễn đàn SME Việt Nam 2026",
+      "TASME Thái Nguyên",
+      "Kết nối giao thương SME",
+      "Xúc tiến thương mại",
+      "May Plaza Hotel Thai Nguyen",
+      "B2B Matching",
+      "Đăng ký gian hàng",
+      "Tài trợ diễn đàn SME",
     ],
-    locale: "vi_VN",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026",
-    description:
-      "Kết nối doanh nghiệp - Xúc tiến đầu tư - Mở rộng thị trường. 18-20/09/2026 tại Thái Nguyên.",
-    images: ["/images/hero-bg.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+    authors: [{ name: siteConfig.organizer || "Hiệp hội DNNVV tỉnh Thái Nguyên (TASME)" }],
+    openGraph: {
+      title,
+      description,
+      url: "https://sme-thainguyen.vercel.app",
+      siteName: siteConfig.siteName || "DIỄN ĐÀN SME VIỆT NAM 2026",
+      images: [
+        {
+          url: "/images/hero-bg.jpg",
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      locale: "vi_VN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/images/hero-bg.jpg"],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default function RootLayout({
   children,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot } from "lucide-react";
@@ -8,11 +8,20 @@ import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot } 
 interface GeneralEditorProps {
   initialConfig: SiteConfig;
   initialFooter: FooterContent;
+  onSaveSuccess?: (updatedConfig: SiteConfig, updatedFooter: FooterContent) => void;
 }
 
-export default function GeneralEditor({ initialConfig, initialFooter }: GeneralEditorProps) {
+export default function GeneralEditor({ initialConfig, initialFooter, onSaveSuccess }: GeneralEditorProps) {
   const [config, setConfig] = useState<SiteConfig>(initialConfig);
   const [footer, setFooter] = useState<FooterContent>(initialFooter);
+
+  useEffect(() => {
+    setConfig(initialConfig);
+  }, [initialConfig]);
+
+  useEffect(() => {
+    setFooter(initialFooter);
+  }, [initialFooter]);
 
   const [saving, setSaving] = useState(false);
   const [testingTg, setTestingTg] = useState(false);
@@ -29,6 +38,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
     setSaving(false);
     if (res1.success && res2.success) {
       setMsg({ type: "success", text: "Đã cập nhật cấu hình chung, Telegram & Google Sheets thành công!" });
+      onSaveSuccess?.(config, footer);
     } else {
       setMsg({ type: "error", text: res1.error || res2.error || "Lỗi khi lưu dữ liệu." });
     }
@@ -293,27 +303,27 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Tên Sự Kiện Đầy Đủ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Tên Sự Kiện Đầy Đủ</label>
             <input
               type="text"
               value={config.siteName}
               onChange={(e) => setConfig({ ...config, siteName: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Đơn Vị Tổ Chức (Organizer)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Đơn Vị Tổ Chức (Organizer)</label>
             <input
               type="text"
               value={config.organizer}
               onChange={(e) => setConfig({ ...config, organizer: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Hotline Liên Hệ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Hotline Liên Hệ</label>
             <input
               type="text"
               value={config.hotline}
@@ -321,12 +331,12 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
                 setConfig({ ...config, hotline: e.target.value });
                 setFooter({ ...footer, contactHotline: e.target.value });
               }}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Email Hỗ Trợ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Email Hỗ Trợ</label>
             <input
               type="email"
               value={config.email}
@@ -334,12 +344,12 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
                 setConfig({ ...config, email: e.target.value });
                 setFooter({ ...footer, contactEmail: e.target.value });
               }}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Địa Điểm Tổ Chức</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Địa Điểm Tổ Chức</label>
             <input
               type="text"
               value={config.address}
@@ -347,7 +357,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
                 setConfig({ ...config, address: e.target.value });
                 setFooter({ ...footer, contactAddress: e.target.value });
               }}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
         </div>
@@ -358,22 +368,22 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH SEO METADATA</h3>
         
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Thẻ Tiêu Đề Web (Meta Title)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Thẻ Tiêu Đề Web (Meta Title)</label>
           <input
             type="text"
             value={config.metaTitle}
             onChange={(e) => setConfig({ ...config, metaTitle: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Thẻ Mô Tả (Meta Description)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Thẻ Mô Tả (Meta Description)</label>
           <textarea
             rows={3}
             value={config.metaDescription}
             onChange={(e) => setConfig({ ...config, metaDescription: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
           />
         </div>
       </div>
@@ -383,69 +393,69 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG FOOTER & MẠNG XÃ HỘI</h3>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Đoạn Văn Giới Thiệu Ở Footer</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Đoạn Văn Giới Thiệu Ở Footer</label>
           <textarea
-            rows={2}
+            rows={3}
             value={footer.aboutText}
             onChange={(e) => setFooter({ ...footer, aboutText: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Facebook Link</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Facebook Link</label>
             <input
               type="text"
-              value={footer.socialLinks.facebook || ""}
+              value={footer.socialLinks?.facebook || ""}
               onChange={(e) =>
                 setFooter({
                   ...footer,
-                  socialLinks: { ...footer.socialLinks, facebook: e.target.value },
+                  socialLinks: { ...(footer.socialLinks || {}), facebook: e.target.value },
                 })
               }
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Zalo Official Link</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Zalo Official Link</label>
             <input
               type="text"
-              value={footer.socialLinks.zalo || ""}
+              value={footer.socialLinks?.zalo || ""}
               onChange={(e) =>
                 setFooter({
                   ...footer,
-                  socialLinks: { ...footer.socialLinks, zalo: e.target.value },
+                  socialLinks: { ...(footer.socialLinks || {}), zalo: e.target.value },
                 })
               }
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">YouTube Link</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">YouTube Link</label>
             <input
               type="text"
-              value={footer.socialLinks.youtube || ""}
+              value={footer.socialLinks?.youtube || ""}
               onChange={(e) =>
                 setFooter({
                   ...footer,
-                  socialLinks: { ...footer.socialLinks, youtube: e.target.value },
+                  socialLinks: { ...(footer.socialLinks || {}), youtube: e.target.value },
                 })
               }
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Bản Quyền Copyright Text</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Bản Quyền Copyright Text</label>
           <input
             type="text"
             value={footer.copyrightText}
             onChange={(e) => setFooter({ ...footer, copyrightText: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
           />
         </div>
       </div>

@@ -19,6 +19,7 @@ export async function updateSectionAction(key: string, newContent: any) {
     }
 
     revalidatePath("/");
+    revalidatePath("/admin");
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || "Lỗi cập nhật dữ liệu" };

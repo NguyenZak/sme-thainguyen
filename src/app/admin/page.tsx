@@ -156,7 +156,17 @@ export default function AdminPage() {
           ) : (
             <>
               {activeTab === "general" && (
-                <GeneralEditor initialConfig={data.site_config} initialFooter={data.footer} />
+                <GeneralEditor
+                  initialConfig={data.site_config}
+                  initialFooter={data.footer}
+                  onSaveSuccess={(updatedConfig, updatedFooter) => {
+                    setData((prev) => ({
+                      ...prev,
+                      site_config: updatedConfig,
+                      footer: updatedFooter,
+                    }));
+                  }}
+                />
               )}
               {activeTab === "navbar" && <NavbarEditor initialNavbar={data.navbar} />}
               {activeTab === "hero" && <HeroEditor initialHero={data.hero} />}

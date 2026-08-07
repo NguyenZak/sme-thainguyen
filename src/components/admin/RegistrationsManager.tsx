@@ -11,6 +11,8 @@ import {
   Award,
   Store,
   Filter,
+  CheckCircle2,
+  Trash2,
 } from "lucide-react";
 
 export interface RegistrationRecord {
@@ -22,7 +24,7 @@ export interface RegistrationRecord {
   position: string;
   ticket_type: string;
   notes?: string;
-  status: "pending" | "confirmed" | "cancelled";
+  status: "pending" | "confirmed" | "completed" | "cancelled";
   created_at: string;
 }
 
@@ -89,7 +91,10 @@ export default function RegistrationsManager() {
     fetchRegistrations();
   }, []);
 
-  const updateStatus = async (id: string, newStatus: "pending" | "confirmed" | "cancelled") => {
+  const updateStatus = async (
+    id: string,
+    newStatus: "pending" | "confirmed" | "completed" | "cancelled"
+  ) => {
     try {
       const supabase = createClient();
       const { error } = await supabase
@@ -107,7 +112,22 @@ export default function RegistrationsManager() {
     }
   };
 
-  // ── Thống kê theo 3 Form ──────────────────────────────────────────────────
+  const deleteRegistration = async (id: string, name: string) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa lượt đăng ký của "${name}" không?`)) return;
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("registrations").delete().eq("id", id);
+      if (!error) {
+        setRegistrations((prev) => prev.filter((item) => item.id !== id));
+      } else {
+        alert("Xóa thất bại: " + error.message);
+      }
+    } catch (err) {
+      console.error("Failed to delete registration", err);
+    }
+  };
+
+  // ── Thống kê theo 3 Form & Trạng thái ────────────────────────────────────
   const delegateCount = registrations.filter(
     (r) => getFormCategory(r.ticket_type) === "delegate"
   ).length;
@@ -117,6 +137,7 @@ export default function RegistrationsManager() {
   const boothCount = registrations.filter(
     (r) => getFormCategory(r.ticket_type) === "booth"
   ).length;
+  const completedCount = registrations.filter((r) => r.status === "completed").length;
 
   const filteredList = registrations.filter((r) => {
     const category = getFormCategory(r.ticket_type);
@@ -158,6 +179,15 @@ export default function RegistrationsManager() {
           ? "Nhà Tài Trợ"
           : "Gian Hàng Triển Lãm";
 
+      const statusLabel =
+        r.status === "completed"
+          ? "Đã xử lý xong"
+          : r.status === "confirmed"
+          ? "Đã xác nhận"
+          : r.status === "cancelled"
+          ? "Đã hủy"
+          : "Chờ xử lý";
+
       return [
         `"${catLabel}"`,
         `"${r.full_name}"`,
@@ -166,7 +196,7 @@ export default function RegistrationsManager() {
         `"${r.company_name}"`,
         `"${r.position}"`,
         `"${r.ticket_type}"`,
-        `"${r.status}"`,
+        `"${statusLabel}"`,
         `"${new Date(r.created_at).toLocaleString("vi-VN")}"`,
         `"${(r.notes || "").replace(/"/g, '""')}"`,
       ];
@@ -196,7 +226,7 @@ export default function RegistrationsManager() {
             Quản Lý Danh Sách Đăng Ký Tham Dự
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Tổng hợp dữ liệu từ 3 Form Đăng ký trên Landing Page: <b>Đại Biểu</b>, <b>Nhà Tài Trợ</b>, và <b>Gian Hàng Triển Lãm</b>.
+            Tổng hợp & Xử lý dữ liệu từ 3 Form Đăng ký trên Landing Page (<b>Đại Biểu</b>, <b>Nhà Tài Trợ</b>, <b>Gian Hàng</b>).
           </p>
         </div>
 
@@ -219,7 +249,7 @@ export default function RegistrationsManager() {
         </div>
       </div>
 
-      {/* ── Stat Cards Summary For 3 Landing Forms ──────────────────────── */}
+      {/* ── Stat Cards Summary ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <button
           type="button"
@@ -232,12 +262,15 @@ export default function RegistrationsManager() {
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider opacity-80">
-              TẤT CẢ CÁC FORM
+              TẤT CẢ ĐĂNG KÝ
             </span>
             <Filter className="w-4 h-4 opacity-70" />
           </div>
           <div className="text-2xl font-black mt-2">{registrations.length}</div>
-          <p className="text-[10px] mt-1 opacity-70">Tổng số lượt gửi từ Landing Page</p>
+          <div className="text-[10px] mt-1 opacity-70 flex items-center justify-between">
+            <span>Tổng lượt đăng ký</span>
+            {completedCount > 0 && <span className="font-bold">✅ Đã xong {completedCount}</span>}
+          </div>
         </button>
 
         <button
@@ -298,9 +331,8 @@ export default function RegistrationsManager() {
         </button>
       </div>
 
-      {/* ── Filters bar ──────────────────────────────────────────────────── */}
+      {/* ── Filters Bar ──────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
-        {/* Search input */}
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -312,28 +344,27 @@ export default function RegistrationsManager() {
           />
         </div>
 
-        {/* Form Category Selector */}
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value as FormCategory)}
           className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-semibold shadow-sm"
         >
-          <option value="all">📂 Tất cả 3 Form Đăng Ký ({registrations.length})</option>
+          <option value="all">📂 Tất cả 3 Form ({registrations.length})</option>
           <option value="delegate">🎟️ Form 1: Đăng ký Đại Biểu ({delegateCount})</option>
           <option value="sponsor">💎 Form 2: Đăng ký Nhà Tài Trợ ({sponsorCount})</option>
           <option value="booth">🎪 Form 3: Đăng ký Gian Hàng ({boothCount})</option>
         </select>
 
-        {/* Status Selector */}
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-semibold shadow-sm"
         >
           <option value="all">Tất cả trạng thái</option>
-          <option value="pending">🟡 Chờ xác nhận (Pending)</option>
-          <option value="confirmed">🟢 Đã xác nhận (Confirmed)</option>
-          <option value="cancelled">🔴 Đã hủy (Cancelled)</option>
+          <option value="pending">🟡 Chờ xử lý (Pending)</option>
+          <option value="confirmed">🔵 Đã xác nhận (Confirmed)</option>
+          <option value="completed">✅ Đã xử lý xong (Completed)</option>
+          <option value="cancelled">🔴 Đã hủy vé (Cancelled)</option>
         </select>
       </div>
 
@@ -360,15 +391,22 @@ export default function RegistrationsManager() {
                   <th className="px-4 py-3.5">Chi Tiết Gói / Gian Hàng</th>
                   <th className="px-4 py-3.5">Ngày Đăng Ký</th>
                   <th className="px-4 py-3.5 text-center">Trạng Thái</th>
+                  <th className="px-4 py-3.5 text-right">Thao Tác Fast</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {filteredList.map((r) => {
                   const category = getFormCategory(r.ticket_type);
                   const badge = getCategoryBadge(category);
+                  const isDone = r.status === "completed";
 
                   return (
-                    <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                    <tr
+                      key={r.id}
+                      className={`transition-colors ${
+                        isDone ? "bg-emerald-50/40 hover:bg-emerald-50/70" : "hover:bg-slate-50"
+                      }`}
+                    >
                       {/* Form Badge */}
                       <td className="px-4 py-3.5">
                         <span
@@ -380,7 +418,10 @@ export default function RegistrationsManager() {
 
                       {/* Full Name & Notes */}
                       <td className="px-4 py-3.5 font-bold text-slate-900">
-                        {r.full_name}
+                        <div className="flex items-center gap-1.5">
+                          {isDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
+                          <span>{r.full_name}</span>
+                        </div>
                         {r.notes && (
                           <div className="text-[11px] font-normal text-slate-500 mt-0.5 italic">
                             Ghi chú: {r.notes}
@@ -402,7 +443,10 @@ export default function RegistrationsManager() {
 
                       {/* Ticket / Booth / Sponsor detail */}
                       <td className="px-4 py-3.5 font-semibold text-slate-700">
-                        <span className="px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 text-[11px] inline-block max-w-[200px] truncate" title={r.ticket_type}>
+                        <span
+                          className="px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 text-[11px] inline-block max-w-[200px] truncate"
+                          title={r.ticket_type}
+                        >
                           {r.ticket_type === "standard" ? "Vé Tiêu Chuẩn" : r.ticket_type}
                         </span>
                       </td>
@@ -412,23 +456,61 @@ export default function RegistrationsManager() {
                         {new Date(r.created_at).toLocaleDateString("vi-VN")}
                       </td>
 
-                      {/* Status selector */}
+                      {/* Status Selector */}
                       <td className="px-4 py-3.5 text-center">
                         <select
                           value={r.status}
                           onChange={(e) => updateStatus(r.id, e.target.value as any)}
                           className={`text-[11px] font-bold rounded-lg px-2.5 py-1 border focus:outline-none cursor-pointer ${
-                            r.status === "confirmed"
-                              ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                            r.status === "completed"
+                              ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                              : r.status === "confirmed"
+                              ? "bg-blue-50 text-blue-800 border-blue-300"
                               : r.status === "cancelled"
                               ? "bg-red-50 text-red-800 border-red-300"
                               : "bg-amber-50 text-amber-800 border-amber-300"
                           }`}
                         >
-                          <option value="pending">Chờ xác nhận</option>
-                          <option value="confirmed">Đã xác nhận</option>
-                          <option value="cancelled">Đã hủy vé</option>
+                          <option value="pending">🟡 Chờ xử lý</option>
+                          <option value="confirmed">🔵 Đã xác nhận</option>
+                          <option value="completed">✅ Đã xử lý xong</option>
+                          <option value="cancelled">🔴 Đã hủy vé</option>
                         </select>
+                      </td>
+
+                      {/* Fast Action Buttons */}
+                      <td className="px-4 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {r.status !== "completed" ? (
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(r.id, "completed")}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm"
+                              title="Đánh dấu đã liên hệ & xử lý xong dữ liệu"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Xong</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(r.id, "pending")}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-lg text-[11px] font-semibold transition-all"
+                              title="Mở lại trạng thái chờ xử lý"
+                            >
+                              Mở lại
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => deleteRegistration(r.id, r.full_name)}
+                            className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
+                            title="Xóa lượt đăng ký này"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
