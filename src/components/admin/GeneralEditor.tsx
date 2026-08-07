@@ -78,6 +78,35 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     }
   };
 
+  const [testingGs, setTestingGs] = useState(false);
+
+  const handleTestGoogleSheet = async () => {
+    if (!config.googleSheetScriptUrl) {
+      toast.warning("Thiếu thông tin!", "Vui lòng nhập Google Apps Script URL trước khi kiểm tra!");
+      return;
+    }
+
+    setTestingGs(true);
+    try {
+      const res = await fetch("/api/test-google-sheet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scriptUrl: config.googleSheetScriptUrl }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Test Google Sheet thành công! 📊", data.message);
+      } else {
+        toast.error("Thử nghiệm thất bại!", data.message);
+      }
+    } catch (err: any) {
+      toast.error("Lỗi kết nối!", err?.message || "Không thể kết nối Google Apps Script");
+    } finally {
+      setTestingGs(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
@@ -270,7 +299,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO GOOGLE SHEETS</h3>
-              <p className="text-[11px] text-slate-500">Điền link Webhook Google Apps Script để ghi tự động từng lượt đăng ký vào file Google Sheet của bạn.</p>
+              <p className="text-[11px] text-slate-500">Tự động ghi từng lượt đăng ký mới trên Landing Page thành 1 dòng trong file Google Sheet của bạn.</p>
             </div>
           </div>
 
@@ -286,18 +315,67 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Google Apps Script Webhook URL</label>
-          <input
-            type="text"
-            placeholder="https://script.google.com/macros/s/.../exec"
-            value={config.googleSheetScriptUrl || ""}
-            onChange={(e) => setConfig({ ...config, googleSheetScriptUrl: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-mono"
-          />
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Google Apps Script Web App URL</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+              value={config.googleSheetScriptUrl || ""}
+              onChange={(e) => setConfig({ ...config, googleSheetScriptUrl: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-mono"
+            />
+            <button
+              type="button"
+              onClick={handleTestGoogleSheet}
+              disabled={testingGs}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shrink-0 shadow-sm"
+            >
+              {testingGs ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+              Gửi Thử Nghiệm
+            </button>
+          </div>
         </div>
-        <p className="text-[11px] text-slate-500">
-          💡 File script sẵn có nằm tại <code className="text-slate-800 font-bold font-mono">google-apps-script.js</code> trong thư mục dự án. Hãy deploy thành Web App và dán URL vào đây.
-        </p>
+
+        {/* ── Hướng dẫn 4 Bước cài đặt Google Apps Script ─────────────────── */}
+        <div className="border-t border-slate-100 pt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              📋 HƯỚNG DẪN 4 BƯỚC TẠO LINK GOOGLE SHEET TỰ ĐỘNG
+            </h4>
+            <button
+              type="button"
+              onClick={() => {
+                const codeStr = `function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Thời Gian", "Họ và Tên", "Số Điện Thoại", "Email", "Tên Doanh Nghiệp", "Chức Vụ", "Loại Đăng Ký", "Ghi Chú"]);
+      sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#1e293b").setFontColor("#ffffff");
+    }
+    var timestamp = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+    sheet.appendRow([timestamp, data.fullName||data.full_name||"N/A", data.phone||"N/A", data.email||"N/A", data.company||data.company_name||"N/A", data.position||"N/A", data.registrationType||data.intentTab||"N/A", data.notes||data.networkingNeeds||""]);
+    return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+                navigator.clipboard.writeText(codeStr);
+                toast.success("Đã copy mã Google Apps Script! 📋", "Dán mã này vào Apps Script của Google Sheet.");
+              }}
+              className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[11px] font-bold transition-colors"
+            >
+              📋 Copy Mã Script 1-Click
+            </button>
+          </div>
+
+          <ol className="list-decimal list-inside text-[11px] text-slate-600 space-y-1.5 leading-relaxed">
+            <li>Mở file <b>Google Sheet</b> của bạn &gt; Menu <b>Tiện ích mở rộng (Extensions)</b> &gt; Chọn <b>Apps Script</b>.</li>
+            <li>Xóa mã mặc định và dán đoạn mã Script (bấm nút <b>Copy Mã Script 1-Click</b> ở trên).</li>
+            <li>Bấm nút <b>Triển khai (Deploy)</b> &gt; <b>Tạo bản triển khai mới (New deployment)</b> &gt; Chọn loại <b>Ứng dụng web (Web App)</b>.</li>
+            <li>Mục <b>"Ai có quyền truy cập" (Who has access)</b>: Chọn <b>"Bất kỳ ai" (Anyone)</b> rồi bấm <b>Triển khai</b> &gt; Copy URL dán vào ô bên trên.</li>
+          </ol>
+        </div>
       </div>
 
       {/* Thông tin sự kiện cơ bản */}
