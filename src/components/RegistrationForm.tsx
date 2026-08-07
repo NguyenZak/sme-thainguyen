@@ -218,45 +218,65 @@ export default function RegistrationForm() {
         </motion.div>
 
         {/* Smart 3-Tab Intent Selector */}
-        <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-2xl mx-auto gap-1 sm:gap-2">
-          <button
-            type="button"
-            onClick={() => handleTabChange("delegate")}
-            className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-              activeTab === "delegate"
-                ? "bg-[#22C55E] text-white shadow-md"
-                : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-            }`}
-          >
-            <Ticket className="w-4 h-4 shrink-0" />
-            <span className="truncate">Vé Đại biểu</span>
-          </button>
+        <div className="space-y-4">
+          <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-2xl mx-auto gap-1 sm:gap-2">
+            <button
+              type="button"
+              onClick={() => handleTabChange("delegate")}
+              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                activeTab === "delegate"
+                  ? "bg-[#22C55E] text-white shadow-md"
+                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+              }`}
+            >
+              <Ticket className="w-4 h-4 shrink-0" />
+              <span className="truncate">Vé Đại biểu</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => handleTabChange("sponsor")}
-            className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-              activeTab === "sponsor"
-                ? "bg-[#F59E0B] text-slate-950 shadow-md"
-                : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-            }`}
-          >
-            <Award className="w-4 h-4 shrink-0" />
-            <span className="truncate">Nhà Tài trợ</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange("sponsor")}
+              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                activeTab === "sponsor"
+                  ? "bg-[#F59E0B] text-slate-950 shadow-md"
+                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+              }`}
+            >
+              <Award className="w-4 h-4 shrink-0" />
+              <span className="truncate">Nhà Tài trợ</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => handleTabChange("booth")}
-            className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-              activeTab === "booth"
-                ? "bg-[#0D3B2E] text-white shadow-md"
-                : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-            }`}
-          >
-            <Store className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span className="truncate">Gian hàng</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange("booth")}
+              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                activeTab === "booth"
+                  ? "bg-[#0D3B2E] text-white shadow-md"
+                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+              }`}
+            >
+              <Store className="w-4 h-4 shrink-0" />
+              <span className="truncate">Gian hàng</span>
+            </button>
+          </div>
+
+          {/* 3-Step Visual Workflow Progress Bar */}
+          <div className="flex items-center justify-center gap-2 sm:gap-6 max-w-xl mx-auto text-xs text-slate-500 pt-1 font-medium">
+            <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
+              <span className="w-5 h-5 rounded-full bg-[#22C55E] text-white flex items-center justify-center text-[10px] font-black">1</span>
+              <span>Chọn Hạng Mục</span>
+            </div>
+            <span className="text-slate-300">➔</span>
+            <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
+              <span className="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-black">2</span>
+              <span>Điền Thông Tin</span>
+            </div>
+            <span className="text-slate-300">➔</span>
+            <div className="flex items-center gap-1.5 text-slate-400">
+              <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">3</span>
+              <span>Nhận Xác Nhận QR</span>
+            </div>
+          </div>
         </div>
 
         {/* Form Container */}

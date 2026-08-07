@@ -4,11 +4,13 @@ import Statistics from "@/components/Statistics";
 import AboutEvent from "@/components/AboutEvent";
 import Benefits from "@/components/Benefits";
 import Timeline from "@/components/Timeline";
+import SpeakersSection from "@/components/SpeakersSection";
 import RegistrationFee from "@/components/RegistrationFee";
 import SponsorSection from "@/components/SponsorSection";
 import BoothSection from "@/components/BoothSection";
 import RegistrationForm from "@/components/RegistrationForm";
 import Footer from "@/components/Footer";
+import MobileStickyCTA from "@/components/MobileStickyCTA";
 import { getAllLandingPageContent } from "@/lib/cmsServer";
 
 export default async function Home() {
@@ -35,13 +37,13 @@ export default async function Home() {
       }
     },
     "image": [
-      "https://smevietnam2026.vn/images/hero-bg.jpg",
-      "https://smevietnam2026.vn/logo.png"
+      "https://sme-thainguyen.vercel.app/images/hero-bg.jpg",
+      "https://sme-thainguyen.vercel.app/logo.png"
     ],
     "description": content.siteConfig.metaDescription,
     "offers": {
       "@type": "Offer",
-      "url": "https://smevietnam2026.vn#register",
+      "url": "https://sme-thainguyen.vercel.app#register",
       "price": content.ticketFee.priceVND.toString(),
       "priceCurrency": "VND",
       "availability": "https://schema.org/InStock"
@@ -60,35 +62,41 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Navigation Bar */}
+      {/* 1. Navigation Bar */}
       <Navbar />
 
-      {/* Hero Section with Embedded Statistics */}
+      {/* 2. Hero Section with Embedded Countdown & Key Statistics */}
       <Hero content={content.hero} statsContent={content.statistics} />
 
-      {/* About Forum & Purpose */}
+      {/* 3. About Forum & Core Purpose */}
       <AboutEvent content={content.about} />
 
-      {/* Attendee Benefits & Value */}
+      {/* 4. Keynote Speakers & Experts (Authority & Prestige) */}
+      <SpeakersSection content={content.speakers} />
+
+      {/* 5. Attendee Benefits & Core Value Propositions */}
       <Benefits content={content.benefits} />
 
-      {/* 3-Day Program Timeline */}
+      {/* 6. 3-Day Program Agenda Timeline */}
       <Timeline content={content.timeline} />
 
-      {/* Registration Fee & Inclusions Card */}
-      <RegistrationFee content={content.ticketFee} />
-
-      {/* Sponsorship Packages (Diamond/Gold/Silver/Bronze) */}
+      {/* 7. Sponsors Logo Wall & Sponsorship Packages (Social Proof & Trust) */}
       <SponsorSection content={content.sponsors} />
 
-      {/* Booth Exhibition & Interactive Floor Plan */}
+      {/* 8. 100 Booth Exhibition & Interactive Floor Plan */}
       <BoothSection content={content.booths} />
 
-      {/* Online Registration Form */}
+      {/* 9. Registration Fee & Inclusions Card (Offer Transparency) */}
+      <RegistrationFee content={content.ticketFee} />
+
+      {/* 10. Direct Online Registration Form (Action Destination) */}
       <RegistrationForm />
 
-      {/* Footer & Location Map */}
+      {/* 11. Footer & Location Google Maps */}
       <Footer content={content.footer} />
+
+      {/* 12. Mobile Floating Sticky CTA */}
+      <MobileStickyCTA />
     </main>
   );
 }

@@ -201,12 +201,19 @@ export default function Footer({ content }: { content?: any }) {
           </div>
         </div>
 
-        {/* Bottom Bar Copyright */}
+        {/* Bottom Bar Copyright & Back to Top */}
         <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
+            <span className="text-slate-400 font-medium">BTC đang tiếp nhận hồ sơ đăng ký tham dự &amp; tài trợ</span>
+          </div>
           <p>© 2026 TASME THÁI NGUYÊN. All rights reserved.</p>
-          <p>
-            Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026 • 18–20/09/2026
-          </p>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-300 text-[11px] font-bold border border-slate-800 transition-colors cursor-pointer"
+          >
+            <span>Về đầu trang ↑</span>
+          </button>
         </div>
       </div>
     </footer>

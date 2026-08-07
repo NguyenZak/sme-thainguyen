@@ -379,22 +379,57 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
 };
 
 export const DEFAULT_SPONSORS: SponsorsContent = {
-  badge: "ĐỐI TÁC ĐỒNG HÀNH",
-  title: "NHÀ TÀI TRỢ & ĐƠN VỊ ĐỒNG HÀNH",
-  subtitle: "Xin chân thành cảm ơn các tập đoàn, doanh nghiệp đã tin tưởng và tài trợ cho diễn đàn.",
+  badge: "ĐỐI TÁC & NHÀ TÀI TRỢ",
+  title: "DANH SÁCH NHÀ TÀI TRỢ & ĐƠN VỊ ĐỒNG HÀNH",
+  subtitle: "Xin chân thành cảm ơn các Tập đoàn, Ngân hàng, Doanh nghiệp và Đơn vị truyền thông đã tin tưởng và đồng hành cùng Diễn đàn SME Việt Nam 2026.",
   items: [
     {
       id: "sp-1",
-      name: "Tập Đoàn May Plaza",
+      name: "Tập Đoàn May Plaza Thái Nguyên",
       tier: "diamond",
       logoUrl: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300&h=150&fit=crop",
-      websiteUrl: "https://mayplazahotel.com"
+      websiteUrl: "https://mayplazahotel.com",
+      description: "Đơn vị tài trợ địa điểm & Nhà tài trợ Kim Cương"
     },
     {
       id: "sp-2",
-      name: "Ngân Hàng Tiêu Biểu",
+      name: "VietinBank Chi Nhánh Thái Nguyên",
       tier: "gold",
-      logoUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=150&fit=crop"
+      logoUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=150&fit=crop",
+      websiteUrl: "https://vietinbank.vn",
+      description: "Ngân hàng Đồng hành Xúc tiến Đầu tư & Tín dụng SME"
+    },
+    {
+      id: "sp-3",
+      name: "Tập Đoàn Bưu Chính Viễn Thông VNPT",
+      tier: "gold",
+      logoUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=300&h=150&fit=crop",
+      websiteUrl: "https://vnpt.com.vn",
+      description: "Đối tác Chuyển đổi số & Hạ tầng Công nghệ Diễn đàn"
+    },
+    {
+      id: "sp-4",
+      name: "Công Ty Cổ Phần Đầu Tư & Thương Mại TNG",
+      tier: "silver",
+      logoUrl: "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=300&h=150&fit=crop",
+      websiteUrl: "https://tng.vn",
+      description: "Nhà tài trợ Bạc & Đơn vị Sản xuất Xuất khẩu Tiêu biểu"
+    },
+    {
+      id: "sp-5",
+      name: "Hiệp Hội Doanh Nghiệp NV Tỉnh Thái Nguyên (TASME)",
+      tier: "co-organizer",
+      logoUrl: "/logo.png",
+      websiteUrl: "https://sme-thainguyen.vercel.app",
+      description: "Đơn vị Trực tiếp Chỉ đạo & Tổ chức Diễn đàn"
+    },
+    {
+      id: "sp-6",
+      name: "Đài Phát Thanh & Truyền Hình Thái Nguyên (TNTV)",
+      tier: "companion",
+      logoUrl: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=300&h=150&fit=crop",
+      websiteUrl: "https://thainguyentv.vn",
+      description: "Đơn vị Bảo trợ Truyền thông Chính thức"
     }
   ]
 };
@@ -425,6 +460,67 @@ export const DEFAULT_BOOTHS: BoothsContent = {
       status: "reserved",
       reservedBy: "Công ty Cổ phần Công nghệ ABC",
       description: "Gian hàng tiêu chuẩn"
+    }
+  ]
+};
+
+export interface SpeakerItem {
+  id: string;
+  name: string;
+  title: string;
+  organization: string;
+  topic: string;
+  imageUrl: string;
+  badge?: string;
+}
+
+export interface SpeakersContent {
+  badge: string;
+  title: string;
+  subtitle: string;
+  items: SpeakerItem[];
+}
+
+export const DEFAULT_SPEAKERS: SpeakersContent = {
+  badge: "DIỄN GIẢ & KHÁCH MỜI DANH DỰ",
+  title: "ĐỘI NGŨ DIỄN GIẢ VÀ CHUYÊN GIA ĐẦU NGÀNH",
+  subtitle: "Lắng nghe các bài chia sẻ chiến lược và góc nhìn chuyên sâu từ các nhà quản lý, diễn giả hàng đầu.",
+  items: [
+    {
+      id: "spk-1",
+      name: "TS. Nguyễn Văn Nam",
+      title: "Chuyên gia Kinh tế Trưởng",
+      organization: "Viện Nghiên cứu Quản lý Kinh tế Trung ương",
+      topic: "Xu hướng phát triển kinh tế SME & Cơ hội bứt phá chuỗi giá trị 2026",
+      imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
+      badge: "Diễn giả Keynote"
+    },
+    {
+      id: "spk-2",
+      name: "Ông Trần Đức Minh",
+      title: "Phó Cục trưởng Cục Xúc tiến Thương mại",
+      organization: "Bộ Công Thương",
+      topic: "Chiến lược xúc tiến xuất khẩu & Mở rộng thị trường quốc tế cho doanh nghiệp vừa và nhỏ",
+      imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
+      badge: "Khách mời Danh dự"
+    },
+    {
+      id: "spk-3",
+      name: "Bà Lê Thị Thu Hà",
+      title: "Giám đốc Chuyển đổi số Doanh nghiệp",
+      organization: "Tập đoàn Viễn thông VNPT",
+      topic: "Ứng dụng AI và Công nghệ số nâng cao năng suất quản trị cho SME",
+      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80",
+      badge: "Chuyên gia Công nghệ"
+    },
+    {
+      id: "spk-4",
+      name: "Ông Hoàng Văn Thái",
+      title: "Chủ tịch Hội đồng Quản trị",
+      organization: "Hiệp hội Doanh nghiệp NV Tỉnh Thái Nguyên (TASME)",
+      topic: "Kết nối nguồn lực địa phương & Hỗ trợ doanh nghiệp phát triển bền vững",
+      imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
+      badge: "Ban Tổ Chức"
     }
   ]
 };

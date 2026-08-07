@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://smevietnam2026.vn"),
+  metadataBase: new URL("https://sme-thainguyen.vercel.app"),
   title: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026 | May Plaza Hotel Thai Nguyen",
   description:
     "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam. 18-20/09/2026 tại May Plaza Hotel Thái Nguyên.",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026",
     description:
       "Kết nối doanh nghiệp - Xúc tiến đầu tư - Mở rộng thị trường. Sự kiện quy tụ 100+ phiên B2B Matching, lãnh đạo chính phủ và hàng nghìn cơ hội kinh doanh.",
-    url: "https://smevietnam2026.vn",
+    url: "https://sme-thainguyen.vercel.app",
     siteName: "DIỄN ĐÀN SME VIỆT NAM 2026",
     images: [
       {

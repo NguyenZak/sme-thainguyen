@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import { Calendar, MapPin, Ticket, Award, Store, ArrowRight, Clock } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
 import Statistics from "./Statistics";
+import AddToCalendar from "./AddToCalendar";
 
 import { HeroContent, DEFAULT_HERO } from "@/constants/defaultContent";
 
@@ -23,6 +24,21 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
   const [wordIndex, setWordIndex] = useState(0);
   const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const tickers = [
+    "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Đại biểu (2 phút trước)",
+    "⚡ Công ty Cổ phần Công nghệ ABC vừa đăng ký Gian hàng Triển lãm A-05",
+    "⭐ Tập đoàn May Plaza công bố trở thành Nhà tài trợ Kim Cương chính thức",
+    "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % tickers.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [tickers.length]);
 
   // GSAP Entrance Timeline Animation
   useGSAP(
@@ -115,20 +131,30 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
 
       {/* Hero Container */}
       <div className="relative z-10 max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
-        {/* Trust & Honor Pill Badges */}
+        {/* Trust & Honor Pill Badges + Live Ticker Notification */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="hero-badge flex flex-wrap items-center justify-center gap-2"
+          className="hero-badge flex flex-col items-center gap-3"
         >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300 shadow-md backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-            <span>Chào mừng Đại hội HHDNNVV tỉnh Thái Nguyên · Nhiệm kỳ 2026 – 2031</span>
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[11px] sm:text-xs font-bold text-amber-300 shadow-md backdrop-blur-md">
-            🏅 Huân chương Lao động hạng Ba
-          </span>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300 shadow-md backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
+              <span>Chào mừng Đại hội HHDNNVV tỉnh Thái Nguyên · Nhiệm kỳ 2026 – 2031</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[11px] sm:text-xs font-bold text-amber-300 shadow-md backdrop-blur-md">
+              🏅 Huân chương Lao động hạng Ba
+            </span>
+          </div>
+
+          {/* Dynamic Social Proof Live Ticker */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-900/60 border border-emerald-400/30 text-xs font-medium text-emerald-200 backdrop-blur-md shadow-inner transition-all">
+            <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+            <span className="animate-in fade-in transition-all duration-300">
+              {tickers[tickerIndex]}
+            </span>
+          </div>
         </motion.div>
 
         {/* Main Headline (Typewriter Effect Animation) */}
@@ -239,40 +265,61 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
         </motion.div>
 
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3 pb-6 sm:pb-8 w-full max-w-xl sm:max-w-none mx-auto relative z-50">
-          {/* 1st Order Primary CTA */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3 pb-4 sm:pb-6 w-full max-w-xl sm:max-w-none mx-auto relative z-50">
+          {/* 1st Order Primary CTA: Registration Form (Delegate) */}
           <a
             id="cta-1"
             href="#register"
-            onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
+            onClick={(e) => {
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(
+                  new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } })
+                );
+              }
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
           >
             <Ticket className="w-4 h-4" />
             <span>Đăng ký Vé Đại biểu (1.450.000 VNĐ)</span>
             <ArrowRight className="w-4 h-4" />
           </a>
 
-          {/* 2nd Order Secondary CTA */}
+          {/* 2nd Order Secondary CTA: Sponsor Packages & Prospectus */}
           <a
             id="cta-2"
-            href="#register"
-            onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } }))}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
+            href="#sponsors"
+            onClick={(e) => {
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(
+                  new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } })
+                );
+              }
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
           >
             <Award className="w-4 h-4" />
             <span>Hồ sơ Nhà tài trợ</span>
           </a>
 
-          {/* 3rd Order Tertiary CTA */}
+          {/* 3rd Order Tertiary CTA: Booth Floorplan & Exhibition */}
           <a
             id="cta-3"
-            href="#register"
-            onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } }))}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
+            href="#booths"
+            onClick={(e) => {
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(
+                  new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } })
+                );
+              }
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
           >
             <Store className="w-4 h-4 text-emerald-400" />
             <span>Sơ đồ 100 Gian hàng</span>
           </a>
+
+          {/* Add To Calendar Button */}
+          <AddToCalendar variant="hero" />
         </div>
 
         {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}

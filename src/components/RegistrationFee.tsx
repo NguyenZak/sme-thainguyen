@@ -75,6 +75,17 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                 </div>
               </div>
 
+              {/* Early Bird Progress Bar */}
+              <div className="bg-emerald-950/60 p-3.5 rounded-2xl border border-emerald-700/50 space-y-2 text-xs text-emerald-200 text-left">
+                <div className="flex items-center justify-between font-bold">
+                  <span>Vé ưu đãi Đăng ký sớm</span>
+                  <span className="text-amber-400">Còn 15 / 100 suất</span>
+                </div>
+                <div className="w-full h-2 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800">
+                  <div className="h-full bg-gradient-to-r from-[#22C55E] to-[#F59E0B] rounded-full w-[85%]" />
+                </div>
+              </div>
+
               <div className="space-y-3 pt-2">
                 <a
                   href="#register"
