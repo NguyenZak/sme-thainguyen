@@ -31,76 +31,87 @@ const SPONSOR_TIERS: SponsorTier[] = [
     name: "Nhà tài trợ Chiến lược",
     badgeColor: "bg-purple-900 text-white font-extrabold",
     borderAccent: "border-purple-600 shadow-purple-100",
-    price: "100.000.000 VNĐ",
+    price: "Từ 100.000.000 VNĐ (Tối đa 01)",
     popular: true,
     perks: [
-      "Vị trí Logo Chiến lược độc quyền trên toàn bộ ấn phẩm Diễn đàn & Backdrop",
-      "Phát biểu 15 phút tại Lễ Khai mạc Diễn đàn SME 2026",
-      "Khu vực Triển lãm VIP 02-03 gian hàng vị trí trung tâm sảnh",
-      "10 Thẻ VIP Đại biểu tham dự trọn gói + Gala Dinner",
-      "Bài viết PR độc quyền trên báo chí & Trang chủ Diễn đàn",
-      "Chiếu Video quảng bá Doanh nghiệp tại màn hình LED chính",
+      "Logo mức 100% - Vị trí ưu tiên 1 trên nhận diện, backdrop & màn hình LED",
+      "01 Gian trưng bày tiêu chuẩn vị trí ưu tiên 1",
+      "Phát biểu tối đa 05 phút hoặc tham gia 01 phiên đối thoại chính",
+      "12 Thẻ Thư mời Đại biểu tham dự trọn gói (Gala & Ăn ở)",
+      "Tối đa 10 lịch hẹn B2B / Investment Matching ưu tiên",
+      "Video thương hiệu 60s (04 lượt phát trước phiên chính & Gala)",
+      "03 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+      "Kỷ niệm chương đặc biệt + Báo cáo quyền lợi riêng sau sự kiện",
     ],
   },
   {
     name: "Nhà tài trợ Kim Cương",
     badgeColor: "bg-[#0D3B2E] text-white font-bold",
     borderAccent: "border-emerald-600 shadow-emerald-100",
-    price: "70.000.000 VNĐ",
+    price: "Từ 70.000.000 VNĐ (Tối đa 02)",
     perks: [
-      "Vị trí Logo Kim Cương trên toàn bộ ấn phẩm Diễn đàn & Backdrop",
-      "Phát biểu 10 phút tại Lễ Khai mạc Diễn đàn SME 2026",
-      "Khu vực Triển lãm VIP 02 gian hàng vị trí trung tâm sảnh",
-      "05 Thẻ VIP Đại biểu tham dự trọn gói + 05 Đêm Gala Dinner",
-      "Bài viết PR độc quyền trên báo chí & Trang chủ Diễn đàn",
-      "Chiếu Video quảng bá Doanh nghiệp tại màn hình LED chính",
+      "Logo mức 85% - Vị trí ưu tiên tại các hoạt động trọng tâm",
+      "01 Gian trưng bày vị trí ưu tiên",
+      "Ưu tiên xem xét 01 vị trí đối thoại chính quyền - doanh nghiệp",
+      "08 Thẻ Thư mời Đại biểu tham dự trọn gói",
+      "Tối đa 08 lịch hẹn B2B Matching ưu tiên",
+      "Video thương hiệu 45s (03 lượt phát trước phiên chính/Gala)",
+      "02 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+      "Kỷ niệm chương + Báo cáo quyền lợi riêng sau sự kiện",
     ],
   },
   {
     name: "Nhà tài trợ Vàng",
     badgeColor: "bg-amber-500 text-slate-950 font-bold",
     borderAccent: "border-amber-300 shadow-amber-50",
-    price: "50.000.000 VNĐ",
+    price: "Từ 50.000.000 VNĐ (Tối đa 03)",
     perks: [
-      "Vị trí Logo Nhà tài trợ Vàng trên backdrop & tài liệu sự kiện",
-      "Khu vực Triển lãm 01 gian hàng tiêu chuẩn tại sảnh",
-      "03 Thẻ Đại biểu tham dự trọn gói + 03 Đêm Gala Dinner",
-      "Tuyên dương tặng Kỷ niệm chương tại Lễ Bế mạc",
-      "Đăng tải thông tin quảng bá trên Fanpage & website TASME",
+      "Logo mức 70% trên bộ nhận diện chính & truyền thông",
+      "01 Gian trưng bày tiêu chuẩn",
+      "06 Thẻ Thư mời Đại biểu tham dự trọn gói",
+      "Tối đa 06 lịch hẹn B2B Matching ưu tiên",
+      "Video thương hiệu 30s (02 lượt phát)",
+      "01 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+      "Kỷ niệm chương + Báo cáo quyền lợi rút gọn",
     ],
   },
   {
     name: "Nhà tài trợ Bạc",
     badgeColor: "bg-slate-700 text-white font-bold",
     borderAccent: "border-slate-300",
-    price: "30.000.000 VNĐ",
+    price: "Từ 30.000.000 VNĐ (Tối đa 05)",
     perks: [
-      "Vị trí Logo Nhà tài trợ Bạc trên backdrop sự kiện",
-      "02 Thẻ Đại biểu tham dự trọn gói + Gala Dinner",
-      "Đặt 01 Standee quảng bá tại sảnh triển lãm",
-      "Tuyên dương thương hiệu tại Lễ Khai mạc",
+      "Logo mức 55% tại các điểm chạm phù hợp",
+      "01 Gian trưng bày tiêu chuẩn (nếu còn vị trí)",
+      "04 Thẻ Thư mời Đại biểu tham dự trọn gói",
+      "Tối đa 04 lịch hẹn B2B Matching ưu tiên",
+      "Video thương hiệu 30s (01 lượt phát)",
+      "01 Bài giới thiệu tổng hợp trên kênh truyền thông BTC",
+      "Chứng nhận Nhà tài trợ Bạc + Báo cáo chung",
     ],
   },
   {
     name: "Nhà tài trợ Đồng",
     badgeColor: "bg-amber-800 text-white font-bold",
     borderAccent: "border-amber-200",
-    price: "15.000.000 VNĐ",
+    price: "Từ 20.000.000 VNĐ (Tối đa 10)",
     perks: [
-      "Vị trí Logo Nhà tài trợ Đồng trên ấn phẩm tài liệu",
-      "01 Thẻ Đại biểu tham dự trọn gói + Gala Dinner",
-      "Quảng bá danh xưng trên các kênh truyền thông Diễn đàn",
+      "Logo mức 40% ở nhóm đồng tài trợ",
+      "Ưu đãi 50% chi phí gian hàng triển lãm",
+      "02 Thẻ Thư mời Đại biểu tham dự trọn gói",
+      "Tối đa 02 lịch hẹn B2B Matching",
+      "Bài giới thiệu tổng hợp & Chứng nhận Nhà tài trợ Đồng",
     ],
   },
   {
     name: "Đơn vị Đồng hành",
     badgeColor: "bg-teal-700 text-white font-bold",
     borderAccent: "border-teal-300",
-    price: "10.000.000 VNĐ",
+    price: "Từ 10.000.000 VNĐ đến dưới 19.000.000 VNĐ",
     perks: [
-      "Vị trí Logo Đơn vị Đồng hành trên ấn phẩm truyền thông phụ",
-      "01 Thẻ Đại biểu tham dự trọn gói + Gala Dinner",
-      "Trao chứng nhận Đơn vị Đồng hành tại Diễn đàn",
+      "Ghi nhận logo/thương hiệu theo hạng mục tài trợ cụ thể",
+      "01 Thẻ Thư mời Đại biểu tham dự trọn gói",
+      "Bài cảm ơn chung & Thư cảm ơn từ Ban Tổ chức TASME",
     ],
   },
 ];
@@ -370,7 +381,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                     </div>
                     <div className="pt-1">
                       <p
-                        className="text-2xl font-black text-[#0D3B2E]"
+                        className="text-xl sm:text-2xl font-black text-[#0D3B2E]"
                         style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                       >
                         {tier.price}
@@ -414,8 +425,71 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
               </motion.div>
             ))}
           </div>
-        </div>
 
+          {/* Section 5 & 6: Hạng mục Tài trợ Ưu tiên & Mốc Thời gian Khuyến nghị */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+            {/* Left 6 cols: Hạng mục Tài trợ Ưu tiên */}
+            <div className="lg:col-span-6 bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
+              <div className="space-y-2">
+                <span className="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase">
+                  Tài Trợ Hạng Mục Cụ Thể
+                </span>
+                <h3 className="text-xl font-extrabold text-[#0D3B2E]">Các Hạng Mục Tài Trợ Ưu Tiên</h3>
+                <p className="text-xs text-slate-600">
+                  Ngoài gói tài trợ tổng thể, BTC tiếp nhận đồng hành theo từng hạng mục chuyên biệt với giá trị quy đổi linh hoạt.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { name: "Vietnam SME Networking Gala (18/9)", fee: "Từ 100 Triệu" },
+                  { name: "Gala Chào mừng Đại hội (19/9)", fee: "Từ 70 Triệu" },
+                  { name: "Lễ Trà Kết nối & Tea Break Signature", fee: "Từ 50 Triệu" },
+                  { name: "Nền tảng B2B - Công nghệ - Kết nối", fee: "Từ 30 Triệu" },
+                  { name: "Phương tiện - Logistics - Đón đoàn", fee: "Từ 20 Triệu" },
+                  { name: "Truyền thông - Quay chụp - Livestream", fee: "Từ 10 Triệu" },
+                  { name: "Quà tặng & Bộ tài liệu đại biểu", fee: "Từ 10 Triệu" },
+                  { name: "Gian hàng - In ấn - Nhận diện", fee: "Từ 10 Triệu" },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs space-y-1">
+                    <p className="text-xs font-bold text-slate-800 leading-tight">{item.name}</p>
+                    <p className="text-[11px] font-extrabold text-[#22C55E]">{item.fee}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right 6 cols: Mốc Thời gian Tiếp nhận */}
+            <div className="lg:col-span-6 bg-[#0B3026] text-white rounded-3xl p-6 sm:p-8 border border-emerald-800 space-y-6">
+              <div className="space-y-2">
+                <span className="inline-block px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase border border-emerald-500/30">
+                  Tiến Độ Triển Khai
+                </span>
+                <h3 className="text-xl font-extrabold text-white">Mốc Thời Gian Quyền Lợi Nhà Tài Trợ</h3>
+                <p className="text-xs text-emerald-200">
+                  Vui lòng hoàn tất đăng ký theo các mốc khuyến nghị để bảo đảm đầy đủ quyền lợi nhận diện trên ấn phẩm chính.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { time: "Trước 31/08/2026", desc: "Đăng ký gói tài trợ để bảo đảm quyền lợi trên toàn bộ ấn phẩm chính." },
+                  { time: "Trước 05/09/2026", desc: "Cung cấp Logo, hồ sơ thương hiệu, video & danh sách đại biểu." },
+                  { time: "Trước 10/09/2026", desc: "Hoàn tất kinh phí hoặc bàn giao hiện vật/dịch vụ đồng hành." },
+                  { time: "11 – 17/09/2026", desc: "Truyền thông cao điểm; duyệt kỹ thuật gian hàng & vật phẩm sự kiện." },
+                  { time: "18 – 20/09/2026", desc: "Chính thức diễn ra chuỗi sự kiện tại May Plaza Hotel Thái Nguyên." },
+                ].map((m, idx) => (
+                  <div key={idx} className="flex items-start gap-3 bg-emerald-950/70 p-3 rounded-xl border border-emerald-800/80">
+                    <span className="px-2 py-0.5 rounded bg-[#22C55E] text-white text-[10px] font-extrabold shrink-0 mt-0.5">
+                      {m.time}
+                    </span>
+                    <p className="text-xs text-emerald-100 font-medium leading-relaxed">{m.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

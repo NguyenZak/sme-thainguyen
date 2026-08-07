@@ -312,49 +312,92 @@ export const DEFAULT_BENEFITS: BenefitsContent = {
 export const DEFAULT_TIMELINE: TimelineContent = {
   badge: "LỊCH TRÌNH CHUYÊN NGHIỆP",
   title: "CHƯƠNG TRÌNH CHI TIẾT 3 NGÀY DIỄN ĐÀN",
-  subtitle: "Chuỗi hoạt động phong phú gồm Triển lãm, Hội thảo chuyên đề, B2B Matching và Đêm Gala tôn vinh.",
+  subtitle: "Chuỗi hoạt động phong phú gồm Triển lãm, Diễn đàn cấp cao, B2B Matching, Gala Dinner và Đại hội TASME.",
   days: [
-    { dayNumber: 1, dayTitle: "Ngày 1: Khai mạc & Triển lãm", dateText: "18/09/2026" },
-    { dayNumber: 2, dayTitle: "Ngày 2: Diễn đàn B2B & Gala", dateText: "19/09/2026" },
-    { dayNumber: 3, dayTitle: "Ngày 3: Xúc tiến Đầu tư & Khép lại", dateText: "20/09/2026" }
+    { dayNumber: 1, dayTitle: "Ngày 1: National Business Matching Day", dateText: "18/09/2026" },
+    { dayNumber: 2, dayTitle: "Ngày 2: Vietnam SME Forum 2026", dateText: "19/09/2026" },
+    { dayNumber: 3, dayTitle: "Ngày 3: Đại hội HHDNNVV Tỉnh Thái Nguyên", dateText: "20/09/2026" }
   ],
   slots: [
+    // Ngày 1
     {
       id: "ts-1",
       dayNumber: 1,
       dayTitle: "Ngày 1",
       timeSlot: "08:00 - 09:00",
       title: "Đón tiếp đại biểu & Check-in",
-      location: "Sảnh Chính May Plaza Hotel",
-      description: "Nhận thẻ đeo, tài liệu sự kiện & thưởng thức tiệc trà teabreak chào mừng."
+      location: "Sảnh Khách sạn May Plaza",
+      description: "Đón tiếp đoàn Đại biểu, doanh nghiệp SME, FDI, trao thẻ đeo & bộ tài liệu sự kiện."
     },
     {
       id: "ts-2",
       dayNumber: 1,
       dayTitle: "Ngày 1",
       timeSlot: "09:00 - 11:30",
-      title: "Lễ Khai mạc Diễn đàng & Cắt băng Khai trương Triển lãm",
+      title: "Lễ Khai mạc Triển lãm & Kết nối B2B Theo Ngành",
       speaker: "Lãnh đạo Bộ Công Thương & Ban Tổ chức TASME",
-      location: "Hội trường Grand Ballroom",
-      description: "Phát biểu khai mạc, tặng hoa nhà tài trợ và tham quan 100+ gian hàng."
+      location: "Khu vực Triển lãm 100 Gian hàng",
+      description: "Cắt băng khai mạc 100 gian hàng; kết nối B2B Matching 1:1; gặp gỡ nhà mua hàng & chuỗi cung ứng; Investment Matching."
     },
     {
       id: "ts-3",
-      dayNumber: 2,
-      dayTitle: "Ngày 2",
-      timeSlot: "08:30 - 11:30",
-      title: "Phiên Kết nối Giao thương B2B Matching Chuyên sâu",
-      location: "Khu vực B2B Matching",
-      description: "Các cuộc gặp 1:1 theo lịch hẹn trước giữa các Nhà cung ứng và Đối tác mua hàng."
+      dayNumber: 1,
+      dayTitle: "Ngày 1",
+      timeSlot: "18:00 - 21:30",
+      title: "Tiệc Đêm Vietnam SME Networking Gala",
+      location: "Hội trường Grand Ballroom",
+      description: "Đêm tiệc giao lưu nghệ thuật sang trọng, thắt chặt mối quan hệ giao thương giữa các đại biểu & nhà đầu tư."
     },
+
+    // Ngày 2
     {
       id: "ts-4",
       dayNumber: 2,
       dayTitle: "Ngày 2",
-      timeSlot: "18:00 - 21:30",
-      title: "Đêm Gala Dinner & Tôn vinh Doanh nghiệp Tiêu biểu",
+      timeSlot: "08:00 - 09:00",
+      title: "Lễ Trà Kết Nối & Tea Break Signature",
+      location: "Sảnh VIP May Plaza",
+      description: "Thưởng thức văn hóa trà Thái Nguyên đặc sắc & giao lưu kết nối doanh nhân."
+    },
+    {
+      id: "ts-5",
+      dayNumber: 2,
+      dayTitle: "Ngày 2",
+      timeSlot: "09:00 - 11:30",
+      title: "Diễn đàn Cấp cao Vietnam SME Forum 2026 & Ký kết MOU",
+      speaker: "Chuyên gia Kinh tế Trung ương & Diễn giả Công nghệ",
       location: "Hội trường Grand Ballroom",
-      description: "Tiệc tối sang trọng, biểu diễn nghệ thuật, bốc thăm may mắn và trao chứng nhận."
+      description: "Diễn đàn về đầu tư, tài chính, AI, chuyển đổi số, thương mại điện tử, liên kết vùng; Đối thoại chính quyền - doanh nghiệp & Lễ ký kết MOU."
+    },
+    {
+      id: "ts-6",
+      dayNumber: 2,
+      dayTitle: "Ngày 2",
+      timeSlot: "18:00 - 21:30",
+      title: "Đêm Gala Dinner Chào mừng Đại hội TASME",
+      location: "Hội trường Grand Ballroom",
+      description: "Đêm Gala tôn vinh nhà tài trợ, trao kỷ niệm chương, giao lưu văn nghệ & bốc thăm may mắn."
+    },
+
+    // Ngày 3
+    {
+      id: "ts-7",
+      dayNumber: 3,
+      dayTitle: "Ngày 3",
+      timeSlot: "08:00 - 11:30",
+      title: "Đại hội Hiệp hội Doanh nghiệp NV Tỉnh Thái Nguyên (Nhiệm kỳ 2026 - 2031)",
+      speaker: "Lãnh đạo Tỉnh ủy, UBND Tỉnh Thái Nguyên & Ban Chấp hành",
+      location: "Hội trường Trọng tâm",
+      description: "Đại hội chính thức nhiệm kỳ 2026 - 2031; ra mắt Ban Chấp hành mới; tri ân khen thưởng & tiệc chúc mừng."
+    },
+    {
+      id: "ts-8",
+      dayNumber: 3,
+      dayTitle: "Ngày 3",
+      timeSlot: "13:30 - 17:00",
+      title: "Chương trình Khảo sát Vùng Trà, KCN & Doanh nghiệp Tiêu biểu",
+      location: "Vùng trà Tân Cương & KCN Sông Công",
+      description: "Đoàn đại biểu tham quan thực tế danh thắng vùng trà Thái Nguyên, khảo sát hạ tầng KCN & doanh nghiệp tiêu biểu."
     }
   ]
 };
