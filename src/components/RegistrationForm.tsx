@@ -164,11 +164,19 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
           ? registration.sponsorEmailBody
           : registration.boothEmailBody;
 
+      const emailPosterUrl =
+        values.intentTab === "delegate"
+          ? registration.delegatePosterUrl
+          : values.intentTab === "sponsor"
+          ? registration.sponsorPosterUrl
+          : registration.boothPosterUrl;
+
       const payload = {
         ...values,
         registrationType: typeLabel,
         emailSubject,
         emailBody,
+        emailPosterUrl,
         timestamp: new Date().toISOString(),
         status: "Pending",
       };

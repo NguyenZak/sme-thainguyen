@@ -1,10 +1,11 @@
 /**
- * HƯỚNG DẪN TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO 3 TAB SHEET & GỬI EMAIL XÁC NHẬN KÈM POSTER SỰ KIỆN & LẶP LẠI THÔNG TIN KHÁCH HÀNG
+ * HƯỚNG DẪN TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO 3 TAB SHEET & GỬI EMAIL XÁC NHẬN KÈM POSTER VÀ TRÌNH SOẠN THẢO RICH TEXT TÙY CHỈNH
  * 
- * Tính năng nổi bật:
+ * Tính năng chính:
  *  1. Phân loại ghi dữ liệu vào 3 Tab Google Sheet: "Đại biểu", "Tài trợ", "Gian hàng".
- *  2. GỬI EMAIL HTML SANG TRỌNG CÓ POSTER BANNER ĐÍNH KÈM Ở ĐẦU THƯ.
- *  3. LẶP LẠI ĐẦY ĐỦ BẢNG THÔNG TIN XÁC NHẬN ĐÃ ĐIỀN CỦA KHÁCH HÀNG (Họ tên, SĐT, Email, Công ty, Chức vụ, Loại đăng ký, Ghi chú).
+ *  2. GỬI EMAIL HTML CHUYÊN NGHIỆP VỚI ANH POSTER ĐÍNH KÈM TẢI LÊN TỪ CMS ADMIN.
+ *  3. HỖ TRỢ TRÌNH SOẠN THẢO VĂN BẢN RICH TEXT (In đậm, In nghiêng, Chèn màu, Chèn tên khách hàng...).
+ *  4. LẶP LẠI ĐẦY ĐỦ BẢNG THÔNG TIN XÁC NHẬN CỦA KHÁCH HÀNG (Họ tên, SĐT, Email, Công ty, Chức vụ, Chi tiết gói, Ghi chú).
  * 
  * BƯỚC 1: Mở file Google Sheet của bạn trên trình duyệt.
  * BƯỚC 2: Vào menu: Tiện ích mở rộng (Extensions) -> Apps Script.
@@ -64,6 +65,7 @@ function doPost(e) {
     var notes = data.notes || data.networkingNeeds || "Không có";
     var customSubject = data.emailSubject || "";
     var customBody = data.emailBody || "";
+    var posterImgUrl = data.emailPosterUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80";
 
     // 1. Ghi vào Google Sheet
     sheet.appendRow([
@@ -77,6 +79,15 @@ function doPost(e) {
       notes
     ]);
 
+    // Replace các biến động trong Custom Body từ Rich Text Editor
+    if (customBody) {
+      customBody = customBody.replace(/\{\{fullName\}\}/g, fullName)
+                             .replace(/\{\{company\}\}/g, company)
+                             .replace(/\{\{phone\}\}/g, phone)
+                             .replace(/\{\{position\}\}/g, position)
+                             .replace(/\{\{email\}\}/g, email);
+    }
+
     // 2. Gửi Email Xác Nhận Tự Động tới Email Khách Hàng (Kèm Poster Banner & Bảng Lặp Thông Tin)
     if (email && email.indexOf("@") !== -1) {
       try {
@@ -86,9 +97,9 @@ function doPost(e) {
 
         var htmlTemplate = 
           '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">' +
-            '<!-- Poster Banner Đính Kèm Top -->' +
+            '<!-- Poster Banner Đính Kèm Top Tải Tới Từ CMS -->' +
             '<div style="width: 100%; text-align: center; background-color: #0D3B2E;">' +
-              '<img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80" alt="Poster Diễn Đàn SME Việt Nam 2026" style="width: 100%; max-height: 240px; object-fit: cover; display: block;" />' +
+              '<img src="' + posterImgUrl + '" alt="Poster Diễn Đàn SME Việt Nam 2026" style="width: 100%; max-height: 260px; object-fit: cover; display: block;" />' +
             '</div>' +
 
             '<!-- Header Tiêu Đề -->' +
@@ -97,10 +108,10 @@ function doPost(e) {
               '<p style="margin: 6px 0 0 0; font-size: 13px; color: #a7f3d0; font-weight: 600;">📍 May Plaza Hotel Thái Nguyên | 18 - 20/09/2026</p>' +
             '</div>' +
 
-            '<!-- Nội dung Thư -->' +
+            '<!-- Nội dung Thư từ Rich Text Editor -->' +
             '<div style="padding: 28px; color: #334155; line-height: 1.6; font-size: 14px;">' +
               '<p style="margin-top: 0; font-size: 15px;">Kính gửi Quý khách <b>' + fullName + '</b>,</p>' +
-              '<p style="margin-bottom: 20px;">' + introMessage + '</p>' +
+              '<div style="margin-bottom: 20px; line-height: 1.6;">' + introMessage + '</div>' +
 
               '<!-- Bảng Lặp Lại Đầy Đủ Thông Tin Xác Nhận -->' +
               '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #22c55e; border-radius: 12px; padding: 20px; margin: 20px 0;">' +
