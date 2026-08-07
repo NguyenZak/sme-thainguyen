@@ -211,10 +211,10 @@ export interface BoothsContent {
   mapImageUrl: string;
   totalBooths: number;
   availableBooths: number;
-  priceVND: number;
-  boothPackageTitle: string;
-  boothPackageSubtitle: string;
-  inclusions: string[];
+  priceVND?: number;
+  boothPackageTitle?: string;
+  boothPackageSubtitle?: string;
+  inclusions?: string[];
   items: BoothItem[];
 }
 
