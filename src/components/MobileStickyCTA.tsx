@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowRight, Award, Store, Ticket } from "lucide-react";
+import { Award, Ticket } from "lucide-react";
 import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 
 export default function MobileStickyCTA({ content }: { content?: RegistrationContent }) {

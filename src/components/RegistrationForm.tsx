@@ -97,32 +97,29 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
         else if (hash.includes("delegate") || hash.includes("register")) targetTab = "delegate";
       }
 
-      if (targetTab && ["delegate", "sponsor", "booth"].includes(targetTab)) {
+      if (targetTab) {
         setActiveTab(targetTab);
         setValue("intentTab", targetTab);
       }
 
       if (detail?.sponsorTier) {
-        const found = [
-          "Nhà tài trợ Chiến lược (100.000.000 đ)",
-          "Nhà tài trợ Kim Cương (70.000.000 đ)",
-          "Nhà tài trợ Vàng (50.000.000 đ)",
-          "Nhà tài trợ Bạc (30.000.000 đ)",
-          "Nhà tài trợ Đồng (15.000.000 đ)",
-          "Đơn vị Đồng hành (10.000.000 đ)",
-        ].find((tier) => tier.toLowerCase().includes(detail.sponsorTier!.toLowerCase()));
+        const found = registration.sponsorTiers.find((tier) =>
+          tier.toLowerCase().includes(detail.sponsorTier!.toLowerCase())
+        );
         if (found) {
           setValue("sponsorTier", found);
         }
       }
 
       if (detail?.boothNumber) {
-        setValue("boothNumber", detail.boothNumber);
+        const foundBooth = registration.boothOptions.find((option) =>
+          option.toLowerCase().includes(detail.boothNumber!.toLowerCase())
+        );
+        setValue("boothNumber", foundBooth || detail.boothNumber);
       }
     };
 
-    syncTabFromUrlOrEvent();
-
+    const onHashChange = () => syncTabFromUrlOrEvent();
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent<{
         tab?: "delegate" | "sponsor" | "booth";
@@ -132,14 +129,15 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
       syncTabFromUrlOrEvent(customEvent.detail?.tab, customEvent.detail);
     };
 
-    window.addEventListener("hashchange", () => syncTabFromUrlOrEvent());
+    syncTabFromUrlOrEvent();
+    window.addEventListener("hashchange", onHashChange);
     window.addEventListener("selectRegistrationTab", handleCustomEvent);
 
     return () => {
-      window.removeEventListener("hashchange", () => syncTabFromUrlOrEvent());
+      window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("selectRegistrationTab", handleCustomEvent);
     };
-  }, [setValue]);
+  }, [registration.boothOptions, registration.sponsorTiers, setValue]);
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
@@ -529,13 +527,7 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    <span>
-                      {activeTab === "delegate"
-                        ? "Xác nhận Đăng ký Vé Đại biểu"
-                        : activeTab === "sponsor"
-                        ? "Gửi Đăng ký Đồng hành Tài trợ"
-                        : "Xác nhận Giữ vị trí Gian hàng"}
-                    </span>
+                    <span>{registration.submitButtonText}</span>
                   </>
                 )}
               </button>
