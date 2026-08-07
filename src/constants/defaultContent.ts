@@ -25,6 +25,9 @@ export interface SiteConfig {
   eventPriceVND: number;
   telegramBotToken?: string;
   telegramChatId?: string;
+  telegramThreadIdDelegate?: string;
+  telegramThreadIdSponsor?: string;
+  telegramThreadIdBooth?: string;
   telegramEnabled?: boolean;
   googleSheetScriptUrl?: string;
   googleSheetEnabled?: boolean;
@@ -246,6 +249,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   eventPriceVND: 1450000,
   telegramBotToken: "",
   telegramChatId: "",
+  telegramThreadIdDelegate: "",
+  telegramThreadIdSponsor: "",
+  telegramThreadIdBooth: "",
   telegramEnabled: false,
   googleSheetScriptUrl: "",
   googleSheetEnabled: true,

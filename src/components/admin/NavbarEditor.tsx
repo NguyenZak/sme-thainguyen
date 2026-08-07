@@ -14,11 +14,6 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const handleLinkChange = (index: number, field: keyof NavbarContent, value: string) => {
-    if (field === "navLinks") return;
-    setNavbar({ ...navbar, [field]: value });
-  };
-
   const handleNavLinkChange = (index: number, key: keyof NavbarContent["navLinks"][0], value: string) => {
     const updated = [...navbar.navLinks];
     updated[index] = { ...updated[index], [key]: value };

@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+function getFormCategory(ticketType: string): "delegate" | "sponsor" | "booth" {
+  const t = (ticketType || "").toLowerCase();
+  if (t.includes("sponsor") || t.includes("tài trợ") || t.includes("gói tài trợ")) return "sponsor";
+  if (t.includes("booth") || t.includes("gian hàng") || t.includes("gian")) return "booth";
+  return "delegate";
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
@@ -13,6 +20,10 @@ export async function POST(request: Request) {
     let telegramToken = process.env.TELEGRAM_BOT_TOKEN || "";
     let telegramChatId = process.env.TELEGRAM_CHAT_ID || "";
     let telegramEnabled = false;
+
+    let threadIdDelegate = "";
+    let threadIdSponsor = "";
+    let threadIdBooth = "";
 
     let googleSheetUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || process.env.GOOGLE_SCRIPT_URL || "";
     let googleSheetEnabled = true;
@@ -54,6 +65,11 @@ export async function POST(request: Request) {
           if (cfg.telegramBotToken) telegramToken = cfg.telegramBotToken;
           if (cfg.telegramChatId) telegramChatId = cfg.telegramChatId;
           if (cfg.telegramEnabled !== undefined) telegramEnabled = cfg.telegramEnabled;
+
+          if (cfg.telegramThreadIdDelegate) threadIdDelegate = cfg.telegramThreadIdDelegate;
+          if (cfg.telegramThreadIdSponsor) threadIdSponsor = cfg.telegramThreadIdSponsor;
+          if (cfg.telegramThreadIdBooth) threadIdBooth = cfg.telegramThreadIdBooth;
+
           if (cfg.googleSheetScriptUrl) googleSheetUrl = cfg.googleSheetScriptUrl;
           if (cfg.googleSheetEnabled !== undefined) googleSheetEnabled = cfg.googleSheetEnabled;
         }
@@ -70,28 +86,48 @@ export async function POST(request: Request) {
     const ticketType = data.registrationType || data.intentTab || "standard";
     const notes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : null);
 
-    // 2. Send Telegram Notification Alert if enabled
+    // 2. Send Telegram Notification Alert to Specific Forum Topic if enabled
     if (telegramEnabled && telegramToken && telegramChatId) {
       try {
+        const category = getFormCategory(ticketType);
+        let categoryTitle = "🎟️ ĐĂNG KÝ ĐẠI BIỂU THAM DỰ";
+        let targetThreadIdStr = threadIdDelegate;
+
+        if (category === "sponsor") {
+          categoryTitle = "💎 ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỐI TÁC";
+          targetThreadIdStr = threadIdSponsor;
+        } else if (category === "booth") {
+          categoryTitle = "🎪 ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM";
+          targetThreadIdStr = threadIdBooth;
+        }
+
         const tgMsg =
-          `🔔 <b>ĐĂNG KÝ MỚI - SME VIỆT NAM 2026</b>\n\n` +
+          `🔔 <b>${categoryTitle}</b>\n` +
+          `━━━━━━━━━━━━━━━━━━━\n` +
           `👤 <b>Họ tên:</b> ${fullName}\n` +
-          `🏢 <b>Công ty:</b> ${company}\n` +
+          `🏢 <b>Công ty / Đơn vị:</b> ${company}\n` +
           `💼 <b>Chức vụ:</b> ${position}\n` +
-          `📞 <b>SĐT:</b> ${phone}\n` +
+          `📞 <b>Số điện thoại:</b> ${phone}\n` +
           `📧 <b>Email:</b> ${email}\n` +
-          `🎟️ <b>Đăng ký:</b> ${ticketType}\n` +
-          `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n\n` +
+          `📋 <b>Chi tiết nhu cầu:</b> ${ticketType}\n` +
+          `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n` +
           `⏰ <i>Thời gian: ${new Date().toLocaleString("vi-VN")}</i>`;
+
+        const payload: Record<string, any> = {
+          chat_id: telegramChatId,
+          text: tgMsg,
+          parse_mode: "HTML",
+        };
+
+        // Determine Telegram Group Forum Topic (message_thread_id)
+        if (targetThreadIdStr && !isNaN(parseInt(targetThreadIdStr, 10))) {
+          payload.message_thread_id = parseInt(targetThreadIdStr, 10);
+        }
 
         await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: telegramChatId,
-            text: tgMsg,
-            parse_mode: "HTML",
-          }),
+          body: JSON.stringify(payload),
         });
       } catch (tgErr) {
         console.warn("Failed to send Telegram alert:", tgErr);

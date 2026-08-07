@@ -32,27 +32,42 @@ import {
   DEFAULT_BOOTHS,
   DEFAULT_REGISTRATION,
   DEFAULT_FOOTER,
+  SiteConfig,
+  NavbarContent,
+  HeroContent,
+  StatisticsContent,
+  AboutContent,
+  SpeakersContent,
+  BenefitsContent,
+  TimelineContent,
+  TicketFeeContent,
+  SponsorsContent,
+  BoothsContent,
+  RegistrationContent,
+  FooterContent,
 } from "@/constants/defaultContent";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("general");
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string>("");
-  const [data, setData] = useState<{
-    site_config: any;
-    navbar: any;
-    hero: any;
-    statistics: any;
-    about: any;
-    speakers: any;
-    benefits: any;
-    timeline: any;
-    ticket_fee: any;
-    sponsors: any;
-    booths: any;
-    registration: any;
-    footer: any;
-  }>({
+  type AdminData = {
+    site_config: SiteConfig;
+    navbar: NavbarContent;
+    hero: HeroContent;
+    statistics: StatisticsContent;
+    about: AboutContent;
+    speakers: SpeakersContent;
+    benefits: BenefitsContent;
+    timeline: TimelineContent;
+    ticket_fee: TicketFeeContent;
+    sponsors: SponsorsContent;
+    booths: BoothsContent;
+    registration: RegistrationContent;
+    footer: FooterContent;
+  };
+
+  const [data, setData] = useState<AdminData>({
     site_config: DEFAULT_SITE_CONFIG,
     navbar: DEFAULT_NAVBAR,
     hero: DEFAULT_HERO,
@@ -85,7 +100,7 @@ export default function AdminPage() {
 
         const { data: sections } = await supabase.from("site_sections").select("id, content");
         if (sections && sections.length > 0) {
-          const loadedMap: any = {};
+          const loadedMap: Record<string, unknown> = {};
           sections.forEach((sec) => {
             loadedMap[sec.id] = sec.content;
           });

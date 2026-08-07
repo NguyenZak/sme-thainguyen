@@ -34,7 +34,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
     }
   };
 
-  const handleTestTelegram = async () => {
+  const handleTestTelegram = async (threadId?: string) => {
     if (!config.telegramBotToken || !config.telegramChatId) {
       alert("Vui lòng nhập Telegram Bot Token và Chat ID trước khi bấm thử nghiệm!");
       return;
@@ -48,6 +48,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
         body: JSON.stringify({
           botToken: config.telegramBotToken,
           chatId: config.telegramChatId,
+          threadId: threadId || undefined,
         }),
       });
 
@@ -69,7 +70,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Cấu Hình Chung, Telegram & Google Sheets</h2>
-          <p className="text-xs text-slate-500 mt-1">Quản lý thông tin sự kiện, kết nối bot Telegram thông báo và đường dẫn Google Sheet tự động.</p>
+          <p className="text-xs text-slate-500 mt-1">Quản lý thông tin sự kiện, kết nối bot Telegram thông báo theo từng Topic và đường dẫn Google Sheet tự động.</p>
         </div>
         <button
           type="submit"
@@ -94,7 +95,7 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
         </div>
       )}
 
-      {/* 1. THÔNG BÁO TỰ ĐỘNG TELEGRAM BOT */}
+      {/* 1. THÔNG BÁO TỰ ĐỘNG TELEGRAM BOT & CHIA TOPIC */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -102,8 +103,8 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
               <Bot className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">THÔNG BÁO TỰ ĐỘNG TELEGRAM BOT</h3>
-              <p className="text-[11px] text-slate-500">Bật tính năng này để nhận thông báo tức thì vào Telegram mỗi khi có đăng ký mới.</p>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">THÔNG BÁO TỰ ĐỘNG TELEGRAM BOT & PHÂN LOẠI TOPIC</h3>
+              <p className="text-[11px] text-slate-500">Bật tính năng này để nhận thông báo tự động phân loại theo từng Topic (Chủ đề) trong Telegram Supergroup.</p>
             </div>
           </div>
 
@@ -142,18 +143,107 @@ export default function GeneralEditor({ initialConfig, initialFooter }: GeneralE
           </div>
         </div>
 
+        {/* ── Telegram Forum Topics Config ───────────────────────────────── */}
+        <div className="border-t border-slate-100 pt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              📌 CẤU HÌNH TOPIC ID GỬI TIN CHO 3 FORM (FORUM TOPICS)
+            </h4>
+            <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-mono">
+              Tùy chọn phân loại
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-500">
+            Nếu Group Telegram của bạn có bật <b>Forum Topics (Chủ đề)</b>, điền Topic ID bên dưới để tin nhắn đăng ký gửi chính xác vào từng Topic tương ứng. <i>(Để trống nếu gửi vào Kênh chung/General)</i>.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                🎟️ Topic ID - Đăng ký Đại biểu
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="text"
+                  placeholder="VD: 2"
+                  value={config.telegramThreadIdDelegate || ""}
+                  onChange={(e) => setConfig({ ...config, telegramThreadIdDelegate: e.target.value })}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleTestTelegram(config.telegramThreadIdDelegate)}
+                  disabled={testingTg}
+                  title="Gửi tin nhắn test tới Topic Đại Biểu"
+                  className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 transition-colors text-xs shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                💎 Topic ID - Nhà Tài Trợ
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="text"
+                  placeholder="VD: 5"
+                  value={config.telegramThreadIdSponsor || ""}
+                  onChange={(e) => setConfig({ ...config, telegramThreadIdSponsor: e.target.value })}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleTestTelegram(config.telegramThreadIdSponsor)}
+                  disabled={testingTg}
+                  title="Gửi tin nhắn test tới Topic Nhà Tài Trợ"
+                  className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 transition-colors text-xs shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                🎪 Topic ID - Gian Hàng Triển Lãm
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="text"
+                  placeholder="VD: 8"
+                  value={config.telegramThreadIdBooth || ""}
+                  onChange={(e) => setConfig({ ...config, telegramThreadIdBooth: e.target.value })}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleTestTelegram(config.telegramThreadIdBooth)}
+                  disabled={testingTg}
+                  title="Gửi tin nhắn test tới Topic Gian Hàng"
+                  className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 transition-colors text-xs shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="pt-2 flex items-center justify-between border-t border-slate-100">
           <span className="text-[11px] text-slate-500">
-            Tạo Bot với <code className="text-slate-800 font-bold font-mono">@BotFather</code> & thêm Bot vào Group của bạn.
+            Cách lấy Topic ID: Trong Telegram Group, nhấp chuột phải vào tên Topic &gt; <b>Copy Link Topic</b> &gt; Số cuối cùng chính là Topic ID (Ví dụ: <code>https://t.me/c/12345/<b>8</b></code> &rarr; ID là <b>8</b>).
           </span>
           <button
             type="button"
-            onClick={handleTestTelegram}
+            onClick={() => handleTestTelegram()}
             disabled={testingTg}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 rounded-xl text-xs font-bold transition-all disabled:opacity-50 shrink-0"
           >
             {testingTg ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-            Gửi Tin Nhắn Thử nghiệm
+            Test Kênh Chung (General)
           </button>
         </div>
       </div>
