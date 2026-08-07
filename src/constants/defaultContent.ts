@@ -172,14 +172,14 @@ export interface FooterContent {
 }
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
-  siteName: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026",
+  siteName: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026",
   organizer: "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên (TASME)",
-  hotline: "0988.123.456",
-  email: "contact@smevietnam2026.vn",
-  address: "May Plaza Hotel Thai Nguyen, 668 Phan Đình Phùng, TP. Thái Nguyên",
+  hotline: "0815.340.488",
+  email: "contact@tasmethainguyen.vn",
+  address: "Khách sạn May Plaza, Số 668 Phan Đình Phùng, TP. Thái Nguyên",
   googleMapsUrl: "https://maps.google.com",
-  metaTitle: "Diễn Đàn Kết Nối Giao Thương SME Việt Nam 2026",
-  metaDescription: "Quy tụ 500+ Doanh nghiệp, 100+ gian hàng triển lãm và 50+ phiên kết nối B2B matching xúc tiến thương mại.",
+  metaTitle: "Vietnam SME Prosperity Link Forum 2026 | Diễn Đàn Kết Nối Giao Thương SME Việt Nam",
+  metaDescription: "Sự kiện xúc tiến thương mại cấp quốc gia quy tụ 500+ đại biểu, 100+ gian hàng triển lãm, kết nối B2B & xúc tiến đầu tư FDI.",
   eventDateISO: "2026-09-18T08:00:00+07:00",
   eventPriceVND: 1450000,
   telegramBotToken: "",
@@ -190,24 +190,24 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 };
 
 export const DEFAULT_HERO: HeroContent = {
-  badgeText: "CHƯƠNG TRÌNH XÚC TIẾN THƯƠNG MẠI QUỐC GIA 2026",
+  badgeText: "VIETNAM SME PROSPERITY LINK 2026 • CHÀO MỪNG ĐẠI HỘI TASME NHIỆM KỲ 2026 - 2031",
   mainTitle: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG",
-  subTitle: "SME VIỆT NAM 2026",
+  subTitle: "DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026",
   keywords: [
     "KẾT NỐI GIAO THƯƠNG",
-    "XÚC TIẾN ĐẦU TƯ",
-    "MỞ RỘNG THỊ TRƯỜNG",
-    "VƯƠN TẦM QUỐC TẾ"
+    "VƯƠN TẦM QUỐC TẾ",
+    "XÚC TIẾN ĐẦU TƯ FDI",
+    "LIÊN KẾT CHUỖI CUNG ỨNG"
   ],
   eventDateText: "18 - 20 tháng 09, 2026",
   targetDateISO: "2026-09-18T08:00:00+07:00",
-  venueText: "May Plaza Hotel Thai Nguyen",
-  primaryCtaText: "ĐĂNG KÝ THAM GIA NGAY",
+  venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
+  primaryCtaText: "ĐĂNG KÝ VÉ ĐẠI BIỂU",
   primaryCtaLink: "#register",
-  secondaryCtaText: "ĐĂNG KÝ TÀI TRỢ",
-  secondaryCtaLink: "#sponsor",
-  tertiaryCtaText: "ĐĂNG KÝ GIAN HÀNG",
-  tertiaryCtaLink: "#booth",
+  secondaryCtaText: "HỒ SƠ NHÀ TÀI TRỢ",
+  secondaryCtaLink: "#sponsors",
+  tertiaryCtaText: "SƠ ĐỒ 100 GIAN HÀNG",
+  tertiaryCtaLink: "#booths",
 };
 
 export const DEFAULT_STATISTICS: StatisticsContent = {
@@ -216,8 +216,8 @@ export const DEFAULT_STATISTICS: StatisticsContent = {
       id: "stat-1",
       value: 500,
       suffix: "+",
-      label: "DOANH NHÂN & LÃNH ĐẠO",
-      subtext: "Quy tụ đại diện các doanh nghiệp SME tiêu biểu toàn quốc",
+      label: "ĐẠI BIỂU DỰ KIẾN",
+      subtext: "Lãnh đạo cơ quan, hiệp hội, SME toàn quốc & đối tác FDI quốc tế",
       iconName: "Users"
     },
     {
@@ -225,86 +225,81 @@ export const DEFAULT_STATISTICS: StatisticsContent = {
       value: 100,
       suffix: "+",
       label: "GIAN HÀNG TRIỂN LÃM",
-      subtext: "Trưng bày sản phẩm, dịch vụ và công nghệ tiên tiến",
+      subtext: "Trưng bày sản phẩm, công nghệ & giải pháp phát triển bền vững",
       iconName: "Store"
     },
     {
       id: "stat-3",
       value: 50,
       suffix: "+",
-      label: "PHIÊN KẾT NỐI B2B",
-      subtext: "Giao thương trực tiếp 1:1 mở rộng chuỗi cung ứng",
+      label: "PHIÊN B2B MATCHING",
+      subtext: "Kết nối trực tiếp 1:1 giữa nhà cung ứng & nhà mua hàng",
       iconName: "Handshake"
     },
     {
       id: "stat-4",
       value: 3,
       suffix: " NGÀY",
-      label: "CHƯƠNG TRÌNH ĐẶC SẮC",
-      subtext: "Hội thảo chuyên đề, Gala Dinner & Xúc tiến đầu tư",
+      label: "CHUỖI HOẠT ĐỘNG",
+      subtext: "B2B Matching, Diễn đàn cấp cao, Gala Dinner & Đại hội TASME",
       iconName: "Calendar"
     }
   ]
 };
 
 export const DEFAULT_ABOUT: AboutContent = {
-  badge: "VỀ CHƯƠNG TRÌNH",
-  title: "CẦU NỐI VỮNG CHẮC CHO SỰ PHÁT TRIỂN CỦA DOANH NGHIỆP SME",
-  highlightText: "Diễn đàn Kết nối Giao thương SME Việt Nam 2026",
-  descriptionParagraph1: "Là sự kiện xúc tiến thương mại quy mô cấp quốc gia nhằm kết nối các doanh nghiệp vừa và nhỏ trên toàn quốc với các đối tác trong và ngoài nước.",
-  descriptionParagraph2: "Sự kiện quy tụ hàng trăm doanh chủ, nhà đầu tư, chuyên gia kinh tế đầu ngành cùng đại diện các cơ quan quản lý nhà nước để cùng thảo luận, chia sẻ giải pháp và nâng cao năng lực cạnh tranh trong kỷ nguyên số.",
+  badge: "TỔNG QUAN SỰ KIỆN",
+  title: "KẾT NỐI GIAO THƯƠNG, VƯƠN TẦM QUỐC TẾ",
+  highlightText: "Vietnam SME Prosperity Link Forum 2026",
+  descriptionParagraph1: "Diễn đàn Kết nối giao thương Doanh nghiệp nhỏ và vừa Việt Nam 2026 được Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên (TASME) chủ trì tổ chức chào mừng Đại hội TASME nhiệm kỳ 2026 – 2031.",
+  descriptionParagraph2: "Quy mô 100 gian hàng và 500 đại biểu quy tụ đại diện cơ quan quản lý, VCCI, hiệp hội doanh nghiệp các tỉnh thành, doanh nghiệp SME, doanh nghiệp FDI, nhà đầu tư, ngân hàng, quỹ đầu tư & các cơ quan báo chí truyền thông.",
   bullets: [
-    "Kết nối giao thương B2B trực tiếp với hàng trăm doanh nghiệp tiêu biểu.",
-    "Tiếp cận thị trường mới và thu hút vốn đầu tư tiềm năng.",
-    "Cập nhật các xu hướng công nghệ, chuyển đổi số và phát triển bền vững.",
-    "Quảng bá thương hiệu rộng rãi trên các kênh truyền thông báo chí uy tín."
+    "Tạo không gian kết nối giao thương B2B, mở rộng thị trường và liên kết vùng cho cộng đồng SME.",
+    "Kết nối doanh nghiệp với đối tác FDI, tập đoàn lớn, nhà mua hàng, tổ chức tài chính & quỹ đầu tư.",
+    "Xúc tiến hợp tác thương mại, chuyển đổi số, công nghệ AI & hỗ trợ ký kết MOU / Thỏa thuận đầu tư.",
+    "Quảng bá môi trường đầu tư, văn hóa trà Thái Nguyên & sản phẩm tiêu biểu; tôn vinh doanh nhân xuất sắc."
   ],
   imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop",
   statCardNumber: "100%",
-  statCardLabel: "Cơ hội giao thương trực tiếp"
+  statCardLabel: "Không gian kết nối giao thương thực tế"
 };
 
 export const DEFAULT_BENEFITS: BenefitsContent = {
-  badge: "GIÁ TRỊ NỔI BẬT",
-  title: "TẠI SAO BẠN NÊN THAM GIA DIỄN ĐÀN?",
-  subtitle: "Cơ hội vàng để nâng tầm thương hiệu, gia tăng doanh số và tạo dựng quan hệ chiến lược.",
+  badge: "GIÁ TRỊ ĐỒNG HÀNH",
+  title: "5 GIÁ TRỊ CỐT LÕI DÀNH CHO ĐỐI TÁC & NHÀ TÀI TRỢ",
+  subtitle: "Tối ưu hóa cơ hội hiện diện thương hiệu, kết nối B2B và mở rộng thị trường tại Diễn đàn.",
   items: [
     {
       id: "ben-1",
-      title: "Giao thương B2B Trực tiếp",
-      description: "Tham gia các phiên B2B Matching 1:1 được sắp xếp khoa học, tìm kiếm nhà cung ứng và khách hàng tiềm năng.",
-      iconName: "Handshake",
-      badge: "Đặc quyền"
+      title: "Hiện diện Đúng Đối tượng",
+      description: "Tiếp cận trực tiếp 500+ lãnh đạo doanh nghiệp, nhà đầu tư, nhà mua hàng, hiệp hội & cơ quan quản lý nhà nước.",
+      iconName: "Users",
+      badge: "Hiện diện VIP"
     },
     {
       id: "ben-2",
-      title: "Trưng bày & Quảng bá",
-      description: "Sở hữu gian hàng triển lãm hiện đại giúp tiếp cận trực tiếp hàng ngàn lượt khách tham quan chuyên nghiệp.",
-      iconName: "Store"
+      title: "Kết nối Có Mục tiêu (B2B Matching)",
+      description: "Được ưu tiên đăng ký các phiên B2B Matching 1:1, Investment Matching phù hợp chính xác theo ngành hàng.",
+      iconName: "Handshake",
+      badge: "Ưu tiên 1:1"
     },
     {
       id: "ben-3",
-      title: "Cập nhật Tri thức Kinh doanh",
-      description: "Lắng nghe các bài chia sẻ từ các diễn giả, chuyên gia hàng đầu về kinh tế số, AI và quản trị doanh nghiệp.",
-      iconName: "Lightbulb"
-    },
-    {
-      id: "ben-4",
-      title: "Đêm Gala Dinner Sang trọng",
-      description: "Tiệc giao lưu buổi tối ấm cúng, tinh tế giúp thắt chặt mối quan hệ ngoại giao và hợp tác kinh doanh lâu dài.",
-      iconName: "Utensils"
-    },
-    {
-      id: "ben-5",
-      title: "Truyền thông Đa kênh",
-      description: "Thương hiệu của bạn xuất hiện trên các trang báo điện tử lớn và các kênh truyền thông chính thức của Diễn đàn.",
+      title: "Truyền thông Đa điểm chạm",
+      description: "Xuất hiện nổi bật trên bộ nhận diện, backdrop, màn hình LED, ấn phẩm chính & báo chí truyền thông toàn quốc.",
       iconName: "TrendingUp"
     },
     {
-      id: "ben-6",
-      title: "Tiếp cận Nguồn vốn & Khởi nghiệp",
-      description: "Gặp gỡ trực tiếp đại diện các quỹ đầu tư, tổ chức tài chính và ngân hàng đồng hành hỗ trợ doanh nghiệp SME.",
-      iconName: "DollarSign"
+      id: "ben-4",
+      title: "Trưng bày & Trải nghiệm Sản phẩm",
+      description: "Sở hữu gian hàng triển lãm tiêu chuẩn 3m x 3m tại khu vực trung tâm sảnh Khách sạn May Plaza.",
+      iconName: "Store"
+    },
+    {
+      id: "ben-5",
+      title: "Khẳng định Vai trò Đồng hành",
+      description: "Được tôn vinh, tri ân tại đêm Gala Dinner, nhận Kỷ niệm chương & Báo cáo đo lường quyền lợi chi tiết sau sự kiện.",
+      iconName: "Award"
     }
   ]
 };
