@@ -92,7 +92,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
   }, [data.targetDateISO]);
 
   return (
-    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
+    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-0 sm:pb-0 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
       {/* 3D Depth Layer Engine & Cyber Grid Background */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#071F18]">
         {/* 3D Perspective Horizon Grid */}
