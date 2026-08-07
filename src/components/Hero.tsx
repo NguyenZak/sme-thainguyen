@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Calendar, MapPin, Ticket, Award, Store, ArrowRight, Clock } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
+import Statistics from "./Statistics";
 
 import { HeroContent, DEFAULT_HERO } from "@/constants/defaultContent";
 
@@ -14,7 +15,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
-export default function Hero({ content }: { content?: HeroContent }) {
+export default function Hero({ content, statsContent }: { content?: HeroContent; statsContent?: any }) {
   const data = content || DEFAULT_HERO;
   const words = data.keywords && data.keywords.length > 0 ? data.keywords : DEFAULT_HERO.keywords;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -239,6 +240,9 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </div>
           </div>
         </motion.div>
+
+        {/* Key Event Statistics Counter (Placed right under Ticket Fee card) */}
+        <Statistics content={statsContent} />
 
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
         <motion.div

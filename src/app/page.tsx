@@ -63,11 +63,8 @@ export default async function Home() {
       {/* Navigation Bar */}
       <Navbar />
 
-      {/* Hero Section */}
-      <Hero content={content.hero} />
-
-      {/* Key Event Statistics Counter */}
-      <Statistics content={content.statistics} />
+      {/* Hero Section with Embedded Statistics */}
+      <Hero content={content.hero} statsContent={content.statistics} />
 
       {/* About Forum & Purpose */}
       <AboutEvent content={content.about} />

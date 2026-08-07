@@ -35,96 +35,96 @@ function Counter({ end, duration = 2.8, suffix = "", formatZero = true }: { end:
 
 export default function Statistics({ content }: { content?: any }) {
   return (
-    <section className="relative -mt-2 sm:-mt-8 z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-[#0B3026] text-white rounded-2xl shadow-sme border border-emerald-800/60 p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+    <div className="w-full max-w-4xl mx-auto my-4 sm:my-6">
+      <div className="bg-white text-slate-800 sm:bg-[#0B3026] sm:text-white rounded-2xl shadow-xl sm:shadow-sme border border-slate-100 sm:border-emerald-800/60 p-4 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
         {/* Stat 1: 100+ Business Matching */}
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="flex flex-col items-center text-center p-4 rounded-xl hover:bg-emerald-900/40 transition-colors"
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-slate-50/80 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-emerald-900/40 transition-colors"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-950 border border-emerald-700/50 flex items-center justify-center mb-3 shadow-sm">
-            <Handshake className="w-7 h-7 text-[#22C55E]" />
+          <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-100/70 sm:bg-emerald-950 border border-emerald-300/60 sm:border-emerald-700/50 flex items-center justify-center mb-2 sm:mb-3 shadow-sm">
+            <Handshake className="w-5 h-5 sm:w-7 sm:h-7 text-[#0D3B2E] sm:text-[#22C55E]" />
           </div>
           <div
-            className="text-3xl sm:text-4xl font-extrabold text-[#22C55E] tracking-tight"
+            className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] sm:text-[#22C55E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             <Counter end={100} suffix="+" formatZero={false} />
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-emerald-200 mt-1 uppercase tracking-wider">
+          <p className="text-[11px] sm:text-sm font-bold text-slate-600 sm:text-emerald-200 mt-1 uppercase tracking-wider">
             Business Matching
           </p>
         </motion.div>
 
         {/* Stat 2: 03 Ngày diễn ra sự kiện */}
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
-          className="flex flex-col items-center text-center p-4 rounded-xl hover:bg-emerald-900/40 transition-colors"
+          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+          className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-slate-50/80 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-emerald-900/40 transition-colors"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-950 border border-emerald-700/50 flex items-center justify-center mb-3 shadow-sm">
-            <CalendarDays className="w-7 h-7 text-[#22C55E]" />
+          <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-100/70 sm:bg-emerald-950 border border-emerald-300/60 sm:border-emerald-700/50 flex items-center justify-center mb-2 sm:mb-3 shadow-sm">
+            <CalendarDays className="w-5 h-5 sm:w-7 sm:h-7 text-[#0D3B2E] sm:text-[#22C55E]" />
           </div>
           <div
-            className="text-3xl sm:text-4xl font-extrabold text-[#22C55E] tracking-tight"
+            className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] sm:text-[#22C55E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             <Counter end={3} formatZero={true} />
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-emerald-200 mt-1 uppercase tracking-wider">
+          <p className="text-[11px] sm:text-sm font-bold text-slate-600 sm:text-emerald-200 mt-1 uppercase tracking-wider">
             Ngày diễn ra sự kiện
           </p>
         </motion.div>
 
         {/* Stat 3: 02 Đêm Gala Dinner */}
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.9, delay: 0.3, ease: "easeOut" }}
-          className="flex flex-col items-center text-center p-4 rounded-xl hover:bg-emerald-900/40 transition-colors"
+          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+          className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-slate-50/80 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-emerald-900/40 transition-colors"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-950 border border-emerald-700/50 flex items-center justify-center mb-3 shadow-sm">
-            <Wine className="w-7 h-7 text-[#F59E0B]" />
+          <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-amber-100/70 sm:bg-emerald-950 border border-amber-300/60 sm:border-emerald-700/50 flex items-center justify-center mb-2 sm:mb-3 shadow-sm">
+            <Wine className="w-5 h-5 sm:w-7 sm:h-7 text-[#D97706] sm:text-[#F59E0B]" />
           </div>
           <div
-            className="text-3xl sm:text-4xl font-extrabold text-[#22C55E] tracking-tight"
+            className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] sm:text-[#22C55E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             <Counter end={2} formatZero={true} />
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-emerald-200 mt-1 uppercase tracking-wider">
+          <p className="text-[11px] sm:text-sm font-bold text-slate-600 sm:text-emerald-200 mt-1 uppercase tracking-wider">
             Đêm Gala Dinner
           </p>
         </motion.div>
 
         {/* Stat 4: Hàng nghìn Cơ hội giao thương */}
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.9, delay: 0.45, ease: "easeOut" }}
-          className="flex flex-col items-center text-center p-4 rounded-xl hover:bg-emerald-900/40 transition-colors"
+          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+          className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-slate-50/80 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-emerald-900/40 transition-colors"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-950 border border-emerald-700/50 flex items-center justify-center mb-3 shadow-sm">
-            <TrendingUp className="w-7 h-7 text-[#22C55E]" />
+          <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-100/70 sm:bg-emerald-950 border border-emerald-300/60 sm:border-emerald-700/50 flex items-center justify-center mb-2 sm:mb-3 shadow-sm">
+            <TrendingUp className="w-5 h-5 sm:w-7 sm:h-7 text-[#0D3B2E] sm:text-[#22C55E]" />
           </div>
           <div
-            className="text-3xl sm:text-4xl font-extrabold text-[#22C55E] tracking-tight"
+            className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] sm:text-[#22C55E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             Hàng nghìn
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-emerald-200 mt-1 uppercase tracking-wider">
+          <p className="text-[11px] sm:text-sm font-bold text-slate-600 sm:text-emerald-200 mt-1 uppercase tracking-wider">
             Cơ hội giao thương
           </p>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 }
