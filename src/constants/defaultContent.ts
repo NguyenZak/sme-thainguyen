@@ -31,6 +31,11 @@ export interface SiteConfig {
   telegramEnabled?: boolean;
   googleSheetScriptUrl?: string;
   googleSheetEnabled?: boolean;
+  sepayEnabled?: boolean;
+  sepayBankCode?: string;
+  sepayAccountNumber?: string;
+  sepayAccountName?: string;
+  sepayApiKey?: string;
 }
 
 export interface HeroContent {
@@ -265,6 +270,11 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   telegramEnabled: false,
   googleSheetScriptUrl: "",
   googleSheetEnabled: true,
+  sepayEnabled: false,
+  sepayBankCode: "MB",
+  sepayAccountNumber: "0388925432",
+  sepayAccountName: "HIEP HOI DNNVV THAI NGUYEN",
+  sepayApiKey: "",
 };
 
 export const DEFAULT_HERO: HeroContent = {

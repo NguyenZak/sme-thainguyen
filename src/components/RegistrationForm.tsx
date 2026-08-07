@@ -18,7 +18,12 @@ import {
   Store,
   Sparkles,
 } from "lucide-react";
-import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
+import {
+  RegistrationContent,
+  DEFAULT_REGISTRATION,
+  SiteConfig,
+  DEFAULT_SITE_CONFIG,
+} from "@/constants/defaultContent";
 import { toast } from "@/components/ui/Toast";
 
 // Form validation schema with Zod
@@ -42,8 +47,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function RegistrationForm({ content }: { content?: RegistrationContent }) {
+export default function RegistrationForm({
+  content,
+  siteConfig,
+}: {
+  content?: RegistrationContent;
+  siteConfig?: SiteConfig;
+}) {
   const registration = content || DEFAULT_REGISTRATION;
+  const config = siteConfig || DEFAULT_SITE_CONFIG;
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor" | "booth">("delegate");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
@@ -671,18 +683,49 @@ export default function RegistrationForm({ content }: { content?: RegistrationCo
                       </div>
                     )}
 
-                    {/* QR Code & Status */}
-                    <div className="pt-3 border-t border-white/20 flex items-center justify-between bg-black/20 p-3 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-white p-1 rounded-lg flex items-center justify-center shrink-0">
-                          <QrCode className="w-10 h-10 text-slate-900" />
+                    {/* SePay VietQR Payment QR Code or Event Check-in QR */}
+                    {config?.sepayEnabled && config?.sepayAccountNumber ? (
+                      <div className="pt-3 border-t border-white/20 space-y-3 bg-black/30 p-3.5 rounded-xl border border-white/10">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase text-amber-300 tracking-wider">
+                            💳 Thanh Toán Tự Động Quét Mã VietQR (SePay)
+                          </span>
+                          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">
+                            Khuyên dùng
+                          </span>
                         </div>
-                        <div>
-                          <span className="text-[10px] font-semibold text-white/80 block">QR Code Check-in Sự kiện</span>
-                          <span className="text-[11px] font-bold text-emerald-400 block">Trạng thái: Đã ghi nhận</span>
+
+                        <div className="flex items-center gap-3 bg-white text-slate-900 p-2.5 rounded-lg">
+                          <img
+                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${tab === "delegate" ? 1450000 : 0}&des=${successModal.registrationId}`}
+                            alt="VietQR SePay Payment"
+                            className="w-24 h-24 object-contain rounded border border-slate-200 shrink-0"
+                          />
+                          <div className="text-[11px] space-y-1 text-slate-800">
+                            <div><span className="text-slate-500">Ngân hàng:</span> <b>{config.sepayBankCode || "MBBank"}</b></div>
+                            <div><span className="text-slate-500">Số tài khoản:</span> <b className="font-mono text-emerald-800 text-xs">{config.sepayAccountNumber}</b></div>
+                            <div><span className="text-slate-500">Chủ tài khoản:</span> <b className="uppercase text-slate-900">{config.sepayAccountName}</b></div>
+                            <div><span className="text-slate-500">Nội dung CK:</span> <b className="font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">{successModal.registrationId}</b></div>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-white/80 italic text-center">
+                          ⚡ Hệ thống SePay sẽ tự động khớp lệnh & cập nhật trạng thái đơn hàng ngay khi tiền vào TK!
+                        </p>
+                      </div>
+                    ) : (
+                      /* Standard Event Check-in QR */
+                      <div className="pt-3 border-t border-white/20 flex items-center justify-between bg-black/20 p-3 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-white p-1 rounded-lg flex items-center justify-center shrink-0">
+                            <QrCode className="w-10 h-10 text-slate-900" />
+                          </div>
+                          <div>
+                            <span className="text-[10px] font-semibold text-white/80 block">QR Code Check-in Sự kiện</span>
+                            <span className="text-[11px] font-bold text-emerald-400 block">Trạng thái: Đã ghi nhận</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="flex gap-3">
