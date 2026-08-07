@@ -241,15 +241,12 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
           </div>
         </motion.div>
 
-        {/* Key Event Statistics Counter (Placed directly under Ticket Fee / Event Details card) */}
-        <Statistics content={statsContent} />
-
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-8 sm:pt-10 w-full max-w-xl sm:max-w-none mx-auto relative z-50"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 w-full max-w-xl sm:max-w-none mx-auto"
         >
           {/* 1st Order Primary CTA */}
           <a
@@ -285,6 +282,9 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
             <span>Sơ đồ 100 Gian hàng</span>
           </a>
         </motion.div>
+
+        {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}
+        <Statistics content={statsContent} />
       </div>
     </section>
   );
