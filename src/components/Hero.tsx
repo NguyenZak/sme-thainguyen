@@ -92,7 +92,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
   }, [data.targetDateISO]);
 
   return (
-    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-10 sm:pb-12 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
+    <section ref={containerRef} className="relative min-h-0 sm:min-h-[95vh] flex items-center justify-center pt-24 sm:pt-28 pb-14 sm:pb-16 px-4 sm:px-6 lg:px-8 bg-[#0B3026]">
       {/* 3D Depth Layer Engine & Cyber Grid Background */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#071F18]">
         {/* 3D Perspective Horizon Grid */}
@@ -246,7 +246,7 @@ export default function Hero({ content, statsContent }: { content?: HeroContent;
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 w-full max-w-xl sm:max-w-none mx-auto"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 pb-4 sm:pb-6 w-full max-w-xl sm:max-w-none mx-auto relative z-50"
         >
           {/* 1st Order Primary CTA */}
           <a
