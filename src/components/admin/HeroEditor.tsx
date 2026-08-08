@@ -206,37 +206,85 @@ export default function HeroEditor({ initialHero }: HeroEditorProps) {
 
       {/* Các Nút Bấm Action */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CÁC NÚT BẤM KÍCH HOẠT (CTA BUTTONS)</h3>
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CÁC NÚT BẤM KÍCH HOẠT KÈM ĐƯỜNG DẪN (CTA BUTTONS HERO)</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-            <span className="text-[11px] font-semibold text-slate-800">Nút Chính 1 (Đăng ký)</span>
-            <input
-              type="text"
-              value={hero.primaryCtaText}
-              onChange={(e) => setHero({ ...hero, primaryCtaText: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
-            />
+          <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-200 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-900">🟢 Nút 1 (Đăng ký vé)</span>
+              <span className="text-[10px] text-emerald-700 font-mono">Xanh lá</span>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Văn bản nút:</label>
+              <input
+                type="text"
+                value={hero.primaryCtaText || ""}
+                placeholder="Đăng ký Vé Đại biểu (1.450.000 VNĐ)"
+                onChange={(e) => setHero({ ...hero, primaryCtaText: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Đường dẫn liên kết:</label>
+              <input
+                type="text"
+                value={hero.primaryCtaLink || "#register"}
+                onChange={(e) => setHero({ ...hero, primaryCtaLink: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+            </div>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-            <span className="text-[11px] font-semibold text-slate-800">Nút Phụ 2 (Tài trợ)</span>
-            <input
-              type="text"
-              value={hero.secondaryCtaText}
-              onChange={(e) => setHero({ ...hero, secondaryCtaText: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
-            />
+          <div className="p-3.5 bg-amber-50/50 rounded-xl border border-amber-200 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900">🟠 Nút 2 (Nhà tài trợ)</span>
+              <span className="text-[10px] text-amber-700 font-mono">Vàng cam</span>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Văn bản nút:</label>
+              <input
+                type="text"
+                value={hero.secondaryCtaText || ""}
+                placeholder="Hồ sơ Nhà tài trợ"
+                onChange={(e) => setHero({ ...hero, secondaryCtaText: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Đường dẫn liên kết:</label>
+              <input
+                type="text"
+                value={hero.secondaryCtaLink || "#sponsors"}
+                onChange={(e) => setHero({ ...hero, secondaryCtaLink: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+            </div>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-            <span className="text-[11px] font-semibold text-slate-800">Nút Phụ 3 (Gian hàng)</span>
-            <input
-              type="text"
-              value={hero.tertiaryCtaText}
-              onChange={(e) => setHero({ ...hero, tertiaryCtaText: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
-            />
+          <div className="p-3.5 bg-slate-100/70 rounded-xl border border-slate-300 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-900">⚫ Nút 3 (Gian hàng)</span>
+              <span className="text-[10px] text-slate-600 font-mono">Đen mờ</span>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Văn bản nút:</label>
+              <input
+                type="text"
+                value={hero.tertiaryCtaText || ""}
+                placeholder="Sơ đồ 100 Gian hàng"
+                onChange={(e) => setHero({ ...hero, tertiaryCtaText: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Đường dẫn liên kết:</label>
+              <input
+                type="text"
+                value={hero.tertiaryCtaLink || "#booths"}
+                onChange={(e) => setHero({ ...hero, tertiaryCtaLink: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+            </div>
           </div>
         </div>
       </div>

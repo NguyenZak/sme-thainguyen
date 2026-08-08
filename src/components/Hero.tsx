@@ -268,7 +268,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
           {/* 1st Order Primary CTA: Registration Form (Delegate) */}
           <a
             id="cta-1"
-            href="#register"
+            href={data.primaryCtaLink || "#register"}
             onClick={(e) => {
               if (typeof window !== "undefined") {
                 window.dispatchEvent(
@@ -279,14 +279,14 @@ export default function Hero({ content }: { content?: HeroContent }) {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
           >
             <Ticket className="w-4 h-4" />
-            <span>Đăng ký Vé Đại biểu (1.450.000 VNĐ)</span>
+            <span>{data.primaryCtaText || "Đăng ký Vé Đại biểu (1.450.000 VNĐ)"}</span>
             <ArrowRight className="w-4 h-4" />
           </a>
 
           {/* 2nd Order Secondary CTA: Sponsor Packages & Prospectus */}
           <a
             id="cta-2"
-            href="#sponsors"
+            href={data.secondaryCtaLink || "#sponsors"}
             onClick={(e) => {
               if (typeof window !== "undefined") {
                 window.dispatchEvent(
@@ -297,13 +297,13 @@ export default function Hero({ content }: { content?: HeroContent }) {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
           >
             <Award className="w-4 h-4" />
-            <span>Hồ sơ Nhà tài trợ</span>
+            <span>{data.secondaryCtaText || "Hồ sơ Nhà tài trợ"}</span>
           </a>
 
           {/* 3rd Order Tertiary CTA: Booth Floorplan & Exhibition */}
           <a
             id="cta-3"
-            href="#booths"
+            href={data.tertiaryCtaLink || "#booths"}
             onClick={(e) => {
               if (typeof window !== "undefined") {
                 window.dispatchEvent(
@@ -314,7 +314,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
           >
             <Store className="w-4 h-4 text-emerald-400" />
-            <span>Sơ đồ 100 Gian hàng</span>
+            <span>{data.tertiaryCtaText || "Sơ đồ 100 Gian hàng"}</span>
           </a>
 
           {/* Add To Calendar Button */}
