@@ -49,10 +49,10 @@ export default function Statistics({ content }: { content?: StatisticsContent })
   const items = content?.items && content.items.length > 0 ? content.items : DEFAULT_STATISTICS.items;
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-10 mb-8 relative z-10">
-      <div className="bg-[#0B3026] text-white rounded-2xl shadow-2xl border border-emerald-800/80 p-5 sm:p-8 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 divide-y sm:divide-y-0 lg:divide-x divide-emerald-800/60">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-12 mb-10 relative z-10">
+      <div className={`bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-5 sm:p-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-${Math.min(items.length, 5)} gap-4 sm:gap-6`}>
         {items.map((item, idx) => {
-          const IconComp = ICON_MAP[item.iconName || ""] || Users;
+          const IconComp = ICON_MAP[item.iconName || ""] || MapPin;
 
           return (
             <motion.div
@@ -60,26 +60,21 @@ export default function Statistics({ content }: { content?: StatisticsContent })
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.1 }}
-              transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
-              className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl hover:bg-white/5 transition-colors"
+              transition={{ duration: 0.7, delay: idx * 0.1, ease: "easeOut" }}
+              className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl hover:bg-slate-50 transition-colors"
             >
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center mb-2.5 sm:mb-3 shadow-inner">
-                <IconComp className="w-6 h-6 sm:w-7 sm:h-7 text-[#F59E0B]" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center mb-2 sm:mb-3 shadow-sm">
+                <IconComp className="w-6 h-6 sm:w-7 sm:h-7 text-[#22C55E]" />
               </div>
               <div
-                className="text-2xl sm:text-4xl font-black text-[#F59E0B] tracking-tight"
+                className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
-                <Counter end={item.value} suffix={item.suffix} formatZero={item.value < 10} />
+                <Counter end={item.value} suffix={item.suffix} formatZero={item.value < 10 && item.value > 0} />
               </div>
-              <p className="text-[11px] sm:text-xs font-extrabold text-emerald-100 mt-1.5 uppercase tracking-wider">
+              <p className="text-[11px] sm:text-xs font-bold text-slate-600 mt-1 uppercase tracking-wider">
                 {item.label}
               </p>
-              {item.subtext && (
-                <p className="text-[10px] text-emerald-200/70 mt-1 line-clamp-1 max-w-[200px]">
-                  {item.subtext}
-                </p>
-              )}
             </motion.div>
           );
         })}

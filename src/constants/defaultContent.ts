@@ -365,35 +365,43 @@ export const DEFAULT_STATISTICS: StatisticsContent = {
   items: [
     {
       id: "stat-1",
-      value: 500,
-      suffix: "+",
-      label: "ĐẠI BIỂU DỰ KIẾN",
-      subtext: "Lãnh đạo cơ quan, hiệp hội, SME toàn quốc & đối tác FDI quốc tế",
-      iconName: "Users"
-    },
-    {
-      id: "stat-2",
-      value: 63,
+      value: 34,
       suffix: "",
-      label: "TỈNH THÀNH THAM GIA",
-      subtext: "Đại diện hiệp hội doanh nghiệp các tỉnh thành phố",
+      label: "Tỉnh tham gia",
+      subtext: "Hiệp hội doanh nghiệp các tỉnh thành",
       iconName: "MapPin"
     },
     {
+      id: "stat-2",
+      value: 200,
+      suffix: "++",
+      label: "Doanh nghiệp TN + ngoại tỉnh",
+      subtext: "Doanh nghiệp SME & FDI toàn quốc",
+      iconName: "Building2"
+    },
+    {
       id: "stat-3",
-      value: 10,
-      suffix: "+",
-      label: "QUỐC GIA GIAO THƯƠNG",
-      subtext: "Các đoàn doanh nghiệp & nhà đầu tư quốc tế",
-      iconName: "Globe2"
+      value: 100,
+      suffix: "",
+      label: "Gian hàng triển lãm",
+      subtext: "Gian hàng chuẩn & VIP tại May Plaza",
+      iconName: "Handshake"
     },
     {
       id: "stat-4",
-      value: 3,
-      suffix: " NGÀY",
-      label: "CHUỖI SỰ KIỆN",
-      subtext: "B2B Matching, Diễn đàn cấp cao, Gala Dinner & Triển lãm",
+      value: 50,
+      suffix: "+",
+      label: "MOU dự kiến",
+      subtext: "Phiên giao thương kết nối 1:1",
       iconName: "Calendar"
+    },
+    {
+      id: "stat-5",
+      value: 10,
+      suffix: "",
+      label: "Quỹ đầu tư dự kiến",
+      subtext: "Quỹ mạo hiểm & Nhà đầu tư",
+      iconName: "Banknote"
     }
   ]
 };
