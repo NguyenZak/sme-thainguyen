@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
-import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot, Mail } from "lucide-react";
+import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot, Mail, Eye, EyeOff, LayoutGrid } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
 interface GeneralEditorProps {
@@ -143,6 +143,32 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     }
   };
 
+  const SECTION_ITEMS = [
+    { id: "hero", label: "Banner Hero chính (Tiêu đề & Đếm ngược)", icon: "🚀" },
+    { id: "statistics", label: "Con số thống kê ấn tượng", icon: "📊" },
+    { id: "about", label: "Tổng quan Diễn đàn & Thành phần tham dự", icon: "ℹ️" },
+    { id: "speakers", label: "Diễn giả & Khách mời danh dự", icon: "🎤" },
+    { id: "benefits", label: "5 Giá trị cốt lõi / Quyền lợi đồng hành", icon: "💎" },
+    { id: "timeline", label: "Lịch trình 3 ngày diễn đàn", icon: "📅" },
+    { id: "sponsors", label: "Nhà tài trợ & Đơn vị đồng hành", icon: "🤝" },
+    { id: "booths", label: "Sơ đồ & Đăng ký 100 gian hàng triển lãm", icon: "🎪" },
+    { id: "ticket_fee", label: "Bảng giá vé & Chi phí tham dự", icon: "🎟️" },
+    { id: "registration", label: "Form Đăng ký trực tuyến", icon: "📝" },
+  ];
+
+  const toggleSection = (sectionId: string) => {
+    const current = config.hiddenSections || [];
+    let updated: string[];
+    if (current.includes(sectionId)) {
+      updated = current.filter((id) => id !== sectionId);
+      toast.info("Đã hiện Section", `Đã bật hiển thị phần: ${SECTION_ITEMS.find((s) => s.id === sectionId)?.label}`);
+    } else {
+      updated = [...current, sectionId];
+      toast.warning("Đã ẩn Section", `Đã tạm ẩn phần: ${SECTION_ITEMS.find((s) => s.id === sectionId)?.label}`);
+    }
+    setConfig({ ...config, hiddenSections: updated });
+  };
+
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
@@ -172,6 +198,69 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
           {msg.text}
         </div>
       )}
+
+      {/* ── Section Visibility Management Card ─────────────────────────── */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-800 font-bold text-xs">
+              <LayoutGrid className="w-4 h-4 text-indigo-700" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">QUẢN LÝ ẨN / HIỆN TẠM THỜI CÁC SECTIONS TRÊN LANDING PAGE</h3>
+              <p className="text-[11px] text-slate-500">Tùy chỉnh Bật/Tắt hiển thị từng khối nội dung trên Trang chủ diễn đàn 1-Click.</p>
+            </div>
+          </div>
+          <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
+            Hiển thị: {SECTION_ITEMS.length - (config.hiddenSections?.length || 0)} / {SECTION_ITEMS.length} phần
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {SECTION_ITEMS.map((item) => {
+            const isHidden = config.hiddenSections?.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => toggleSection(item.id)}
+                className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                  isHidden
+                    ? "bg-slate-50 border-slate-200 opacity-60 hover:opacity-100"
+                    : "bg-emerald-50/40 border-emerald-200/80 hover:border-emerald-300 shadow-sm"
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="text-base shrink-0">{item.icon}</span>
+                  <span className={`text-xs font-semibold truncate ${isHidden ? "text-slate-500 line-through" : "text-slate-900"}`}>
+                    {item.label}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 ml-2">
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      isHidden
+                        ? "bg-slate-200 text-slate-600"
+                        : "bg-emerald-600 text-white"
+                    }`}
+                  >
+                    {isHidden ? "Đang ẩn" : "Hiển thị"}
+                  </span>
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+                      isHidden
+                        ? "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                        : "bg-emerald-600 text-white hover:bg-emerald-700"
+                    }`}
+                  >
+                    {isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {/* 1. THÔNG BÁO TỰ ĐỘNG TELEGRAM BOT & CHIA TOPIC */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">

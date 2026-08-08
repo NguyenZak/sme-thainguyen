@@ -54,6 +54,9 @@ export default async function Home() {
     }
   };
 
+  const hiddenSections = content.siteConfig.hiddenSections || [];
+  const isVisible = (key: string) => !hiddenSections.includes(key);
+
   return (
     <main className="min-h-screen flex flex-col font-sans bg-[#F8FAFC]">
       {/* Structured Data Script */}
@@ -66,38 +69,38 @@ export default async function Home() {
       <Navbar content={content.navbar} />
 
       {/* 2. Hero Section with Embedded Countdown */}
-      <Hero content={content.hero} />
-      <Statistics content={content.statistics} />
+      {isVisible("hero") && <Hero content={content.hero} />}
+      {isVisible("statistics") && <Statistics content={content.statistics} />}
 
       {/* 3. About Forum & Core Purpose */}
-      <AboutEvent content={content.about} />
+      {isVisible("about") && <AboutEvent content={content.about} />}
 
       {/* 4. Keynote Speakers & Experts (Authority & Prestige) */}
-      <SpeakersSection content={content.speakers} />
+      {isVisible("speakers") && <SpeakersSection content={content.speakers} />}
 
       {/* 5. Attendee Benefits & Core Value Propositions */}
-      <Benefits content={content.benefits} />
+      {isVisible("benefits") && <Benefits content={content.benefits} />}
 
       {/* 6. 3-Day Program Agenda Timeline */}
-      <Timeline content={content.timeline} />
+      {isVisible("timeline") && <Timeline content={content.timeline} />}
 
       {/* 7. Sponsors Logo Wall & Sponsorship Packages (Social Proof & Trust) */}
-      <SponsorSection content={content.sponsors} />
+      {isVisible("sponsors") && <SponsorSection content={content.sponsors} />}
 
       {/* 8. 100 Booth Exhibition & Interactive Floor Plan */}
-      <BoothSection content={content.booths} />
+      {isVisible("booths") && <BoothSection content={content.booths} />}
 
       {/* 9. Registration Fee & Inclusions Card (Offer Transparency) */}
-      <RegistrationFee content={content.ticketFee} />
+      {isVisible("ticket_fee") && <RegistrationFee content={content.ticketFee} />}
 
       {/* 10. Direct Online Registration Form (Action Destination) */}
-      <RegistrationForm content={content.registration} />
+      {isVisible("registration") && <RegistrationForm content={content.registration} siteConfig={content.siteConfig} />}
 
       {/* 11. Footer & Location Google Maps */}
       <Footer content={content.footer} />
 
       {/* 12. Mobile Floating Sticky CTA */}
-      <MobileStickyCTA content={content.registration} />
+      {isVisible("registration") && <MobileStickyCTA content={content.registration} />}
     </main>
   );
 }

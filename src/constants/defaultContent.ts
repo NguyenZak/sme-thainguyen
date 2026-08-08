@@ -36,6 +36,7 @@ export interface SiteConfig {
   sepayAccountNumber?: string;
   sepayAccountName?: string;
   sepayApiKey?: string;
+  hiddenSections?: string[];
 }
 
 export interface HeroContent {
@@ -275,6 +276,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   sepayAccountNumber: "0388925432",
   sepayAccountName: "HIEP HOI DNNVV THAI NGUYEN",
   sepayApiKey: "",
+  hiddenSections: [],
 };
 
 export const DEFAULT_HERO: HeroContent = {
