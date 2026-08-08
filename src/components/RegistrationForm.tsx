@@ -23,6 +23,8 @@ import {
   DEFAULT_REGISTRATION,
   SiteConfig,
   DEFAULT_SITE_CONFIG,
+  TicketFeeContent,
+  DEFAULT_TICKET_FEE,
 } from "@/constants/defaultContent";
 import { toast } from "@/components/ui/Toast";
 
@@ -50,12 +52,15 @@ type FormValues = z.infer<typeof formSchema>;
 export default function RegistrationForm({
   content,
   siteConfig,
+  ticketFee,
 }: {
   content?: RegistrationContent;
   siteConfig?: SiteConfig;
+  ticketFee?: TicketFeeContent;
 }) {
   const registration = content || DEFAULT_REGISTRATION;
   const config = siteConfig || DEFAULT_SITE_CONFIG;
+  const unitPrice = ticketFee?.priceVND || config.eventPriceVND || DEFAULT_TICKET_FEE.priceVND;
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor" | "booth">("delegate");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
@@ -357,7 +362,7 @@ export default function RegistrationForm({
             {activeTab === "delegate" && (
               <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0D3B2E] flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-                <span>Tổng chi phí: {(watchCount * 1450000).toLocaleString("vi-VN")} VNĐ</span>
+                <span>Tổng chi phí: {(watchCount * unitPrice).toLocaleString("vi-VN")} VNĐ</span>
               </div>
             )}
           </div>
@@ -697,7 +702,7 @@ export default function RegistrationForm({
 
                         <div className="flex items-center gap-3 bg-white text-slate-900 p-2.5 rounded-lg">
                           <img
-                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${tab === "delegate" ? 1450000 : 0}&des=${successModal.registrationId}`}
+                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${tab === "delegate" ? unitPrice : 0}&des=${successModal.registrationId}`}
                             alt="VietQR SePay Payment"
                             className="w-24 h-24 object-contain rounded border border-slate-200 shrink-0"
                           />

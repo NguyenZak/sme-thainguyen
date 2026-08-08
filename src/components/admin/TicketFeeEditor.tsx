@@ -114,30 +114,50 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Giá Vé Ưu Đãi (VNĐ)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Giá Vé Ưu Đãi (Giá Bán - VNĐ) <span className="text-emerald-600 font-bold">*(VD: 1450000)*</span>
+            </label>
             <input
               type="number"
-              value={fee.priceVND}
+              value={fee.priceVND || ""}
               onChange={(e) => setFee({ ...fee, priceVND: Number(e.target.value) })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
+            {fee.priceVND ? (
+              <p className="text-[11px] text-slate-500 mt-1">
+                Hiển thị: <strong className="text-amber-600">{Number(fee.priceVND).toLocaleString("vi-VN")} VNĐ</strong>
+              </p>
+            ) : null}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Giá Gốc Niêm Yết (VNĐ)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Giá Gốc / Giá Gạch (VNĐ) <span className="text-amber-600 font-bold">*(Hiển thị gạch ngang, VD: 2500000)*</span>
+            </label>
             <input
               type="number"
-              value={fee.originalPriceVND}
+              value={fee.originalPriceVND || ""}
               onChange={(e) => setFee({ ...fee, originalPriceVND: Number(e.target.value) })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              placeholder="VD: 2500000"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-medium"
             />
+            {fee.originalPriceVND ? (
+              <p className="text-[11px] text-slate-500 mt-1">
+                Hiển thị: <span className="line-through text-slate-400 font-semibold">{Number(fee.originalPriceVND).toLocaleString("vi-VN")} VNĐ</span>
+                {fee.priceVND && fee.originalPriceVND > fee.priceVND && (
+                  <span className="ml-1 text-red-600 font-bold">
+                    (-{Math.round(((fee.originalPriceVND - fee.priceVND) / fee.originalPriceVND) * 100)}%)
+                  </span>
+                )}
+              </p>
+            ) : null}
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu Vé (Ticket Badge)</label>
             <input
               type="text"
-              value={fee.ticketBadgeText}
+              value={fee.ticketBadgeText || ""}
               onChange={(e) => setFee({ ...fee, ticketBadgeText: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -147,7 +167,7 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
             <label className="block text-xs font-semibold text-slate-700 mb-1">Chữ Nút Đăng Ký (CTA Text)</label>
             <input
               type="text"
-              value={fee.ctaText}
+              value={fee.ctaText || ""}
               onChange={(e) => setFee({ ...fee, ctaText: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -157,7 +177,7 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
             <label className="block text-xs font-semibold text-slate-700 mb-1">Cam Kết & Bảo Hành (Guarantee Text)</label>
             <input
               type="text"
-              value={fee.guaranteeText}
+              value={fee.guaranteeText || ""}
               onChange={(e) => setFee({ ...fee, guaranteeText: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />

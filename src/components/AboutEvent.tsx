@@ -273,10 +273,13 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
 
             {/* Attendee cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {ATTENDEE_TAGS.map((tag, idx) => {
+              {(data.attendeeTags && data.attendeeTags.length > 0 ? data.attendeeTags : DEFAULT_ABOUT.attendeeTags).map((tag, idx) => {
                 const isVip = tag.tier === "vip";
                 const isGold = tag.tier === "gold";
-                const Icon = tag.icon;
+                const iconMap: Record<string, any> = {
+                  Landmark, Crown, TrendingUp, Building2, Globe2, Factory, Target, Users, Award
+                };
+                const Icon = iconMap[tag.iconName || ""] || Crown;
                 const accent = isVip ? "#F59E0B" : isGold ? "#22C55E" : "#6B9E8A";
                 const bgGrad = isVip
                   ? "from-amber-900/50 to-emerald-950/90"
@@ -290,7 +293,7 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                   : "border-emerald-800/50";
                 return (
                   <motion.div
-                    key={idx}
+                    key={tag.id || idx}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

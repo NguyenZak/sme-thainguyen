@@ -94,7 +94,7 @@ export default async function Home() {
       {isVisible("ticket_fee") && <RegistrationFee content={content.ticketFee} />}
 
       {/* 10. Direct Online Registration Form (Action Destination) */}
-      {isVisible("registration") && <RegistrationForm content={content.registration} siteConfig={content.siteConfig} />}
+      {isVisible("registration") && <RegistrationForm content={content.registration} siteConfig={content.siteConfig} ticketFee={content.ticketFee} />}
 
       {/* 11. Footer & Location Google Maps */}
       <Footer content={content.footer} />

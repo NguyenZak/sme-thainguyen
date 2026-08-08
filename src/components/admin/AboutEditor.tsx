@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AboutContent } from "@/constants/defaultContent";
+import { AboutContent, AttendeeTag, DEFAULT_ABOUT } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, Upload } from "lucide-react";
@@ -12,7 +12,10 @@ interface AboutEditorProps {
 }
 
 export default function AboutEditor({ initialAbout }: AboutEditorProps) {
-  const [about, setAbout] = useState<AboutContent>(initialAbout);
+  const [about, setAbout] = useState<AboutContent>({
+    ...initialAbout,
+    attendeeTags: initialAbout.attendeeTags || DEFAULT_ABOUT.attendeeTags,
+  });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -30,6 +33,12 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
   const removeBullet = (index: number) => {
     const updated = about.bullets.filter((_, i) => i !== index);
     setAbout({ ...about, bullets: updated });
+  };
+
+  const handleAttendeeTagChange = (index: number, field: keyof AttendeeTag, value: any) => {
+    const updated = [...(about.attendeeTags || DEFAULT_ABOUT.attendeeTags)];
+    updated[index] = { ...updated[index], [field]: value };
+    setAbout({ ...about, attendeeTags: updated });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +65,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
     setSaving(false);
 
     if (res.success) {
-      setMsg({ type: "success", text: "Đã cập nhật bài viết Giới thiệu Diễn đàn thành công!" });
+      setMsg({ type: "success", text: "Đã cập nhật bài viết & khối Thành phần tham dự thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Lỗi lưu dữ liệu." });
     }
@@ -66,13 +75,13 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Về Diễn Đàn (About Event)</h2>
-          <p className="text-xs text-slate-500 mt-1">Quản lý tiêu đề, bài viết giới thiệu, danh sách gạch đầu dòng nổi bật và hình ảnh minh họa.</p>
+          <h2 className="text-xl font-bold text-slate-900">Về Diễn Đàn & Thành Phần Tham Dự</h2>
+          <p className="text-xs text-slate-500 mt-1">Quản lý bài viết giới thiệu, 6 thẻ Thành phần tham dự trọng điểm & hình ảnh minh họa.</p>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50 cursor-pointer"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Lưu Thay Đổi
@@ -94,7 +103,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
 
       {/* Nội dung bài viết */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TIÊU ĐỀ & VĂN BẢN MÔ TẢ</h3>
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">1. TIÊU ĐỀ & VĂN BẢN MÔ TẢ GIỚI THIỆU</h3>
 
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu (Badge)</label>
@@ -112,7 +121,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
             type="text"
             value={about.title}
             onChange={(e) => setAbout({ ...about, title: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
           />
         </div>
 
@@ -147,10 +156,84 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
         </div>
       </div>
 
+      {/* THÀNH PHẦN THAM DỰ TRỌNG ĐIỂM (6 THẺ ĐẠI BIỂU) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="border-b border-slate-100 pb-3">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">2. THÀNH PHẦN THAM DỰ TRỌNG ĐIỂM (6 THẺ ĐẠI BIỂU)</h3>
+          <p className="text-xs text-slate-500 mt-1">Chỉnh sửa nội dung 6 thẻ đại biểu trọng điểm (Lãnh đạo Chính phủ, 500+ CEO, Quỹ đầu tư, Hiệp hội, FDI, BQL KCN).</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          {(about.attendeeTags || DEFAULT_ABOUT.attendeeTags).map((tag, idx) => (
+            <div key={tag.id || idx} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-slate-900 uppercase">THẺ ĐẠI BIỂU #{idx + 1} ({tag.rank})</span>
+                <select
+                  value={tag.tier}
+                  onChange={(e) => handleAttendeeTagChange(idx, "tier", e.target.value)}
+                  className="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-[11px] font-bold text-slate-800 focus:outline-none"
+                >
+                  <option value="vip">★ VIP (Nổi bật Vàng)</option>
+                  <option value="gold">◆ GOLD (Nổi bật Xanh)</option>
+                  <option value="standard">STANDARD (Tiêu chuẩn)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Tên Nhóm / Tiêu Đề</label>
+                <input
+                  type="text"
+                  value={tag.label}
+                  onChange={(e) => handleAttendeeTagChange(idx, "label", e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Dòng Chi Tiết / Phụ Đề</label>
+                <input
+                  type="text"
+                  value={tag.sub}
+                  onChange={(e) => handleAttendeeTagChange(idx, "sub", e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">Huy Hiệu Số Lượng (Pill)</label>
+                  <input
+                    type="text"
+                    value={tag.count}
+                    onChange={(e) => handleAttendeeTagChange(idx, "count", e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-900 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">Biểu Tượng (Icon)</label>
+                  <select
+                    value={tag.iconName}
+                    onChange={(e) => handleAttendeeTagChange(idx, "iconName", e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
+                  >
+                    <option value="Landmark">Landmark (Chính phủ)</option>
+                    <option value="Crown">Crown (Lãnh đạo / CEO)</option>
+                    <option value="TrendingUp">TrendingUp (Quỹ đầu tư)</option>
+                    <option value="Building2">Building2 (Hiệp hội)</option>
+                    <option value="Globe2">Globe2 (Quốc tế / FDI)</option>
+                    <option value="Factory">Factory (KCN / Khu kinh tế)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Gạch đầu dòng nổi bật */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">GẠCH ĐẦU DÒNG NỔI BẬT</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">3. GẠCH ĐẦU DÒNG NỔI BẬT</h3>
           <button
             type="button"
             onClick={addBullet}
@@ -172,7 +255,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
               <button
                 type="button"
                 onClick={() => removeBullet(idx)}
-                className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
+                className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -183,7 +266,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
 
       {/* Hình ảnh sự kiện */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">HÌNH ẢNH SỰ KIỆN MINH HỌA</h3>
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">4. HÌNH ẢNH SỰ KIỆN MINH HỌA</h3>
 
         <div className="flex flex-col sm:flex-row items-start gap-4">
           {about.imageUrl && (
