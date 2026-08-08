@@ -311,19 +311,19 @@ export default function RegistrationForm({
           </div>
 
           {/* 3-Step Visual Workflow Progress Bar */}
-          <div className="flex items-center justify-center gap-2 sm:gap-6 max-w-xl mx-auto text-xs text-slate-500 pt-1 font-medium">
-            <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
-              <span className="w-5 h-5 rounded-full bg-[#22C55E] text-white flex items-center justify-center text-[10px] font-black">1</span>
+          <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 max-w-2xl mx-auto text-xs text-slate-500 pt-1 font-medium overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 text-emerald-700 font-bold whitespace-nowrap shrink-0">
+              <span className="w-5 h-5 rounded-full bg-[#22C55E] text-white flex items-center justify-center text-[10px] font-black shrink-0">1</span>
               <span>Chọn Hạng Mục</span>
             </div>
-            <span className="text-slate-300">➔</span>
-            <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
-              <span className="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-black">2</span>
+            <span className="text-slate-300 shrink-0">➔</span>
+            <div className="flex items-center gap-1.5 text-emerald-800 font-bold whitespace-nowrap shrink-0">
+              <span className="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-black shrink-0">2</span>
               <span>Điền Thông Tin</span>
             </div>
-            <span className="text-slate-300">➔</span>
-            <div className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">3</span>
+            <span className="text-slate-300 shrink-0">➔</span>
+            <div className="flex items-center gap-1.5 text-slate-400 whitespace-nowrap shrink-0">
+              <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold shrink-0">3</span>
               <span>Nhận Xác Nhận QR</span>
             </div>
           </div>
