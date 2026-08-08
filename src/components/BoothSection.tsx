@@ -272,17 +272,9 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
             transition={{ duration: 0.5 }}
             className="lg:col-span-7 bg-[#0B3026] rounded-3xl p-5 sm:p-8 text-white relative overflow-hidden border border-emerald-800 shadow-xl"
           >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-xs sm:text-sm">
-                <LayoutGrid className="w-5 h-5 text-[#F59E0B] shrink-0" />
-                <span>Sơ đồ Mặt bằng Triển lãm (Nhấp để phóng to & kéo di chuyển)</span>
-              </div>
-              <button
-                onClick={() => setFloorPlanOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 text-xs font-bold text-white border border-emerald-700/60 transition-all w-full sm:w-auto justify-center shadow-sm hover:scale-105 active:scale-95"
-              >
-                <Maximize2 className="w-3.5 h-3.5 text-amber-400" /> Phóng to & Kéo Sơ đồ
-              </button>
+            <div className="flex items-center gap-2 text-amber-400 font-bold text-xs sm:text-sm mb-6">
+              <LayoutGrid className="w-5 h-5 text-[#F59E0B] shrink-0" />
+              <span>Sơ đồ Mặt bằng Triển lãm (Nhấp vào ảnh để xem chi tiết)</span>
             </div>
 
             {/* Clickable Floor Plan Image Container */}
@@ -296,27 +288,6 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                   alt="Sơ đồ gian hàng Diễn đàn Thái Nguyên SME"
                   className="w-full h-full object-contain rounded-xl group-hover:scale-[1.02] transition-transform duration-500 ease-out"
                 />
-              </div>
-
-              {/* Hover Badge Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 opacity-80 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4 pointer-events-none">
-                <div className="flex justify-end gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[11px] font-bold border border-amber-400/30 shadow-lg">
-                    <Move className="w-3.5 h-3.5 text-emerald-400" /> Kéo 4 chiều
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[11px] font-bold border border-amber-400/30 shadow-lg">
-                    <ZoomIn className="w-3.5 h-3.5" /> Chạm để zoom
-                  </span>
-                </div>
-                <div className="bg-black/60 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-xs font-bold text-emerald-300">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    Khu vực 100+ Gian hàng May Plaza
-                  </span>
-                  <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                    Xem full HD & Di chuyển <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
               </div>
             </div>
           </motion.div>
