@@ -357,14 +357,19 @@ export default function HeroEditor({ initialHero }: HeroEditorProps) {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Khẩu Hiệu / Slogan Diễn Đàn (Tagline / Quotes)
-            </label>
-            <input
-              type="text"
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700">
+                Khẩu Hiệu / Slogan Diễn Đàn (Tagline / Quotes)
+              </label>
+              <span className="text-[11px] text-emerald-600 font-medium">
+                💡 Bấm Enter để xuống dòng chủ động
+              </span>
+            </div>
+            <textarea
+              rows={2}
               value={hero.sloganText || ""}
               onChange={(e) => setHero({ ...hero, sloganText: e.target.value })}
-              placeholder="VD: “Kết nối giao thương, vươn tầm quốc tế” • Connecting SME – Going Global"
+              placeholder="VD: “Kết nối giao thương, vươn tầm quốc tế”&#10;Connecting SME – Going Global"
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none italic"
             />
           </div>

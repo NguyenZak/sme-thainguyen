@@ -182,7 +182,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </p>
           )}
           {data.sloganText && (
-            <p className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2">
+            <p className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2 whitespace-pre-line">
               {data.sloganText}
             </p>
           )}
