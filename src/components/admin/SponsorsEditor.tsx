@@ -218,9 +218,20 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
     setSponsors({ ...sponsors, items: [...sponsors.items, newSp] });
   };
 
-  const removeSponsor = (index: number) => {
+  const removeSponsor = async (index: number) => {
+    if (!window.confirm("Xóa nhà tài trợ này khỏi danh sách?")) return;
     const updated = sponsors.items.filter((_, i) => i !== index);
-    setSponsors({ ...sponsors, items: updated });
+    const updatedSponsors = { ...sponsors, items: updated };
+    setSponsors(updatedSponsors);
+    // Auto-save ngay lập tức
+    const res = await updateSectionAction("sponsors", updatedSponsors);
+    if (res.success) {
+      setMsg({ type: "success", text: "Đã xóa nhà tài trợ và lưu thành công!" });
+    } else {
+      setMsg({ type: "error", text: res.error || "Xóa thất bại, thử lại." });
+      // Rollback nếu lỗi
+      setSponsors(sponsors);
+    }
   };
 
   const handleLogoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
