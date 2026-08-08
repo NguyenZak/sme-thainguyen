@@ -156,17 +156,29 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     { id: "registration", label: "Form Đăng ký trực tuyến", icon: "📝" },
   ];
 
-  const toggleSection = (sectionId: string) => {
+  const toggleSection = async (sectionId: string) => {
     const current = config.hiddenSections || [];
     let updated: string[];
+    const item = SECTION_ITEMS.find((s) => s.id === sectionId);
+
     if (current.includes(sectionId)) {
       updated = current.filter((id) => id !== sectionId);
-      toast.info("Đã hiện Section", `Đã bật hiển thị phần: ${SECTION_ITEMS.find((s) => s.id === sectionId)?.label}`);
+      toast.info("Đã bật hiển thị phần! 👁️", `Phần "${item?.label}" đã hiển thị ra ngoài Trang chủ.`);
     } else {
       updated = [...current, sectionId];
-      toast.warning("Đã ẩn Section", `Đã tạm ẩn phần: ${SECTION_ITEMS.find((s) => s.id === sectionId)?.label}`);
+      toast.warning("Đã tạm ẩn phần! 🙈", `Phần "${item?.label}" đã được ẩn hoàn toàn khỏi Trang chủ.`);
     }
-    setConfig({ ...config, hiddenSections: updated });
+
+    const updatedConfig = { ...config, hiddenSections: updated };
+    setConfig(updatedConfig);
+
+    // Tự động lưu ngay lập tức xuống CSDL Supabase và làm mới cache Landing Page
+    const res = await updateSectionAction("site_config", updatedConfig);
+    if (res.success) {
+      onSaveSuccess?.(updatedConfig, footer);
+    } else {
+      toast.error("Lỗi tự động lưu!", res.error || "Không thể cập nhật trạng thái ẩn section.");
+    }
   };
 
   return (
