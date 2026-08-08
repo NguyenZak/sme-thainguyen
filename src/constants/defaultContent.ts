@@ -373,26 +373,26 @@ export const DEFAULT_STATISTICS: StatisticsContent = {
     },
     {
       id: "stat-2",
-      value: 100,
-      suffix: "+",
-      label: "GIAN HÀNG TRIỂN LÃM",
-      subtext: "Trưng bày sản phẩm, công nghệ & giải pháp phát triển bền vững",
-      iconName: "Store"
+      value: 63,
+      suffix: "",
+      label: "TỈNH THÀNH THAM GIA",
+      subtext: "Đại diện hiệp hội doanh nghiệp các tỉnh thành phố",
+      iconName: "MapPin"
     },
     {
       id: "stat-3",
-      value: 50,
+      value: 10,
       suffix: "+",
-      label: "PHIÊN B2B MATCHING",
-      subtext: "Kết nối trực tiếp 1:1 giữa nhà cung ứng & nhà mua hàng",
-      iconName: "Handshake"
+      label: "QUỐC GIA GIAO THƯƠNG",
+      subtext: "Các đoàn doanh nghiệp & nhà đầu tư quốc tế",
+      iconName: "Globe2"
     },
     {
       id: "stat-4",
       value: 3,
       suffix: " NGÀY",
-      label: "CHUỖI HOẠT ĐỘNG",
-      subtext: "B2B Matching, Diễn đàn cấp cao, Gala Dinner & Đại hội TASME",
+      label: "CHUỖI SỰ KIỆN",
+      subtext: "B2B Matching, Diễn đàn cấp cao, Gala Dinner & Triển lãm",
       iconName: "Calendar"
     }
   ]
@@ -647,18 +647,19 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   title: "Đăng Ký Vé Tham Dự Diễn Đàn",
   subtitle: "Trọn gói quyền lợi tham dự chuỗi hoạt động 3 ngày tại Thái Nguyên.",
   priceVND: 1450000,
-  originalPriceVND: 2000000,
-  ticketBadgeText: "ƯU ĐÃI ĐĂNG KÝ SỚM",
+  originalPriceVND: 2500000,
+  ticketBadgeText: "Vé Đại biểu Chính thức",
   inclusions: [
-    "Thẻ tham dự trọn vẹn chuỗi sự kiện 3 ngày (18 - 20/09/2026)",
-    "Tham gia các phiên kết nối giao thương B2B Matching 1:1",
-    "01 Vé tham dự Đêm Gala Dinner sang trọng (Tối 19/09)",
-    "Thưởng thức 04 tiệc trà Teabreak cao cấp trong suốt diễn đàn",
-    "Bộ tài liệu sự kiện, Sổ tay doanh nhân & Quà tặng từ BTC",
-    "Cơ hội bốc thăm may mắn với nhiều giải thưởng giá trị"
+    "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel",
+    "Bữa sáng Buffet cao cấp hàng ngày",
+    "Các bữa ăn trưa chính theo chương trình",
+    "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp",
+    "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
+    "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
+    "Thẻ Đại biểu trọn gói tham dự 100+ phiên B2B Matching"
   ],
-  ctaText: "ĐĂNG KÝ GIỮ CHỖ NGAY",
-  guaranteeText: "Hoàn tiền 100% nếu sự kiện hủy hoặc thay đổi lịch trình bất khả kháng"
+  ctaText: "Đăng ký tham dự ngay",
+  guaranteeText: "Cam kết quyền lợi từ Ban tổ chức TASME"
 };
 
 export const DEFAULT_SPONSORS: SponsorsContent = {

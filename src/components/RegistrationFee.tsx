@@ -19,6 +19,18 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
   const badge = content?.badge || DEFAULT_TICKET_FEE.badge;
   const title = content?.title || DEFAULT_TICKET_FEE.title;
   const subtitle = content?.subtitle || DEFAULT_TICKET_FEE.subtitle;
+  const ticketBadgeText = content?.ticketBadgeText || DEFAULT_TICKET_FEE.ticketBadgeText;
+  const priceVND = content?.priceVND ?? DEFAULT_TICKET_FEE.priceVND;
+  const originalPriceVND = content?.originalPriceVND ?? DEFAULT_TICKET_FEE.originalPriceVND;
+  const inclusions = content?.inclusions?.length ? content.inclusions : DEFAULT_TICKET_FEE.inclusions;
+  const ctaText = content?.ctaText || DEFAULT_TICKET_FEE.ctaText;
+  const guaranteeText = content?.guaranteeText || DEFAULT_TICKET_FEE.guaranteeText;
+
+  const discountPercent =
+    originalPriceVND && originalPriceVND > priceVND
+      ? Math.round(((originalPriceVND - priceVND) / originalPriceVND) * 100)
+      : 0;
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -60,18 +72,34 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
             {/* Left side: Fee summary */}
             <div className="lg:col-span-5 space-y-6 text-center lg:text-left border-b lg:border-b-0 lg:border-r border-emerald-800/80 pb-8 lg:pb-0 lg:pr-8">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-[#F59E0B] text-xs font-bold border border-amber-500/30">
-                <Sparkles className="w-4 h-4 text-[#F59E0B]" /> Vé Đại biểu Chính thức
+                <Sparkles className="w-4 h-4 text-[#F59E0B]" /> {ticketBadgeText}
               </div>
               <div>
-                <p className="text-xs font-medium text-emerald-200 uppercase tracking-wider">
+                <p className="text-xs font-medium text-emerald-200 uppercase tracking-wider mb-1">
                   Chi phí niêm yết
                 </p>
-                <div className="mt-2 flex flex-wrap items-baseline justify-center lg:justify-start gap-1.5 sm:gap-2">
+
+                {/* Strikethrough Price / Giá gạch */}
+                {originalPriceVND && originalPriceVND > priceVND ? (
+                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                    <span className="text-base sm:text-xl font-bold text-slate-300/80 line-through tracking-tight decoration-red-500/80 decoration-2">
+                      {originalPriceVND.toLocaleString("vi-VN")} VNĐ
+                    </span>
+                    {discountPercent > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-[11px] font-extrabold border border-red-500/30">
+                        -{discountPercent}%
+                      </span>
+                    )}
+                  </div>
+                ) : null}
+
+                {/* Main Selling Price / Giá ưu đãi chính */}
+                <div className="flex flex-wrap items-baseline justify-center lg:justify-start gap-1.5 sm:gap-2">
                   <span
                     className="text-3xl sm:text-5xl font-black text-[#F59E0B] tracking-tight"
                     style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                   >
-                    1.450.000
+                    {priceVND.toLocaleString("vi-VN")}
                   </span>
                   <span className="text-lg sm:text-xl font-bold text-slate-200 shrink-0">VNĐ</span>
                   <span className="text-xs sm:text-sm font-medium text-slate-300 whitespace-nowrap shrink-0">/ Đại biểu</span>
@@ -95,11 +123,11 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
                   className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-extrabold text-base bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-lg transition-all transform hover:-translate-y-0.5"
                 >
-                  <span>Đăng ký tham dự ngay</span>
+                  <span>{ctaText}</span>
                   <ArrowRight className="w-5 h-5" />
                 </a>
                 <p className="text-xs text-emerald-200 text-center flex items-center justify-center gap-1">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" /> Cam kết quyền lợi từ Ban tổ chức TASME
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" /> {guaranteeText}
                 </p>
               </div>
             </div>
@@ -113,7 +141,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                 <Ticket className="w-5 h-5 text-[#F59E0B]" /> Gói dịch vụ đã bao gồm:
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                {INCLUSIONS.map((item, idx) => (
+                {inclusions.map((item, idx) => (
                   <motion.li
                     key={idx}
                     initial={{ opacity: 0, x: 20 }}
