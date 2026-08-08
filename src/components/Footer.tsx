@@ -64,17 +64,26 @@ export default function Footer({ content }: { content?: FooterContent }) {
                 const hotlines = footer.contactHotlines?.length
                   ? footer.contactHotlines
                   : footer.contactHotline
-                  ? [footer.contactHotline]
+                  ? [{ title: "Hotline", phone: footer.contactHotline }]
                   : [];
-                return hotlines.length > 0 ? (
+                // backward-compat: nếu vẫn còn dạng string cũ
+                const normalized = hotlines.map((h) =>
+                  typeof h === "string" ? { title: "Hotline", phone: h } : h
+                );
+                return normalized.length > 0 ? (
                   <div className="flex items-start gap-2.5">
                     <Phone className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-white">Hotline Ban tổ chức:</strong>
-                      {hotlines.map((phone, i) => (
-                        <span key={i} className="block">
-                          {phone}
-                        </span>
+                    <div className="space-y-0.5">
+                      <strong className="text-white block">Hotline Ban tổ chức:</strong>
+                      {normalized.map((h, i) => (
+                        <a
+                          key={i}
+                          href={`tel:${h.phone.replace(/[\s.]/g, "")}`}
+                          className="flex items-center gap-1.5 group hover:text-[#22C55E] transition-colors"
+                        >
+                          <span className="text-emerald-400 text-[11px] font-semibold">{h.title}:</span>
+                          <span className="font-bold text-white group-hover:text-[#22C55E] transition-colors">{h.phone}</span>
+                        </a>
                       ))}
                     </div>
                   </div>

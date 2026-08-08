@@ -31,10 +31,12 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
     // Seed contactHotlines from legacy contactHotline if not yet migrated
     contactHotlines:
       initialFooter?.contactHotlines?.length
-        ? initialFooter.contactHotlines
+        ? initialFooter.contactHotlines.map((h) =>
+            typeof h === "string" ? { title: "Hotline", phone: h } : h
+          )
         : initialFooter?.contactHotline
-        ? [initialFooter.contactHotline]
-        : DEFAULT_FOOTER.contactHotlines ?? ["0988.123.456"],
+        ? [{ title: "Hotline", phone: initialFooter.contactHotline }]
+        : DEFAULT_FOOTER.contactHotlines ?? [{ title: "Ban Thư ký", phone: "0988.123.456" }],
     socialLinks: {
       ...DEFAULT_FOOTER.socialLinks,
       ...(initialFooter?.socialLinks || {}),
@@ -186,7 +188,7 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
                 onClick={() =>
                   setFooter({
                     ...footer,
-                    contactHotlines: [...(footer.contactHotlines ?? []), ""],
+                    contactHotlines: [...(footer.contactHotlines ?? []), { title: "Hotline", phone: "" }],
                   })
                 }
                 className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-lg transition-colors"
@@ -194,35 +196,51 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
                 <Plus className="w-3.5 h-3.5" /> Thêm số
               </button>
             </div>
-            {(footer.contactHotlines ?? []).map((phone, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-xl px-2.5 py-2 flex-1">
+            {(footer.contactHotlines ?? []).map((hotline, idx) => (
+              <div key={idx} className="space-y-1.5 bg-emerald-50/60 border border-emerald-200 rounded-xl p-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-0.5">Tiêu đề / Chức danh</label>
+                    <input
+                      type="text"
+                      value={hotline.title}
+                      onChange={(e) => {
+                        const updated = [...(footer.contactHotlines ?? [])];
+                        updated[idx] = { ...hotline, title: e.target.value };
+                        setFooter({ ...footer, contactHotlines: updated });
+                      }}
+                      placeholder="VD: Ban Thư ký"
+                      className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:border-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                  {(footer.contactHotlines ?? []).length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = (footer.contactHotlines ?? []).filter((_, i) => i !== idx);
+                        setFooter({ ...footer, contactHotlines: updated, contactHotline: (updated[0] as any)?.phone ?? "" });
+                      }}
+                      className="p-1.5 mt-4 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors shrink-0"
+                      title="Xóa số này"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <input
                     type="tel"
-                    value={phone}
+                    value={hotline.phone}
                     onChange={(e) => {
                       const updated = [...(footer.contactHotlines ?? [])];
-                      updated[idx] = e.target.value;
-                      setFooter({ ...footer, contactHotlines: updated, contactHotline: updated[0] ?? "" });
+                      updated[idx] = { ...hotline, phone: e.target.value };
+                      setFooter({ ...footer, contactHotlines: updated, contactHotline: updated[0]?.phone ?? "" });
                     }}
                     placeholder="VD: 0988.xxx.xxx"
-                    className="flex-1 bg-transparent border-none outline-none text-xs text-slate-900 font-bold placeholder:font-normal placeholder:text-slate-400"
+                    className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:border-emerald-500 focus:outline-none placeholder:font-normal placeholder:text-slate-400"
                   />
                 </div>
-                {(footer.contactHotlines ?? []).length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = (footer.contactHotlines ?? []).filter((_, i) => i !== idx);
-                      setFooter({ ...footer, contactHotlines: updated, contactHotline: updated[0] ?? "" });
-                    }}
-                    className="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors"
-                    title="Xóa số này"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
               </div>
             ))}
           </div>
