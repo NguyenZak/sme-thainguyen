@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AboutContent, AttendeeTag, FeatureCard, DEFAULT_ABOUT } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
   CheckCircle2,
@@ -280,13 +281,13 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Đoạn Văn Mô Tả Giới Thiệu Chính</label>
-            <textarea
-              rows={3}
+            <RichTextarea
+              label="Đoạn Văn Mô Tả Giới Thiệu Chính"
+              subLabel="💡 Hỗ trợ in đậm <b>, nghiêng <i>, xuống dòng..."
               value={about.descriptionParagraph1 || ""}
-              onChange={(e) => setAbout({ ...about, descriptionParagraph1: e.target.value })}
+              onChange={(val) => setAbout({ ...about, descriptionParagraph1: val })}
               placeholder="Nhập đoạn văn mô tả tổng quan sự kiện..."
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none"
+              rows={3}
             />
           </div>
         </div>
@@ -391,12 +392,11 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">Nội Dung Mô Tả</label>
-                <textarea
-                  rows={2}
+                <RichTextarea
+                  label="Nội Dung Mô Tả"
                   value={card.description || ""}
-                  onChange={(e) => handleFeatureCardChange(idx, "description", e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none"
+                  onChange={(val) => handleFeatureCardChange(idx, "description", val)}
+                  rows={2}
                 />
               </div>
 

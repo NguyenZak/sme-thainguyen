@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   HelpCircle,
   Plus,
@@ -411,17 +412,15 @@ export default function FaqEditor({ initialContent }: { initialContent?: FaqCont
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                    Câu Trả Lời Chi Tiết (Answer)
-                  </label>
-                  <textarea
-                    rows={5}
+                  <RichTextarea
+                    label="Câu Trả Lời Chi Tiết (Answer)"
+                    subLabel="💡 Hỗ trợ in đậm <b>, gạch đầu dòng •, xuống dòng..."
+                    rows={4}
                     value={editingItem.answer}
-                    onChange={(e) =>
-                      handleUpdateItem({ ...editingItem, answer: e.target.value })
+                    onChange={(val) =>
+                      handleUpdateItem({ ...editingItem, answer: val })
                     }
                     placeholder="Nhập nội dung giải đáp chi tiết..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 leading-relaxed focus:bg-white focus:outline-none"
                   />
                 </div>
 

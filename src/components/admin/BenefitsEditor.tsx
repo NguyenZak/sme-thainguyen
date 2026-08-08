@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BenefitsContent, BenefitItem } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
   CheckCircle2,
@@ -279,14 +280,11 @@ export default function BenefitsEditor({ initialBenefits }: BenefitsEditorProps)
 
               {/* Description */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                  Mô Tả Chi Tiết <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  rows={3}
+                <RichTextarea
+                  label="Mô Tả Chi Tiết *"
                   value={item.description}
-                  onChange={(e) => handleItemChange(idx, "description", e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none resize-none"
+                  onChange={(val) => handleItemChange(idx, "description", val)}
+                  rows={2.5}
                 />
               </div>
             </div>

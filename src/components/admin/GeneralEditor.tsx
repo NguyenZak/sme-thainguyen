@@ -5,6 +5,7 @@ import Image from "next/image";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
   CheckCircle2,
@@ -1108,19 +1109,12 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold text-slate-700">
-                3. Thẻ Mô Tả (Meta Description)
-              </label>
-              <span className={`text-[10px] font-mono ${(config.metaDescription?.length || 0) > 165 ? "text-amber-600 font-bold" : "text-slate-400"}`}>
-                {config.metaDescription?.length || 0} / 160 ký tự (chuẩn Google)
-              </span>
-            </div>
-            <textarea
+            <RichTextarea
+              label="3. Thẻ Mô Tả (Meta Description)"
+              subLabel={`${config.metaDescription?.length || 0} / 160 ký tự (chuẩn Google)`}
+              value={config.metaDescription || ""}
+              onChange={(val) => setConfig({ ...config, metaDescription: val })}
               rows={3}
-              value={config.metaDescription}
-              onChange={(e) => setConfig({ ...config, metaDescription: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
 
@@ -1264,12 +1258,11 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG FOOTER & MẠNG XÃ HỘI</h3>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Đoạn Văn Giới Thiệu Ở Footer</label>
-          <textarea
+          <RichTextarea
+            label="Đoạn Văn Giới Thiệu Ở Footer"
+            value={footer.aboutText || ""}
+            onChange={(val) => setFooter({ ...footer, aboutText: val })}
             rows={3}
-            value={footer.aboutText}
-            onChange={(e) => setFooter({ ...footer, aboutText: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
           />
         </div>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FooterContent, DEFAULT_FOOTER } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
   CheckCircle2,
@@ -131,15 +132,13 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
         </h3>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Đoạn Văn Giới Thiệu Ngắn Chân Trang (About Text)
-          </label>
-          <textarea
-            rows={3}
+          <RichTextarea
+            label="Đoạn Văn Giới Thiệu Ngắn Chân Trang (About Text)"
+            subLabel="💡 Hỗ trợ in đậm <b>, nghiêng <i>, xuống dòng..."
             value={footer.aboutText || ""}
-            onChange={(e) => setFooter({ ...footer, aboutText: e.target.value })}
+            onChange={(val) => setFooter({ ...footer, aboutText: val })}
             placeholder="VD: Diễn đàn Kết nối giao thương Doanh nghiệp nhỏ và vừa Việt Nam 2026..."
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none"
+            rows={3}
           />
         </div>
 
