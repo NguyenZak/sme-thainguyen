@@ -64,9 +64,13 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: iconUrl,
-      shortcut: iconUrl,
-      apple: iconUrl,
+      icon: [
+        { url: iconUrl, type: "image/png" },
+        { url: "/icon.png", type: "image/png" },
+        { url: "/favicon.ico", type: "image/x-icon" },
+      ],
+      shortcut: [iconUrl],
+      apple: [iconUrl],
     },
     openGraph: {
       title,
@@ -213,7 +217,8 @@ export default async function RootLayout({
       className={`${wixDisplay.variable} ${inter.variable} scroll-smooth`}
     >
       <head>
-        <link rel="icon" href={faviconHref} />
+        <link rel="icon" type="image/png" href={faviconHref} />
+        <link rel="shortcut icon" type="image/png" href={faviconHref} />
         <link rel="apple-touch-icon" href={faviconHref} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:image" content={fullOgImgUrl} />
