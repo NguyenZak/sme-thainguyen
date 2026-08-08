@@ -14,6 +14,7 @@ import {
   Gem,
   Sparkles,
   Layers,
+  ExternalLink,
 } from "lucide-react";
 import Image from "next/image";
 import {
@@ -40,23 +41,19 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
       ? data.milestones
       : (DEFAULT_SPONSORS.milestones || []);
 
-  const badgeText = data.badge || DEFAULT_SPONSORS.badge;
-  const titleText = data.title || DEFAULT_SPONSORS.title;
-  const subtitleText = data.subtitle || DEFAULT_SPONSORS.subtitle;
+  const badge = data.badge || DEFAULT_SPONSORS.badge;
+  const title = data.title || DEFAULT_SPONSORS.title;
+  const subtitle = data.subtitle || DEFAULT_SPONSORS.subtitle;
+  const prospectusPdfUrl = data.prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
 
-  // Filter confirmed sponsors by tier category
-  const coOrganizers = sponsorsList.filter((sp) => sp.tier === "co-organizer");
-  const diamondSponsors = sponsorsList.filter((sp) => sp.tier === "diamond");
-  const goldSponsors = sponsorsList.filter((sp) => sp.tier === "gold");
-  const silverBronzeSponsors = sponsorsList.filter(
-    (sp) => sp.tier === "silver" || sp.tier === "bronze"
-  );
-  const companionSponsors = sponsorsList.filter(
-    (sp) => sp.tier === "companion" || !sp.tier
-  );
+  const coOrganizers = sponsorsList.filter((s) => s.tier === "co-organizer");
+  const diamondSponsors = sponsorsList.filter((s) => s.tier === "diamond");
+  const goldSponsors = sponsorsList.filter((s) => s.tier === "gold");
+  const silverBronzeSponsors = sponsorsList.filter((s) => s.tier === "silver" || s.tier === "bronze");
+  const companionSponsors = sponsorsList.filter((s) => s.tier === "companion" || !s.tier);
 
   const handleDownloadPDF = () => {
-    const pdfUrl = data.prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
+    const pdfUrl = prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
     if (pdfUrl) {
       window.open(pdfUrl, "_blank");
     } else {
@@ -69,21 +66,31 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
     heightClass: string = "h-16 sm:h-20"
   ) => {
     const tileNode = (
-      <div className={`relative ${heightClass} flex items-center justify-center p-2 group transition-all duration-300`}>
+      <motion.div
+        whileHover={{ y: -6, scale: 1.03 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className={`relative ${heightClass} px-5 py-3 bg-white/95 backdrop-blur-sm rounded-2xl border border-emerald-900/10 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 group flex items-center justify-center cursor-pointer min-w-[140px] sm:min-w-[180px]`}
+      >
         {item.logoUrl ? (
           <Image
             src={item.logoUrl}
             alt={item.name}
             width={240}
             height={100}
-            className={`${heightClass} w-auto object-contain filter group-hover:scale-108 transition-transform duration-300`}
+            className={`${heightClass} w-auto max-w-[180px] sm:max-w-[220px] object-contain filter group-hover:scale-108 transition-transform duration-300`}
           />
         ) : (
-          <div className="flex items-center justify-center text-slate-800 font-extrabold text-sm sm:text-base text-center group-hover:text-emerald-700 transition-colors">
-            <span className="truncate px-2">{item.name}</span>
+          <div className="flex items-center justify-center text-slate-800 font-extrabold text-xs sm:text-sm text-center group-hover:text-emerald-700 transition-colors">
+            <span className="line-clamp-2 px-2">{item.name}</span>
           </div>
         )}
-      </div>
+
+        {item.websiteUrl && item.websiteUrl !== "#" && (
+          <span className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600">
+            <ExternalLink className="w-3 h-3" />
+          </span>
+        )}
+      </motion.div>
     );
 
     if (item.websiteUrl && item.websiteUrl !== "#") {
@@ -93,8 +100,8 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
           href={item.websiteUrl}
           target="_blank"
           rel="noopener noreferrer"
-          title={item.name}
-          className="block cursor-pointer"
+          title={`${item.name} - Nhấp để truy cập website`}
+          className="block"
         >
           {tileNode}
         </a>
@@ -125,16 +132,16 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             className="text-center max-w-3xl mx-auto space-y-4"
           >
             <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider border border-amber-200">
-              {badgeText}
+              {badge}
             </span>
             <h2
               className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
               style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
             >
-              {titleText}
+              {title}
             </h2>
             <p className="text-slate-600 text-base sm:text-lg">
-              {subtitleText}
+              {subtitle}
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">

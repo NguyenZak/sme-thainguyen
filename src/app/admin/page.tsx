@@ -141,14 +141,14 @@ export default function AdminPage() {
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
       <AdminHeader userEmail={userEmail} />
 
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row min-w-0 relative">
         <AdminSidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           registrationsCount={registrationsCount}
         />
 
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-100">
+        <main className="flex-1 p-6 md:p-8 bg-slate-100 min-w-0">
           {loading ? (
             <div className="h-96 flex flex-col items-center justify-center gap-3 text-slate-500">
               <Loader2 className="w-8 h-8 animate-spin text-slate-900" />

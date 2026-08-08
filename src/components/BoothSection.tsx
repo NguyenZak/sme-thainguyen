@@ -5,21 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   LayoutGrid,
-  Maximize2,
   CheckCircle2,
-  ArrowRight,
   Sparkles,
   X,
   ZoomIn,
   ZoomOut,
   RotateCcw,
-  ChevronUp,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
+  ArrowRight,
   Move,
-  Compass,
-  Hand,
 } from "lucide-react";
 import { BoothsContent, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 
@@ -500,82 +493,6 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                     draggable={false}
                     className="max-w-none w-auto max-h-[72vh] object-contain rounded-xl shadow-2xl border border-slate-700/60 pointer-events-none select-none"
                   />
-                </div>
-
-                {/* Floating Directional D-Pad / Navigation Controller (Bottom Right) */}
-                <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center bg-slate-900/90 backdrop-blur-md p-2 rounded-2xl border border-slate-700/80 shadow-2xl">
-                  <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <Compass className="w-3 h-3 text-emerald-400" />
-                    <span>Di chuyển</span>
-                  </div>
-
-                  {/* Up button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePan(0, 100);
-                    }}
-                    title="Kéo lên trên"
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
-                  >
-                    <ChevronUp className="w-4 h-4" />
-                  </button>
-
-                  {/* Left, Center/Reset, Right */}
-                  <div className="flex items-center gap-1 my-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePan(100, 0);
-                      }}
-                      title="Kéo sang trái"
-                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleResetZoom();
-                      }}
-                      title="Căn giữa & Đặt lại (Reset)"
-                      className="p-1.5 rounded-lg bg-emerald-700/70 hover:bg-emerald-600 text-emerald-100 transition-all text-[10px] font-bold shadow-sm active:scale-95"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePan(-100, 0);
-                      }}
-                      title="Kéo sang phải"
-                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  {/* Down button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePan(0, -100);
-                    }}
-                    title="Kéo xuống dưới"
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Floating Bottom Center Helper Pill */}
-                <div className="absolute bottom-4 left-4 z-20 pointer-events-none hidden sm:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs text-slate-300 shadow-xl">
-                  <Hand className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>
-                    <strong>Kéo thả chuột:</strong> Di chuyển mọi hướng • <strong>Cuộn chuột:</strong> Zoom • <strong>Phím mũi tên:</strong> Kéo nhanh
-                  </span>
                 </div>
               </div>
 

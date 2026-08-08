@@ -61,7 +61,7 @@ export default function AdminSidebar({
   ];
 
   return (
-    <aside className="w-full md:w-72 bg-white border-r border-slate-200 p-4 shrink-0 flex flex-col font-sans min-h-[calc(100vh-4rem)]">
+    <aside className="w-full md:w-72 bg-white border-r border-slate-200 p-4 shrink-0 flex flex-col font-sans md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:overflow-y-auto z-20">
       <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-3">
         Danh Mục Quản Lý Nội Dung
       </div>
