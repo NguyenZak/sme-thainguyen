@@ -9,8 +9,9 @@ import { DEFAULT_SPEAKERS, SpeakersContent, SpeakerItem } from "@/constants/defa
 export default function SpeakersSection({ content }: { content?: SpeakersContent }) {
   const [selectedSpeaker, setSelectedSpeaker] = useState<SpeakerItem | null>(null);
   const data = content || DEFAULT_SPEAKERS;
-  const speakers: SpeakerItem[] =
-    data.items && data.items.length > 0 ? data.items : DEFAULT_SPEAKERS.items;
+  const speakers: SpeakerItem[] = Array.isArray(content?.items)
+    ? content.items
+    : DEFAULT_SPEAKERS.items;
 
   return (
     <section id="speakers" className="py-20 bg-white">

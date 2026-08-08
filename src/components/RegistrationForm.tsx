@@ -387,23 +387,7 @@ export default function RegistrationForm({
               </div>
             )}
 
-            {activeTab === "booth" && (
-              <div className="space-y-2">
-                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                  Số gian &amp; Vị trí dự kiến <span className="text-red-500">*</span>
-                </label>
-                <select
-                  {...register("boothNumber")}
-                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
-                >
-                  {registration.boothOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Full Name */}
@@ -515,33 +499,8 @@ export default function RegistrationForm({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Attendees / Booth Quantity count */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                  {activeTab === "booth" ? "Số gian đăng ký" : "Số người đăng ký"}
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  {...register("attendeesCount")}
-                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
-                />
-              </div>
 
-              {/* Networking Needs */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                  Nhu cầu kết nối B2B
-                </label>
-                <input
-                  type="text"
-                  placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
-                  {...register("networkingNeeds")}
-                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
-                />
-              </div>
-            </div>
+
 
             {/* Notes */}
             <div className="space-y-2">
@@ -572,7 +531,7 @@ export default function RegistrationForm({
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Đang xử lý đăng ký...</span>
+                    <span>Đang gửi thông tin...</span>
                   </>
                 ) : (
                   <>

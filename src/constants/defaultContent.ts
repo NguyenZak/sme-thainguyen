@@ -432,7 +432,7 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
     "Gian #12 (3m x 3m)",
     "Gian #19 (3m x 3m)",
   ],
-  submitButtonText: "Gửi đăng ký",
+  submitButtonText: "Gửi thông tin",
   mobileDelegateLabel: "Đăng ký Đại biểu",
   mobileSponsorLabel: "Tài trợ",
   mobileBoothLabel: "Gian hàng",

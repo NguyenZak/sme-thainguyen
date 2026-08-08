@@ -28,18 +28,18 @@ import {
 
 export default function SponsorSection({ content }: { content?: SponsorsContent }) {
   const data = content || DEFAULT_SPONSORS;
-  const sponsorsList: SponsorItem[] =
-    data.items && data.items.length > 0 ? data.items : DEFAULT_SPONSORS.items;
-  const packages: SponsorPackageTier[] =
-    data.packages && data.packages.length > 0 ? data.packages : (DEFAULT_SPONSORS.packages || []);
-  const priorityCategories: SponsorPriorityCategory[] =
-    data.priorityCategories && data.priorityCategories.length > 0
-      ? data.priorityCategories
-      : (DEFAULT_SPONSORS.priorityCategories || []);
-  const milestones: SponsorMilestone[] =
-    data.milestones && data.milestones.length > 0
-      ? data.milestones
-      : (DEFAULT_SPONSORS.milestones || []);
+  const sponsorsList: SponsorItem[] = Array.isArray(content?.items)
+    ? content.items
+    : DEFAULT_SPONSORS.items;
+  const packages: SponsorPackageTier[] = Array.isArray(content?.packages)
+    ? content.packages
+    : (DEFAULT_SPONSORS.packages || []);
+  const priorityCategories: SponsorPriorityCategory[] = Array.isArray(content?.priorityCategories)
+    ? content.priorityCategories
+    : (DEFAULT_SPONSORS.priorityCategories || []);
+  const milestones: SponsorMilestone[] = Array.isArray(content?.milestones)
+    ? content.milestones
+    : (DEFAULT_SPONSORS.milestones || []);
 
   const badge = data.badge || DEFAULT_SPONSORS.badge;
   const title = data.title || DEFAULT_SPONSORS.title;

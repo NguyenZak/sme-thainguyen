@@ -46,7 +46,7 @@ function Counter({ end, duration = 2.5, suffix = "", formatZero = true }: { end:
 }
 
 export default function Statistics({ content }: { content?: StatisticsContent }) {
-  const items = content?.items && content.items.length > 0 ? content.items : DEFAULT_STATISTICS.items;
+  const items = Array.isArray(content?.items) ? content.items : DEFAULT_STATISTICS.items;
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-12 mb-10 relative z-10">

@@ -19,7 +19,7 @@ import { FaqItem, FaqContent, DEFAULT_FAQ_CONTENT } from "@/constants/defaultCon
 
 export default function FaqSection({ content }: { content?: FaqContent }) {
   const data = content || DEFAULT_FAQ_CONTENT;
-  const faqList: FaqItem[] = data.items && data.items.length > 0 ? data.items : DEFAULT_FAQ_CONTENT.items;
+  const faqList: FaqItem[] = Array.isArray(content?.items) ? content.items : DEFAULT_FAQ_CONTENT.items;
   const badge = data.badgeText || DEFAULT_FAQ_CONTENT.badgeText;
   const title = data.title || DEFAULT_FAQ_CONTENT.title;
   const subtitle = data.subtitle || DEFAULT_FAQ_CONTENT.subtitle;

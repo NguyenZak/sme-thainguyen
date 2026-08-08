@@ -40,18 +40,15 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
   const [sponsors, setSponsors] = useState<SponsorsContent>({
     ...DEFAULT_SPONSORS,
     ...(initialSponsors || {}),
-    packages:
-      initialSponsors?.packages && initialSponsors.packages.length > 0
-        ? initialSponsors.packages
-        : DEFAULT_SPONSORS.packages || [],
-    priorityCategories:
-      initialSponsors?.priorityCategories && initialSponsors.priorityCategories.length > 0
-        ? initialSponsors.priorityCategories
-        : DEFAULT_SPONSORS.priorityCategories || [],
-    milestones:
-      initialSponsors?.milestones && initialSponsors.milestones.length > 0
-        ? initialSponsors.milestones
-        : DEFAULT_SPONSORS.milestones || [],
+    packages: Array.isArray(initialSponsors?.packages)
+      ? initialSponsors.packages
+      : DEFAULT_SPONSORS.packages || [],
+    priorityCategories: Array.isArray(initialSponsors?.priorityCategories)
+      ? initialSponsors.priorityCategories
+      : DEFAULT_SPONSORS.priorityCategories || [],
+    milestones: Array.isArray(initialSponsors?.milestones)
+      ? initialSponsors.milestones
+      : DEFAULT_SPONSORS.milestones || [],
     // Dùng Array.isArray thay vì length > 0 để tránh fallback khi mảng rỗng hợp lệ
     items: Array.isArray(initialSponsors?.items)
       ? initialSponsors.items
