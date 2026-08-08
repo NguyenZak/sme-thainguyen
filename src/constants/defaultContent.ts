@@ -298,12 +298,12 @@ export const DEFAULT_HERO: HeroContent = {
   eventDateText: "18 - 20 tháng 09, 2026",
   targetDateISO: "2026-09-18T08:00:00+07:00",
   venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
-  primaryCtaText: "ĐĂNG KÝ VÉ ĐẠI BIỂU",
+  primaryCtaText: "ĐĂNG KÝ ĐẠI BIỂU THAM GIA",
   primaryCtaLink: "#register",
-  secondaryCtaText: "HỒ SƠ NHÀ TÀI TRỢ",
-  secondaryCtaLink: "#sponsors",
-  tertiaryCtaText: "SƠ ĐỒ 100 GIAN HÀNG",
-  tertiaryCtaLink: "#booths",
+  secondaryCtaText: "ĐĂNG KÝ GIAN HÀNG",
+  secondaryCtaLink: "#register",
+  tertiaryCtaText: "THAM KHẢO GÓI TÀI TRỢ",
+  tertiaryCtaLink: "#sponsors",
 };
 
 export const DEFAULT_NAVBAR: NavbarContent = {

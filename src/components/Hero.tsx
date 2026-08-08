@@ -255,7 +255,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
 
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3 pb-4 sm:pb-6 w-full max-w-xl sm:max-w-none mx-auto relative z-50">
-          {/* 1st Order Primary CTA: Registration Form (Delegate) */}
+          {/* 1st Order Primary CTA: Delegate Registration */}
           <a
             id="cta-1"
             href={data.primaryCtaLink || "#register"}
@@ -266,34 +266,17 @@ export default function Hero({ content }: { content?: HeroContent }) {
                 );
               }
             }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
           >
             <Ticket className="w-4 h-4" />
-            <span>{data.primaryCtaText || "Đăng ký Vé Đại biểu (1.450.000 VNĐ)"}</span>
+            <span>{data.primaryCtaText || "ĐĂNG KÝ ĐẠI BIỂU THAM GIA"}</span>
             <ArrowRight className="w-4 h-4" />
           </a>
 
-          {/* 2nd Order Secondary CTA: Sponsor Packages & Prospectus */}
+          {/* 2nd Order Secondary CTA: Booth Exhibition Registration */}
           <a
             id="cta-2"
-            href={data.secondaryCtaLink || "#sponsors"}
-            onClick={(e) => {
-              if (typeof window !== "undefined") {
-                window.dispatchEvent(
-                  new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } })
-                );
-              }
-            }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5"
-          >
-            <Award className="w-4 h-4" />
-            <span>{data.secondaryCtaText || "Hồ sơ Nhà tài trợ"}</span>
-          </a>
-
-          {/* 3rd Order Tertiary CTA: Booth Floorplan & Exhibition */}
-          <a
-            id="cta-3"
-            href={data.tertiaryCtaLink || "#booths"}
+            href={data.secondaryCtaLink || "#register"}
             onClick={(e) => {
               if (typeof window !== "undefined") {
                 window.dispatchEvent(
@@ -301,10 +284,27 @@ export default function Hero({ content }: { content?: HeroContent }) {
                 );
               }
             }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
           >
-            <Store className="w-4 h-4 text-emerald-400" />
-            <span>{data.tertiaryCtaText || "Sơ đồ 100 Gian hàng"}</span>
+            <Store className="w-4 h-4 text-slate-950" />
+            <span>{data.secondaryCtaText || "ĐĂNG KÝ GIAN HÀNG"}</span>
+          </a>
+
+          {/* 3rd Order Tertiary CTA: Sponsor Packages Prospectus */}
+          <a
+            id="cta-3"
+            href={data.tertiaryCtaLink || "#sponsors"}
+            onClick={(e) => {
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(
+                  new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } })
+                );
+              }
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+          >
+            <Award className="w-4 h-4 text-emerald-400" />
+            <span>{data.tertiaryCtaText || "THAM KHẢO GÓI TÀI TRỢ"}</span>
           </a>
         </div>
 

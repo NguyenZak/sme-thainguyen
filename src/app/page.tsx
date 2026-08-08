@@ -73,7 +73,7 @@ export default async function Home() {
       {isVisible("statistics") && <Statistics content={content.statistics} />}
 
       {/* 3. About Forum & Core Purpose */}
-      {isVisible("about") && <AboutEvent content={content.about} />}
+      {isVisible("about") && <AboutEvent content={content.about} statisticsContent={content.statistics} />}
 
       {/* 4. Keynote Speakers & Experts (Authority & Prestige) */}
       {isVisible("speakers") && <SpeakersSection content={content.speakers} />}

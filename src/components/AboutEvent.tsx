@@ -58,10 +58,20 @@ const ATTENDEE_TAGS = [
   },
 ];
 
-import { AboutContent, DEFAULT_ABOUT } from "@/constants/defaultContent";
+import { AboutContent, DEFAULT_ABOUT, StatisticsContent, DEFAULT_STATISTICS } from "@/constants/defaultContent";
 
-export default function AboutEvent({ content }: { content?: AboutContent }) {
+export default function AboutEvent({
+  content,
+  statisticsContent,
+}: {
+  content?: AboutContent;
+  statisticsContent?: StatisticsContent;
+}) {
   const data = content || DEFAULT_ABOUT;
+  const statItems =
+    statisticsContent?.items && statisticsContent.items.length > 0
+      ? statisticsContent.items
+      : DEFAULT_STATISTICS.items;
   return (
     <section id="about" className="py-20 bg-[#F4FBF7]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
@@ -373,24 +383,25 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
               })}
             </div>
 
-            {/* Bottom stat strip */}
+            {/* Bottom stat strip - Synced dynamically with CMS Statistics */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.9 }}
-              className="mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-center"
+              className="mt-7 pt-5 border-t border-white/10 flex flex-wrap items-center justify-center gap-3 sm:gap-8 text-center"
             >
-              {[
-                { value: "500+", label: "Đại biểu" },
-                { value: "63",   label: "Tỉnh thành" },
-                { value: "10+",  label: "Quốc gia" },
-                { value: "3",    label: "Ngày sự kiện" },
-              ].map(({ value, label }, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-lg font-black text-amber-300">{value}</span>
-                  <span className="text-[11px] text-white/35 uppercase tracking-widest">{label}</span>
-                  {i < 3 && <div className="hidden sm:block w-px h-4 bg-white/15 ml-2" />}
+              {statItems.map((item, i) => (
+                <div key={item.id || i} className="flex items-center gap-2">
+                  <span className="text-lg font-black text-amber-300">
+                    {item.value}{item.suffix}
+                  </span>
+                  <span className="text-[11px] text-white/50 uppercase tracking-widest font-bold">
+                    {item.label}
+                  </span>
+                  {i < statItems.length - 1 && (
+                    <div className="hidden sm:block w-px h-4 bg-white/15 ml-2" />
+                  )}
                 </div>
               ))}
             </motion.div>

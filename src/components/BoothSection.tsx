@@ -17,10 +17,10 @@ import {
 import { BoothsContent, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 
 const BOOTH_INCLUSIONS = [
-  "Mặt bằng gian tiêu chuẩn 3m x 3m theo sơ đồ Ban Tổ chức",
-  "Vách ngăn, biển tên gian & hệ khung trưng bày chuyên nghiệp",
-  "01 Bàn tiếp khách + 02 Ghế tiêu chuẩn + Hệ chiếu sáng & điện 220V",
+  "Mặt bằng gian tiêu chuẩn diện tích 2m x 1,5m theo sơ đồ Ban Tổ chức",
+  "01 Standee, Vách ngăn, biển tên gian & hệ khung trưng bày chuyên nghiệp",
   "Ổ cắm điện & kết nối Internet Wi-Fi tốc độ cao riêng khu vực",
+  "02 Bàn + 02 Ghế tiêu chuẩn + Hệ chiếu sáng & điện 220V",
   "Hiển thị logo & thông tin doanh nghiệp trên sơ đồ & catalogue Diễn đàn",
   "Hỗ trợ vận chuyển, sắp xếp hàng hóa ngày lắp đặt (18/9)",
 ];
@@ -163,8 +163,12 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                 className="text-2xl font-extrabold text-[#0D3B2E]"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
-                Gian hàng Triển lãm 3m x 3m
+                Gian hàng Triển lãm 2m x 1,5m
               </h3>
+              <div className="p-3 bg-amber-500/10 border border-amber-400/40 rounded-xl text-amber-950 text-xs font-bold flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#F59E0B] shrink-0" />
+                <span>Mỗi gian hàng BTC sẽ sắp sẵn 2 bàn + 2 ghế + 1 Standee</span>
+              </div>
               <div className="flex items-baseline gap-2 pt-1">
                 <span
                   className="text-3xl font-black text-[#22C55E]"
