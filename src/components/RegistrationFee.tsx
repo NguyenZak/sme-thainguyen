@@ -25,6 +25,11 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
   const inclusions = content?.inclusions?.length ? content.inclusions : DEFAULT_TICKET_FEE.inclusions;
   const ctaText = content?.ctaText || DEFAULT_TICKET_FEE.ctaText;
   const guaranteeText = content?.guaranteeText || DEFAULT_TICKET_FEE.guaranteeText;
+  const earlyBirdLabel = content?.earlyBirdLabel || DEFAULT_TICKET_FEE.earlyBirdLabel || "Vé ưu đãi Đăng ký sớm";
+  const remainingSlots = content?.remainingSlots ?? DEFAULT_TICKET_FEE.remainingSlots ?? 15;
+  const totalSlots = content?.totalSlots ?? DEFAULT_TICKET_FEE.totalSlots ?? 100;
+  const earlyBirdSlotText = content?.earlyBirdSlotText || `Còn ${remainingSlots} / ${totalSlots} suất`;
+  const progressPercent = totalSlots > 0 ? Math.min(100, Math.max(5, Math.round(((totalSlots - remainingSlots) / totalSlots) * 100))) : 85;
 
   const discountPercent =
     originalPriceVND && originalPriceVND > priceVND
@@ -109,11 +114,14 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
               {/* Early Bird Progress Bar */}
               <div className="bg-emerald-950/60 p-3.5 rounded-2xl border border-emerald-700/50 space-y-2 text-xs text-emerald-200 text-left">
                 <div className="flex items-center justify-between font-bold">
-                  <span>Vé ưu đãi Đăng ký sớm</span>
-                  <span className="text-amber-400">Còn 15 / 100 suất</span>
+                  <span>{earlyBirdLabel}</span>
+                  <span className="text-amber-400">{earlyBirdSlotText}</span>
                 </div>
                 <div className="w-full h-2 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800">
-                  <div className="h-full bg-gradient-to-r from-[#22C55E] to-[#F59E0B] rounded-full w-[85%]" />
+                  <div
+                    className="h-full bg-gradient-to-r from-[#22C55E] to-[#F59E0B] rounded-full transition-all duration-500"
+                    style={{ width: `${progressPercent}%` }}
+                  />
                 </div>
               </div>
 

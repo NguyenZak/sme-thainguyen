@@ -185,6 +185,109 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
         </div>
       </div>
 
+      {/* Vé Ưu Đãi Đăng Ký Sớm & Thanh Tiến Độ (Early Bird Progress) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TIẾN ĐỘ VÉ ƯU ĐÃI ĐĂNG KÝ SỚM</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Tùy chỉnh dòng thông báo và thanh số lượng suất vé ưu đãi còn lại.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Tiêu Đề Dòng Vé Ưu Đãi
+            </label>
+            <input
+              type="text"
+              value={fee.earlyBirdLabel || ""}
+              placeholder="VD: Vé ưu đãi Đăng ký sớm"
+              onChange={(e) => setFee({ ...fee, earlyBirdLabel: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Số Suất Còn Lại (Suất) <span className="text-amber-600 font-bold">*(VD: 15)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.remainingSlots !== undefined ? fee.remainingSlots : ""}
+              placeholder="VD: 15"
+              onChange={(e) => {
+                const remaining = Number(e.target.value);
+                const total = fee.totalSlots || 100;
+                setFee({
+                  ...fee,
+                  remainingSlots: remaining,
+                  earlyBirdSlotText: `Còn ${remaining} / ${total} suất`,
+                });
+              }}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Tổng Số Suất Ban Đầu <span className="text-slate-500">*(VD: 100)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.totalSlots !== undefined ? fee.totalSlots : ""}
+              placeholder="VD: 100"
+              onChange={(e) => {
+                const total = Number(e.target.value);
+                const remaining = fee.remainingSlots || 15;
+                setFee({
+                  ...fee,
+                  totalSlots: total,
+                  earlyBirdSlotText: `Còn ${remaining} / ${total} suất`,
+                });
+              }}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+
+          <div className="md:col-span-3">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Chữ Hiển Thị Số Suất Tùy Chọn <span className="text-slate-500">*(Mặc định tự sinh: &quot;Còn 15 / 100 suất&quot;)*</span>
+            </label>
+            <input
+              type="text"
+              value={fee.earlyBirdSlotText || ""}
+              placeholder="VD: Còn 15 / 100 suất"
+              onChange={(e) => setFee({ ...fee, earlyBirdSlotText: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+        </div>
+
+        {/* Live Preview Bar */}
+        <div className="pt-2">
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Xem Trước Hiển Thị Thực Tế:</label>
+          <div className="bg-[#0B3026] p-4 rounded-2xl border border-emerald-800 space-y-2 text-xs text-emerald-200">
+            <div className="flex items-center justify-between font-bold">
+              <span className="text-emerald-100">{fee.earlyBirdLabel || "Vé ưu đãi Đăng ký sớm"}</span>
+              <span className="text-amber-400 font-extrabold">{fee.earlyBirdSlotText || `Còn ${fee.remainingSlots || 15} / ${fee.totalSlots || 100} suất`}</span>
+            </div>
+            <div className="w-full h-2.5 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800">
+              <div
+                className="h-full bg-gradient-to-r from-[#22C55E] to-[#F59E0B] rounded-full transition-all duration-300"
+                style={{
+                  width: `${
+                    fee.totalSlots && fee.totalSlots > 0
+                      ? Math.min(100, Math.max(5, Math.round((((fee.totalSlots || 100) - (fee.remainingSlots || 15)) / (fee.totalSlots || 100)) * 100)))
+                      : 85
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Danh sách dịch vụ bao gồm trong vé */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">

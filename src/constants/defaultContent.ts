@@ -202,6 +202,10 @@ export interface TicketFeeContent {
   priceVND: number;
   originalPriceVND: number;
   ticketBadgeText: string;
+  earlyBirdLabel?: string;
+  remainingSlots?: number;
+  totalSlots?: number;
+  earlyBirdSlotText?: string;
   inclusions: string[];
   ctaText: string;
   guaranteeText: string;
@@ -718,6 +722,10 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   priceVND: 1450000,
   originalPriceVND: 2500000,
   ticketBadgeText: "Vé Đại biểu Chính thức",
+  earlyBirdLabel: "Vé ưu đãi Đăng ký sớm",
+  remainingSlots: 15,
+  totalSlots: 100,
+  earlyBirdSlotText: "Còn 15 / 100 suất",
   inclusions: [
     "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel",
     "Bữa sáng Buffet cao cấp hàng ngày",
