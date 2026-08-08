@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -13,6 +13,13 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Move,
+  Compass,
+  Hand,
 } from "lucide-react";
 import { BoothsContent, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 
@@ -33,12 +40,21 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
 
   const [floorPlanOpen, setFloorPlanOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+
+  const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const startPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const hasMovedRef = useRef<boolean>(false);
+  const touchDistRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  // Reset zoom when modal opens/closes
+  // Reset zoom & pan when modal opens/closes
   useEffect(() => {
     if (floorPlanOpen) {
       setZoomLevel(1);
+      setPosition({ x: 0, y: 0 });
+      setIsDragging(false);
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -48,27 +64,170 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
     };
   }, [floorPlanOpen]);
 
-  // ESC key to close modal
+  const handleZoomIn = useCallback(() => {
+    setZoomLevel((prev) => Math.min(Number((prev + 0.5).toFixed(2)), 4.5));
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setZoomLevel((prev) => {
+      const next = Math.max(Number((prev - 0.5).toFixed(2)), 1);
+      if (next === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  }, []);
+
+  const handleResetZoom = useCallback(() => {
+    setZoomLevel(1);
+    setPosition({ x: 0, y: 0 });
+  }, []);
+
+  const handleSetPreset = useCallback((preset: number) => {
+    setZoomLevel(preset);
+    if (preset === 1) {
+      setPosition({ x: 0, y: 0 });
+    }
+  }, []);
+
+  const handlePan = useCallback((dx: number, dy: number) => {
+    setPosition((prev) => ({
+      x: prev.x + dx,
+      y: prev.y + dy,
+    }));
+  }, []);
+
+  // Keyboard navigation
   useEffect(() => {
+    if (!floorPlanOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && floorPlanOpen) {
+      if (e.key === "Escape") {
         setFloorPlanOpen(false);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        handlePan(100, 0);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        handlePan(-100, 0);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        handlePan(0, 100);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        handlePan(0, -100);
+      } else if (e.key === "+" || e.key === "=") {
+        e.preventDefault();
+        handleZoomIn();
+      } else if (e.key === "-" || e.key === "_") {
+        e.preventDefault();
+        handleZoomOut();
+      } else if (e.key === "0" || e.key.toLowerCase() === "r") {
+        e.preventDefault();
+        handleResetZoom();
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [floorPlanOpen]);
+  }, [floorPlanOpen, handlePan, handleZoomIn, handleZoomOut, handleResetZoom]);
 
-  const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.5, 4));
-  const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.5, 1));
-  const handleResetZoom = () => setZoomLevel(1);
+  // Pointer drag events for smooth multi-directional panning (mouse & single touch/pen)
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    setIsDragging(true);
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+    startPosRef.current = { x: position.x, y: position.y };
+    hasMovedRef.current = false;
 
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {
+      // ignore
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      hasMovedRef.current = true;
+    }
+
+    setPosition({
+      x: startPosRef.current.x + dx,
+      y: startPosRef.current.y + dy,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isDragging) {
+      setIsDragging(false);
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch (_) {
+        // ignore
+      }
+    }
+  };
+
+  // Mouse wheel zoom
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
-    if (e.deltaY < 0) {
-      handleZoomIn();
+    e.stopPropagation();
+    const zoomDelta = e.deltaY < 0 ? 0.3 : -0.3;
+    setZoomLevel((prev) => {
+      const next = Math.min(Math.max(Number((prev + zoomDelta).toFixed(2)), 1), 4.5);
+      if (next === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  };
+
+  // Multi-touch pinch zoom for mobile/tablet
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchDistRef.current = dist;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchDistRef.current !== null) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const factor = dist / touchDistRef.current;
+      touchDistRef.current = dist;
+      setZoomLevel((prev) => {
+        const next = Math.min(Math.max(Number((prev * factor).toFixed(2)), 1), 4.5);
+        if (next === 1) {
+          setPosition({ x: 0, y: 0 });
+        }
+        return next;
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchDistRef.current = null;
+  };
+
+  // Toggle zoom on image click only if user did not drag
+  const handleImageClick = () => {
+    if (hasMovedRef.current) return;
+    if (zoomLevel === 1) {
+      setZoomLevel(2.2);
     } else {
-      handleZoomOut();
+      setZoomLevel(1);
+      setPosition({ x: 0, y: 0 });
     }
   };
 
@@ -104,13 +263,13 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-xs sm:text-sm">
                 <LayoutGrid className="w-5 h-5 text-[#F59E0B] shrink-0" />
-                <span>Sơ đồ Mặt bằng Triển lãm (Nhấp để phóng to)</span>
+                <span>Sơ đồ Mặt bằng Triển lãm (Nhấp để phóng to & kéo di chuyển)</span>
               </div>
               <button
                 onClick={() => setFloorPlanOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 text-xs font-bold text-white border border-emerald-700/60 transition-all w-full sm:w-auto justify-center shadow-sm hover:scale-105 active:scale-95"
               >
-                <Maximize2 className="w-3.5 h-3.5 text-amber-400" /> Phóng to Sơ đồ
+                <Maximize2 className="w-3.5 h-3.5 text-amber-400" /> Phóng to & Kéo Sơ đồ
               </button>
             </div>
 
@@ -129,7 +288,10 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
 
               {/* Hover Badge Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 opacity-80 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4 pointer-events-none">
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[11px] font-bold border border-amber-400/30 shadow-lg">
+                    <Move className="w-3.5 h-3.5 text-emerald-400" /> Kéo 4 chiều
+                  </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-amber-300 text-[11px] font-bold border border-amber-400/30 shadow-lg">
                     <ZoomIn className="w-3.5 h-3.5" /> Chạm để zoom
                   </span>
@@ -140,7 +302,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                     Khu vực 100+ Gian hàng May Plaza
                   </span>
                   <span className="text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                    Xem full HD <ArrowRight className="w-3.5 h-3.5" />
+                    Xem full HD & Di chuyển <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>
@@ -217,120 +379,234 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
           </motion.div>
         </div>
 
-        {/* Floor Plan Lightbox / Interactive Zoom Modal */}
+        {/* Floor Plan Lightbox / Interactive Multi-directional Pan & Zoom Modal */}
         <AnimatePresence>
           {floorPlanOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-6 overflow-hidden select-none"
+              className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between p-2 sm:p-5 overflow-hidden select-none"
             >
               {/* Modal Top Controls Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/80 border border-slate-800 rounded-2xl px-4 py-3 text-white z-10 shadow-2xl">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl px-3 sm:px-4 py-2.5 text-white z-20 shadow-2xl">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <div className="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400">
-                    <LayoutGrid className="w-5 h-5" />
+                    <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm sm:text-base font-bold text-white leading-tight">
-                      Sơ đồ Chi tiết Mặt bằng Triển lãm
+                    <h3 className="text-xs sm:text-base font-bold text-white leading-tight flex items-center gap-2">
+                      <span>Sơ đồ Chi tiết Mặt bằng Triển lãm</span>
+                      <span className="hidden md:inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+                        <Move className="w-3 h-3" /> Kéo chuột di chuyển 4 chiều
+                      </span>
                     </h3>
-                    <p className="text-[11px] text-slate-400 hidden sm:block">
-                      Cuộn chuột hoặc bấm nút (+/-) để phóng to thu nhỏ. Click vào ảnh để toggle zoom.
+                    <p className="text-[10px] sm:text-xs text-slate-400 hidden sm:block">
+                      Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.
                     </p>
                   </div>
                 </div>
 
-                {/* Zoom Toolbar & Close button */}
-                <div className="flex items-center gap-2 sm:gap-3">
+                {/* Zoom Toolbar & Preset buttons & Close */}
+                <div className="flex items-center gap-1.5 sm:gap-2.5">
+                  {/* Preset quick zoom buttons */}
+                  <div className="hidden lg:flex items-center bg-slate-800/80 rounded-xl p-0.5 border border-slate-700/80 text-[11px] font-semibold">
+                    {[1, 1.5, 2, 3].map((preset) => (
+                      <button
+                        key={preset}
+                        onClick={() => handleSetPreset(preset)}
+                        className={`px-2 py-1 rounded-lg transition-all ${
+                          zoomLevel === preset
+                            ? "bg-emerald-600 text-white font-bold shadow-sm"
+                            : "text-slate-300 hover:text-white hover:bg-slate-700"
+                        }`}
+                      >
+                        {preset * 100}%
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Main Zoom In/Out/Reset Box */}
                   <div className="flex items-center bg-slate-800 rounded-xl p-1 border border-slate-700">
                     <button
                       onClick={handleZoomOut}
                       disabled={zoomLevel <= 1}
-                      title="Thu nhỏ"
-                      className="p-2 rounded-lg hover:bg-slate-700 text-slate-300 disabled:opacity-40 transition-colors"
+                      title="Thu nhỏ (-)"
+                      className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-700 text-slate-300 disabled:opacity-40 transition-colors"
                     >
-                      <ZoomOut className="w-4 h-4" />
+                      <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
 
-                    <span className="px-2 sm:px-3 text-xs font-bold text-amber-400 min-w-[50px] text-center">
+                    <span className="px-2 sm:px-2.5 text-[11px] sm:text-xs font-bold text-amber-400 min-w-[45px] text-center">
                       {Math.round(zoomLevel * 100)}%
                     </span>
 
                     <button
                       onClick={handleZoomIn}
-                      disabled={zoomLevel >= 4}
-                      title="Phóng to"
-                      className="p-2 rounded-lg hover:bg-slate-700 text-slate-300 disabled:opacity-40 transition-colors"
+                      disabled={zoomLevel >= 4.5}
+                      title="Phóng to (+)"
+                      className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-700 text-slate-300 disabled:opacity-40 transition-colors"
                     >
-                      <ZoomIn className="w-4 h-4" />
+                      <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
 
-                    <div className="w-[1px] h-5 bg-slate-700 mx-1" />
+                    <div className="w-[1px] h-4 bg-slate-700 mx-1" />
 
                     <button
                       onClick={handleResetZoom}
-                      title="Đặt lại 100%"
-                      className="p-2 rounded-lg hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1 text-xs font-semibold"
+                      title="Đặt lại vị trí ban đầu (Phím 0 hoặc R)"
+                      className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1 text-[11px] font-semibold"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Reset</span>
+                      <span className="hidden sm:inline">Về giữa</span>
                     </button>
                   </div>
 
+                  {/* Close button */}
                   <button
                     onClick={() => setFloorPlanOpen(false)}
-                    className="p-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 transition-colors"
+                    className="p-2 sm:p-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 transition-colors flex items-center justify-center cursor-pointer"
                     title="Đóng sơ đồ (ESC)"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
 
-              {/* Main Zoomable Image Viewport */}
+              {/* Main Pannable & Zoomable Image Viewport */}
               <div
                 ref={viewportRef}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
                 onWheel={handleWheel}
-                className="w-full flex-1 my-3 relative overflow-auto rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-center p-4 cursor-grab active:cursor-grabbing"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className={`w-full flex-1 my-2 relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800/90 flex items-center justify-center touch-none select-none ${
+                  isDragging ? "cursor-grabbing" : "cursor-grab"
+                }`}
+                style={{ touchAction: "none" }}
               >
+                {/* Background grid pattern indicating canvas */}
                 <div
-                  className="transition-transform duration-200 ease-out max-w-full max-h-full flex items-center justify-center"
+                  className="absolute inset-0 opacity-[0.07] pointer-events-none"
                   style={{
-                    transform: `scale(${zoomLevel})`,
-                    transformOrigin: "center center",
+                    backgroundImage:
+                      "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                    backgroundSize: "32px 32px",
                   }}
-                  onClick={() => {
-                    // Toggle zoom on click: if 1x -> 2x, if zoomed -> 1x
-                    if (zoomLevel === 1) {
-                      setZoomLevel(2);
-                    } else {
-                      setZoomLevel(1);
-                    }
+                />
+
+                {/* Zoomable & Pannable Image Canvas */}
+                <div
+                  onClick={handleImageClick}
+                  className="will-change-transform max-w-full max-h-full flex items-center justify-center select-none"
+                  style={{
+                    transform: `translate3d(${position.x}px, ${position.y}px, 0px) scale(${zoomLevel})`,
+                    transformOrigin: "center center",
+                    transition: isDragging ? "none" : "transform 0.15s ease-out",
                   }}
                 >
                   <img
                     src={mapImageUrl}
                     alt="Sơ đồ gian hàng Full HD"
-                    className="max-w-none w-auto max-h-[75vh] object-contain rounded-xl shadow-2xl border border-slate-700/50"
+                    draggable={false}
+                    className="max-w-none w-auto max-h-[72vh] object-contain rounded-xl shadow-2xl border border-slate-700/60 pointer-events-none select-none"
                   />
+                </div>
+
+                {/* Floating Directional D-Pad / Navigation Controller (Bottom Right) */}
+                <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center bg-slate-900/90 backdrop-blur-md p-2 rounded-2xl border border-slate-700/80 shadow-2xl">
+                  <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <Compass className="w-3 h-3 text-emerald-400" />
+                    <span>Di chuyển</span>
+                  </div>
+
+                  {/* Up button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePan(0, 100);
+                    }}
+                    title="Kéo lên trên"
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
+                  >
+                    <ChevronUp className="w-4 h-4" />
+                  </button>
+
+                  {/* Left, Center/Reset, Right */}
+                  <div className="flex items-center gap-1 my-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePan(100, 0);
+                      }}
+                      title="Kéo sang trái"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleResetZoom();
+                      }}
+                      title="Căn giữa & Đặt lại (Reset)"
+                      className="p-1.5 rounded-lg bg-emerald-700/70 hover:bg-emerald-600 text-emerald-100 transition-all text-[10px] font-bold shadow-sm active:scale-95"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePan(-100, 0);
+                      }}
+                      title="Kéo sang phải"
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Down button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePan(0, -100);
+                    }}
+                    title="Kéo xuống dưới"
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Floating Bottom Center Helper Pill */}
+                <div className="absolute bottom-4 left-4 z-20 pointer-events-none hidden sm:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs text-slate-300 shadow-xl">
+                  <Hand className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>
+                    <strong>Kéo thả chuột:</strong> Di chuyển mọi hướng • <strong>Cuộn chuột:</strong> Zoom • <strong>Phím mũi tên:</strong> Kéo nhanh
+                  </span>
                 </div>
               </div>
 
               {/* Modal Bottom Action Bar */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/80 border border-slate-800 rounded-2xl px-4 py-3 text-white z-10 shadow-xl">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 bg-slate-900/90 border border-slate-800 rounded-2xl px-3 sm:px-4 py-2.5 text-white z-20 shadow-xl">
                 <span className="text-xs text-slate-300 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>
+                  <span className="line-clamp-1">
                     Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza
                   </span>
                 </span>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
                   <button
                     onClick={() => setFloorPlanOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-colors flex-1 sm:flex-none"
+                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-colors flex-1 sm:flex-none cursor-pointer"
                   >
                     Đóng
                   </button>
@@ -351,7 +627,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                         }, 100);
                       }
                     }}
-                    className="px-5 py-2 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none cursor-pointer"
                   >
                     <span>Tiến hành Đăng ký gian</span>
                     <ArrowRight className="w-3.5 h-3.5" />

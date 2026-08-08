@@ -132,6 +132,76 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
         </div>
       </div>
 
+      {/* Hồ Sơ Mời Tài Trợ (File PDF) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <span>📥 HỒ SƠ MỜI TÀI TRỢ (FILE PDF / TÀI LIỆU)</span>
+          </h3>
+          {sponsors.prospectusPdfUrl && (
+            <a
+              href={sponsors.prospectusPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
+            >
+              <span>Xem Thử File PDF</span> &rarr;
+            </a>
+          )}
+        </div>
+        <p className="text-xs text-slate-500">
+          Khi khách hàng nhấp vào nút <strong>&quot;Tải Hồ sơ Mời tài trợ (PDF)&quot;</strong> trên trang chủ, hệ thống sẽ mở hoặc tải file này.
+        </p>
+
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Đường Dẫn URL File Hồ Sơ PDF</label>
+            <input
+              type="text"
+              placeholder="https://... hoặc /documents/ho-so-moi-tai-tro-sme-2026.pdf"
+              value={sponsors.prospectusPdfUrl || ""}
+              onChange={(e) => setSponsors({ ...sponsors, prospectusPdfUrl: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Tải File PDF Từ Máy Tính Lên Cloud Storage</label>
+            <div className="flex items-center gap-3">
+              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors">
+                <Upload className="w-4 h-4" />
+                <span>Chọn File PDF / Tài Liệu Tải Lên</span>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.zip,.rar"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setSaving(true);
+                    const { url, error } = await uploadImageToStorage(file);
+                    setSaving(false);
+                    if (error || !url) {
+                      alert("Tải file PDF thất bại: " + (error || "Lỗi không xác định"));
+                    } else {
+                      setSponsors({ ...sponsors, prospectusPdfUrl: url });
+                      alert("Đã tải file PDF lên thành công!");
+                    }
+                  }}
+                />
+              </label>
+              {sponsors.prospectusPdfUrl ? (
+                <span className="text-xs text-emerald-700 font-semibold truncate max-w-md">
+                  ✓ Đã có file: {sponsors.prospectusPdfUrl}
+                </span>
+              ) : (
+                <span className="text-xs text-slate-400 italic">Chưa có file PDF tải lên</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Danh sách Nhà tài trợ */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">

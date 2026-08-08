@@ -138,7 +138,12 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
   );
 
   const handleDownloadPDF = () => {
-    alert("Đang tải Hồ sơ Mời Tài trợ SME Vietnam 2026 (PDF)...");
+    const pdfUrl = content?.prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
+    if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
+    } else {
+      alert("Hồ sơ Mời tài trợ (PDF) đang được Ban Tổ chức TASME cập nhật bản mới nhất. Vui lòng liên hệ Hotline: 0815.340.488 để nhận trực tiếp!");
+    }
   };
 
   const renderLogoTile = (

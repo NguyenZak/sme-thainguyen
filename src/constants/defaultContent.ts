@@ -209,6 +209,7 @@ export interface SponsorsContent {
   badge: string;
   title: string;
   subtitle: string;
+  prospectusPdfUrl?: string;
   items: SponsorItem[];
 }
 
@@ -674,6 +675,7 @@ export const DEFAULT_SPONSORS: SponsorsContent = {
   badge: "ĐỐI TÁC & NHÀ TÀI TRỢ",
   title: "Danh Sách Nhà Tài Trợ & Đơn Vị Đồng Hành",
   subtitle: "Xin chân thành cảm ơn các Tập đoàn, Ngân hàng, Doanh nghiệp và Đơn vị truyền thông đã tin tưởng và đồng hành cùng Diễn đàn SME Việt Nam 2026.",
+  prospectusPdfUrl: "",
   items: [
     {
       id: "sp-1",
