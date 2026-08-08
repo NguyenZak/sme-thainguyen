@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import FormattedText from "@/components/ui/FormattedText";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Calendar, MapPin, Ticket, Award, Store, ArrowRight, Clock } from "lucide-react";
@@ -182,9 +183,11 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </p>
           )}
           {data.sloganText && (
-            <p className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2 whitespace-pre-line">
-              {data.sloganText}
-            </p>
+            <FormattedText
+              content={data.sloganText}
+              as="p"
+              className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2"
+            />
           )}
         </motion.div>
 

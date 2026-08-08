@@ -77,7 +77,7 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
             {data.badge || "01 · TỔNG QUAN - Về sự kiện"}
           </span>
           <h2
-            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {data.title || "Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026"}
@@ -191,7 +191,7 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                   <div className="h-px flex-1 bg-amber-500/20" />
                 </div>
                 <h3
-                  className="text-2xl sm:text-3xl font-extrabold text-white leading-tight"
+                  className="text-lg sm:text-xl font-extrabold text-white leading-tight"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
                   Quy tụ hơn{" "}

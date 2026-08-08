@@ -29,7 +29,7 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
             {data.badge || DEFAULT_SPEAKERS.badge}
           </span>
           <h2
-            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {data.title || DEFAULT_SPEAKERS.title}

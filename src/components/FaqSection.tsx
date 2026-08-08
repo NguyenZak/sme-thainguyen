@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import FormattedText from "@/components/ui/FormattedText";
 import {
   HelpCircle,
   ChevronDown,
@@ -56,7 +57,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
           </div>
 
           <h2
-            className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
+            className="text-lg sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {title}

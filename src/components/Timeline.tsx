@@ -154,7 +154,7 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
             {badge}
           </span>
           <h2
-            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {title}

@@ -257,7 +257,7 @@ export default function RegistrationForm({
             {registration.sectionBadge}
           </span>
           <h2
-            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {registration.sectionTitle}
@@ -499,8 +499,40 @@ export default function RegistrationForm({
               </div>
             </div>
 
+            {/* Attendees Count & B2B Networking Needs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Number of Attendees */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                  Số người đăng ký <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={50}
+                  {...register("attendeesCount")}
+                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
+                />
+                {errors.attendeesCount && (
+                  <p className="text-xs text-red-500 font-medium">
+                    {errors.attendeesCount.message}
+                  </p>
+                )}
+              </div>
 
-
+              {/* B2B Networking Needs */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                  Nhu cầu kết nối B2B
+                </label>
+                <input
+                  type="text"
+                  placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
+                  {...register("networkingNeeds")}
+                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
+                />
+              </div>
+            </div>
 
             {/* Notes */}
             <div className="space-y-2">

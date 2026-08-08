@@ -49,11 +49,24 @@ export default function RichTextarea({
           tinymceScriptSrc="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"
           onInit={(evt, editor) => (editorRef.current = editor)}
           value={value || ""}
-          onEditorChange={(newContent) => onChange(newContent)}
+          onEditorChange={(newContent) => {
+            let cleaned = newContent.trim();
+            if (
+              cleaned.startsWith("<p>") &&
+              cleaned.endsWith("</p>") &&
+              (cleaned.match(/<p>/g) || []).length === 1
+            ) {
+              cleaned = cleaned.substring(3, cleaned.length - 4).trim();
+            }
+            onChange(cleaned);
+          }}
           init={{
             height: calculatedHeight,
             menubar: false,
             placeholder: placeholder || "Nhập nội dung văn bản...",
+            forced_root_block: "",
+            force_br_newlines: true,
+            force_p_newlines: false,
             plugins: [
               "advlist",
               "autolink",

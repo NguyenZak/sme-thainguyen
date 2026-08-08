@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import FormattedText from "@/components/ui/FormattedText";
 import {
   Award,
   Download,
@@ -125,7 +126,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
               {badge}
             </span>
             <h2
-              className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+              className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
               style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
             >
               {title}
@@ -187,12 +188,12 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                       )}
                     </div>
                     <div className="pt-1">
-                      <p
-                        className="text-xl sm:text-2xl font-black text-[#0D3B2E] whitespace-pre-line leading-snug"
+                      <FormattedText
+                        content={tier.price}
+                        as="div"
+                        className="text-xl sm:text-2xl font-black text-[#0D3B2E] leading-snug"
                         style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
-                      >
-                        {tier.price}
-                      </p>
+                      />
                     </div>
                   </div>
 
@@ -250,7 +251,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
                 ĐỐI TÁC ĐỒNG HÀNH ĐÃ XÁC NHẬN
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0D3B2E]">
+              <h3 className="text-lg sm:text-xl font-extrabold text-[#0D3B2E]">
                 Các Doanh Nghiệp &amp; Đơn Vị Đồng Hành Cùng Diễn Đàn
               </h3>
             </div>
