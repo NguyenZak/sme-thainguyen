@@ -10,6 +10,7 @@ export type SectionKey =
   | "sponsors"
   | "booths"
   | "registration"
+  | "faq"
   | "footer";
 
 export interface SiteConfig {
@@ -1126,4 +1127,18 @@ export const DEFAULT_FAQS: FaqItem[] = [
       "Quý đại biểu và doanh nghiệp có thể liên hệ trực tiếp với Thường trực Ban Tổ chức Diễn đàn qua Hotline/Zalo: 0815.340.488 (Hỗ trợ 24/7) hoặc gửi Email về địa chỉ: contact@tasmethainguyen.vn. Ban thư ký sẽ phản hồi trong vòng 30 phút làm việc.",
   },
 ];
+
+export interface FaqContent {
+  badgeText?: string;
+  title?: string;
+  subtitle?: string;
+  items: FaqItem[];
+}
+
+export const DEFAULT_FAQ_CONTENT: FaqContent = {
+  badgeText: "GIẢI ĐÁP THẮC MẮC THƯỜNG GẶP",
+  title: "Câu Hỏi Thường Gặp (FAQ) Về Diễn Đàn",
+  subtitle: "Tổng hợp thông tin quan trọng nhất giúp Quý doanh nghiệp, Đại biểu và Nhà tài trợ dễ dàng chuẩn bị và tham dự sự kiện hiệu quả.",
+  items: DEFAULT_FAQS,
+};
 

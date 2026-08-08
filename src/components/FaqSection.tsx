@@ -15,10 +15,15 @@ import {
   Search,
 } from "lucide-react";
 
-import { FaqItem, DEFAULT_FAQS } from "@/constants/defaultContent";
+import { FaqItem, FaqContent, DEFAULT_FAQ_CONTENT } from "@/constants/defaultContent";
 
-export default function FaqSection({ faqs }: { faqs?: FaqItem[] }) {
-  const faqList = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
+export default function FaqSection({ content }: { content?: FaqContent }) {
+  const data = content || DEFAULT_FAQ_CONTENT;
+  const faqList: FaqItem[] = data.items && data.items.length > 0 ? data.items : DEFAULT_FAQ_CONTENT.items;
+  const badge = data.badgeText || DEFAULT_FAQ_CONTENT.badgeText;
+  const title = data.title || DEFAULT_FAQ_CONTENT.title;
+  const subtitle = data.subtitle || DEFAULT_FAQ_CONTENT.subtitle;
+
   const [openId, setOpenId] = useState<string | null>("faq-1");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,18 +50,18 @@ export default function FaqSection({ faqs }: { faqs?: FaqItem[] }) {
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
             <HelpCircle className="w-4 h-4 text-emerald-700" />
-            <span>GIẢI ĐÁP THẮC MẮC THƯỜNG GẶP</span>
+            <span>{badge}</span>
           </div>
 
           <h2
             className="text-2xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Câu Hỏi Thường Gặp (FAQ) Về Diễn Đàn
+            {title}
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
-            Tổng hợp thông tin quan trọng nhất giúp Quý doanh nghiệp, Đại biểu và Nhà tài trợ dễ dàng chuẩn bị và tham dự sự kiện hiệu quả.
+            {subtitle}
           </p>
         </motion.div>
 

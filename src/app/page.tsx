@@ -60,7 +60,7 @@ export default async function Home() {
       )}
 
       {/* 11. FAQ Accordion Section (High Conversion & Google FAQ Schema) */}
-      <FaqSection />
+      {isVisible("faq") && <FaqSection content={content.faq} />}
 
       {/* 12. Footer & Location Google Maps */}
       <Footer content={content.footer} />

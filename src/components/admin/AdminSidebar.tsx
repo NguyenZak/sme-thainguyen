@@ -14,6 +14,7 @@ import {
   Store,
   MapPin,
   Users,
+  HelpCircle,
 } from "lucide-react";
 
 export type AdminTab =
@@ -29,6 +30,7 @@ export type AdminTab =
   | "registration"
   | "sponsors"
   | "booths"
+  | "faq"
   | "footer"
   | "registrations";
 
@@ -56,6 +58,7 @@ export default function AdminSidebar({
     { id: "registration", label: "Nội dung Đăng ký", icon: ClipboardList },
     { id: "sponsors", label: "Nhà Tài Trợ", icon: Handshake },
     { id: "booths", label: "Gian Hàng Triển Lãm", icon: Store },
+    { id: "faq", label: "Câu Hỏi Thường Gặp (FAQ)", icon: HelpCircle },
     { id: "footer", label: "Chân Trang & Bản Đồ", icon: MapPin },
     { id: "registrations", label: "Quản Lý Đơn Đăng Ký", icon: Users, badge: registrationsCount },
   ];

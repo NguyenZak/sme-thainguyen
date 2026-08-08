@@ -14,6 +14,7 @@ import {
   DEFAULT_FOOTER,
   DEFAULT_NAVBAR,
   DEFAULT_REGISTRATION,
+  DEFAULT_FAQ_CONTENT,
   SiteConfig,
   NavbarContent,
   HeroContent,
@@ -26,6 +27,7 @@ import {
   SponsorsContent,
   BoothsContent,
   RegistrationContent,
+  FaqContent,
   FooterContent,
 } from "@/constants/defaultContent";
 
@@ -42,6 +44,7 @@ const DEFAULTS: Record<string, any> = {
   sponsors: DEFAULT_SPONSORS,
   booths: DEFAULT_BOOTHS,
   registration: DEFAULT_REGISTRATION,
+  faq: DEFAULT_FAQ_CONTENT,
   footer: DEFAULT_FOOTER,
 };
 
@@ -80,6 +83,7 @@ export async function getAllLandingPageContent() {
     sponsors,
     booths,
     registration,
+    faq,
     footer,
   ] = await Promise.all([
     getSectionContent<SiteConfig>("site_config"),
@@ -94,6 +98,7 @@ export async function getAllLandingPageContent() {
     getSectionContent<SponsorsContent>("sponsors"),
     getSectionContent<BoothsContent>("booths"),
     getSectionContent<RegistrationContent>("registration"),
+    getSectionContent<FaqContent>("faq"),
     getSectionContent<FooterContent>("footer"),
   ]);
 
@@ -110,6 +115,7 @@ export async function getAllLandingPageContent() {
     sponsors,
     booths,
     registration,
+    faq,
     footer,
   };
 }

@@ -15,6 +15,7 @@ import TicketFeeEditor from "@/components/admin/TicketFeeEditor";
 import SponsorsEditor from "@/components/admin/SponsorsEditor";
 import BoothsEditor from "@/components/admin/BoothsEditor";
 import RegistrationEditor from "@/components/admin/RegistrationEditor";
+import FaqEditor from "@/components/admin/FaqEditor";
 import FooterEditor from "@/components/admin/FooterEditor";
 import RegistrationsManager from "@/components/admin/RegistrationsManager";
 import { createClient } from "@/utils/supabase/client";
@@ -32,6 +33,7 @@ import {
   DEFAULT_SPONSORS,
   DEFAULT_BOOTHS,
   DEFAULT_REGISTRATION,
+  DEFAULT_FAQ_CONTENT,
   DEFAULT_FOOTER,
   SiteConfig,
   NavbarContent,
@@ -45,6 +47,7 @@ import {
   SponsorsContent,
   BoothsContent,
   RegistrationContent,
+  FaqContent,
   FooterContent,
 } from "@/constants/defaultContent";
 
@@ -65,6 +68,7 @@ export default function AdminPage() {
     sponsors: SponsorsContent;
     booths: BoothsContent;
     registration: RegistrationContent;
+    faq: FaqContent;
     footer: FooterContent;
   };
 
@@ -81,6 +85,7 @@ export default function AdminPage() {
     sponsors: DEFAULT_SPONSORS,
     booths: DEFAULT_BOOTHS,
     registration: DEFAULT_REGISTRATION,
+    faq: DEFAULT_FAQ_CONTENT,
     footer: DEFAULT_FOOTER,
   });
 
@@ -119,6 +124,7 @@ export default function AdminPage() {
             sponsors: { ...DEFAULT_SPONSORS, ...(loadedMap.sponsors || {}) },
             booths: { ...DEFAULT_BOOTHS, ...(loadedMap.booths || {}) },
             registration: { ...DEFAULT_REGISTRATION, ...(loadedMap.registration || {}) },
+            faq: { ...DEFAULT_FAQ_CONTENT, ...(loadedMap.faq || {}) },
             footer: { ...DEFAULT_FOOTER, ...(loadedMap.footer || {}) },
           });
         }
@@ -194,6 +200,7 @@ export default function AdminPage() {
                 <SponsorsEditor initialSponsors={data.sponsors} />
               )}
               {activeTab === "booths" && <BoothsEditor initialBooths={data.booths} />}
+              {activeTab === "faq" && <FaqEditor initialContent={data.faq} />}
               {activeTab === "footer" && (
                 <FooterEditor
                   initialFooter={data.footer}
