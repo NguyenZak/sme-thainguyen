@@ -1122,6 +1122,57 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
             />
           </div>
+
+          {/* ── Google Analytics 4 & Meta Pixel Tracking ── */}
+          <div className="border-t border-slate-200/80 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                4. Google Analytics 4 (GA4 Measurement ID)
+              </label>
+              <input
+                type="text"
+                placeholder="VD: G-XXXXXXXXXX"
+                value={config.gaMeasurementId || ""}
+                onChange={(e) => setConfig({ ...config, gaMeasurementId: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-slate-800"
+              />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Đo lường lượng truy cập người dùng và hiệu suất Core Web Vitals tự động.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                5. Meta Pixel ID (Facebook Pixel)
+              </label>
+              <input
+                type="text"
+                placeholder="VD: 123456789012345"
+                value={config.facebookPixelId || ""}
+                onChange={(e) => setConfig({ ...config, facebookPixelId: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-slate-800"
+              />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Theo dõi chuyển đổi khách bấm Đăng ký vé / Gian hàng từ quảng cáo Facebook & Instagram.
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                6. Canonical URL (Đường dẫn chuẩn Website)
+              </label>
+              <input
+                type="text"
+                placeholder="https://sme-thainguyen.vercel.app"
+                value={config.canonicalUrl || ""}
+                onChange={(e) => setConfig({ ...config, canonicalUrl: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-slate-800"
+              />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Tránh trùng lặp nội dung khi chạy nhiều domain hoặc subdomain (Google SEO Standard).
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

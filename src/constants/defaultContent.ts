@@ -26,6 +26,10 @@ export interface SiteConfig {
   logoUrl?: string;
   faviconUrl?: string;
   ogImageUrl?: string;
+  canonicalUrl?: string;
+  gaMeasurementId?: string;
+  facebookPixelId?: string;
+  keywords?: string[];
   telegramBotToken?: string;
   telegramChatId?: string;
   telegramThreadIdDelegate?: string;
@@ -320,6 +324,19 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   logoUrl: "/logo.png",
   faviconUrl: "/logo.png",
   ogImageUrl: "/images/hero-bg.jpg",
+  canonicalUrl: "https://sme-thainguyen.vercel.app",
+  gaMeasurementId: "",
+  facebookPixelId: "",
+  keywords: [
+    "Diễn đàn SME Việt Nam 2026",
+    "TASME Thái Nguyên",
+    "Kết nối giao thương SME",
+    "Xúc tiến thương mại Thái Nguyên",
+    "May Plaza Hotel Thai Nguyen",
+    "B2B Matching",
+    "Đăng ký gian hàng triển lãm",
+    "Tài trợ diễn đàn SME",
+  ],
   telegramBotToken: "",
   telegramChatId: "",
   telegramThreadIdDelegate: "",
@@ -1050,3 +1067,63 @@ export const DEFAULT_FOOTER: FooterContent = {
   },
   copyrightText: "© 2026 Diễn đàn SME Việt Nam. Bảo lưu mọi quyền."
 };
+
+export interface FaqItem {
+  id: string;
+  category: "all" | "ticket" | "booth" | "sponsor" | "general";
+  question: string;
+  answer: string;
+  badge?: string;
+}
+
+export const DEFAULT_FAQS: FaqItem[] = [
+  {
+    id: "faq-1",
+    category: "general",
+    badge: "Thời gian & Địa điểm",
+    question: "Diễn đàn SME Việt Nam 2026 diễn ra vào thời gian và địa điểm nào?",
+    answer:
+      "Diễn đàn Kết nối Giao thương SME Việt Nam 2026 chính thức diễn ra trong 03 ngày: Từ ngày 18/09/2026 đến hết ngày 20/09/2026 tại Khách sạn May Plaza Hotel Thái Nguyên (Địa chỉ: Số 668 Phan Đình Phùng, TP. Thái Nguyên, Tỉnh Thái Nguyên). Sự kiện mở cửa đón tiếp đại biểu và khách tham quan B2B từ 08:00 sáng đến 17:30 chiều mỗi ngày.",
+  },
+  {
+    id: "faq-2",
+    category: "ticket",
+    badge: "Quyền lợi Vé",
+    question: "Đăng ký vé tham dự Đại biểu bao gồm những quyền lợi gì?",
+    answer:
+      "Mỗi vé tham dự chính thức bao gồm: (1) Thẻ đeo Đại biểu VIP & Bộ tài liệu hội nghị độc quyền; (2) Tham dự toàn bộ các phiên Keynote & Tọa đàm chuyên sâu với Lãnh đạo Chính phủ, Bộ ngành; (3) Tham gia phiên B2B Networking 1-1 mở rộng mạng lưới khách hàng; (4) Thưởng thức tiệc Teabreak cao cấp giao lưu; (5) Được cấp mã xác nhận điện tử và hỗ trợ xuất hóa đơn VAT theo quy định.",
+  },
+  {
+    id: "faq-3",
+    category: "booth",
+    badge: "Gian hàng B2B",
+    question: "Gian hàng triển lãm tiêu chuẩn có diện tích bao nhiêu và bao gồm những trang thiết bị gì?",
+    answer:
+      "Mỗi gian hàng tiêu chuẩn tại sảnh triển lãm có kích thước 2.0m x 1.5m (3.0m²), được trang bị hoàn chỉnh gồm: vách ngăn phân tách chuyên nghiệp, 01 Standee/biển tên thương hiệu theo thiết kế chuẩn của BTC, 01 bàn tư vấn kèm 02 ghế đại biểu, hệ thống chiếu sáng, ổ cắm điện riêng và kết nối Internet Wi-Fi tốc độ cao độc quyền.",
+  },
+  {
+    id: "faq-4",
+    category: "sponsor",
+    badge: "Gói Tài trợ",
+    question: "Doanh nghiệp muốn đồng hành tài trợ diễn đàn thì có những hạng mức nào?",
+    answer:
+      "Ban tổ chức cung cấp 5 hạng mức tài trợ linh hoạt: Đồng hành Chỉ đạo, Nhà tài trợ Kim Cương (Diamond), Nhà tài trợ Vàng (Gold), Nhà tài trợ Bạc & Đồng (Silver/Bronze), và Đơn vị Đồng hành truyền thông. Các nhà tài trợ sẽ được hưởng quyền lợi phát biểu Keynote, bài PR trên báo chí trung ương, logo vị trí VIP trên backdrop sân khấu chính và quyền ưu tiên chọn vị trí gian hàng đẹp nhất.",
+  },
+  {
+    id: "faq-5",
+    category: "general",
+    badge: "Thanh toán & Hóa đơn",
+    question: "Ban tổ chức có hỗ trợ xuất hóa đơn VAT và thanh toán tự động qua mã VietQR không?",
+    answer:
+      "Có! Hệ thống hỗ trợ thanh toán trực tuyến tự động qua cổng quét mã VietQR (SePay) với xác nhận tự động 24/7. Ngay sau khi thanh toán thành công, hệ thống sẽ gửi Email xác nhận kèm mã số đại biểu. Bộ phận tài chính của Hiệp hội TASME sẽ liên hệ xuất hóa đơn tài chính VAT hợp lệ cho quý doanh nghiệp theo đúng quy định.",
+  },
+  {
+    id: "faq-6",
+    category: "general",
+    badge: "Hotline hỗ trợ",
+    question: "Tôi cần liên hệ trực tiếp với Ban tổ chức bằng cách nào?",
+    answer:
+      "Quý đại biểu và doanh nghiệp có thể liên hệ trực tiếp với Thường trực Ban Tổ chức Diễn đàn qua Hotline/Zalo: 0815.340.488 (Hỗ trợ 24/7) hoặc gửi Email về địa chỉ: contact@tasmethainguyen.vn. Ban thư ký sẽ phản hồi trong vòng 30 phút làm việc.",
+  },
+];
+

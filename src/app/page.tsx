@@ -9,6 +9,7 @@ import RegistrationFee from "@/components/RegistrationFee";
 import SponsorSection from "@/components/SponsorSection";
 import BoothSection from "@/components/BoothSection";
 import RegistrationForm from "@/components/RegistrationForm";
+import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import MobileStickyCTA from "@/components/MobileStickyCTA";
 import { getAllLandingPageContent } from "@/lib/cmsServer";
@@ -16,55 +17,11 @@ import { getAllLandingPageContent } from "@/lib/cmsServer";
 export default async function Home() {
   const content = await getAllLandingPageContent();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BusinessEvent",
-    "name": content.siteConfig.siteName,
-    "startDate": content.hero.targetDateISO || "2026-09-18T08:00:00+07:00",
-    "endDate": "2026-09-20T17:00:00+07:00",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": {
-      "@type": "Place",
-      "name": content.hero.venueText || "May Plaza Hotel Thai Nguyen",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": content.siteConfig.address,
-        "addressLocality": "Thái Nguyên",
-        "addressRegion": "Thái Nguyên",
-        "postalCode": "250000",
-        "addressCountry": "VN"
-      }
-    },
-    "image": [
-      "https://sme-thainguyen.vercel.app/images/hero-bg.jpg",
-      "https://sme-thainguyen.vercel.app/logo.png"
-    ],
-    "description": content.siteConfig.metaDescription,
-    "offers": {
-      "@type": "Offer",
-      "url": "https://sme-thainguyen.vercel.app#register",
-      "price": content.ticketFee.priceVND.toString(),
-      "priceCurrency": "VND",
-      "availability": "https://schema.org/InStock"
-    },
-    "organizer": {
-      "@type": "Organization",
-      "name": content.siteConfig.organizer
-    }
-  };
-
   const hiddenSections = content.siteConfig.hiddenSections || [];
   const isVisible = (key: string) => !hiddenSections.includes(key);
 
   return (
     <main className="min-h-screen flex flex-col font-sans bg-[#F8FAFC]">
-      {/* Structured Data Script */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       {/* 1. Navigation Bar */}
       <Navbar content={content.navbar} />
 
@@ -94,12 +51,21 @@ export default async function Home() {
       {isVisible("ticket_fee") && <RegistrationFee content={content.ticketFee} />}
 
       {/* 10. Direct Online Registration Form (Action Destination) */}
-      {isVisible("registration") && <RegistrationForm content={content.registration} siteConfig={content.siteConfig} ticketFee={content.ticketFee} />}
+      {isVisible("registration") && (
+        <RegistrationForm
+          content={content.registration}
+          siteConfig={content.siteConfig}
+          ticketFee={content.ticketFee}
+        />
+      )}
 
-      {/* 11. Footer & Location Google Maps */}
+      {/* 11. FAQ Accordion Section (High Conversion & Google FAQ Schema) */}
+      <FaqSection />
+
+      {/* 12. Footer & Location Google Maps */}
       <Footer content={content.footer} />
 
-      {/* 12. Mobile Floating Sticky CTA */}
+      {/* 13. Mobile Floating Sticky CTA */}
       {isVisible("registration") && <MobileStickyCTA content={content.registration} />}
     </main>
   );
