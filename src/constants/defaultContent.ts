@@ -417,7 +417,7 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
   sponsorTab: "Nhà Tài trợ",
   boothTab: "Gian hàng",
   delegateIntro: "Đại biểu tham dự chương trình với quyền lợi trọn gói, kết nối B2B và Gala Dinner.",
-  sponsorIntro: "Đăng ký tài trợ, quảng bá thương hiệu và tiếp cận nhà đầu tư.",
+  sponsorIntro: "Quý Anh/chị, Đơn vị, Doanh nghiệp điền thông tin bên dưới, Ban tổ chức sẽ liên hệ lại trao đổi quyền lợi trực tiếp trong thời gian sớm nhất!",
   boothIntro: "Đăng ký gian hàng tiêu chuẩn 3m x 3m tại khu triển lãm trung tâm.",
   sponsorTiers: [
     "Nhà tài trợ Chiến lược (100.000.000 đ)",
