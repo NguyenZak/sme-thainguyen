@@ -84,112 +84,55 @@ export default function AboutEvent({
           className="text-center max-w-3xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            01 · TỔNG QUAN - Về sự kiện
+            {data.badge || "01 · TỔNG QUAN - Về sự kiện"}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026
+            {data.title || "Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026"}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Nơi hội tụ &amp; cất cánh của cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam — Sự kiện kinh tế trọng điểm do TASME Thái Nguyên chủ trì, mang sứ mệnh tạo đột phá về kết nối cung cầu, mở rộng chuỗi cung ứng và xúc tiến đầu tư quy mô toàn quốc.
+            {data.descriptionParagraph1 || "Nơi hội tụ & cất cánh của cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam — Sự kiện kinh tế trọng điểm do TASME Thái Nguyên chủ trì, mang sứ mệnh tạo đột phá về kết nối cung cầu, mở rộng chuỗi cung ứng và xúc tiến đầu tư quy mô toàn quốc."}
           </p>
         </motion.div>
 
-        {/* 4 Numbered Feature Cards Grid */}
+        {/* Numbered Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sme shadow-sme-hover flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <span className="text-xs font-black text-[#22C55E] uppercase tracking-widest block">01</span>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D3B2E] flex items-center justify-center font-bold">
-                <Target className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0D3B2E]">Kết nối giao thương</h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Tổ chức 100+ phiên gặp gỡ B2B trực tiếp 1:1 theo nhu cầu ngành nghề giữa các đại biểu doanh nghiệp toàn quốc.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> Giao thương B2B trực tiếp
-            </div>
-          </motion.div>
-
-          {/* Card 2 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sme shadow-sme-hover flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <span className="text-xs font-black text-[#22C55E] uppercase tracking-widest block">02</span>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D3B2E] flex items-center justify-center font-bold">
-                <Users className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0D3B2E]">Xúc tiến đầu tư – tài chính</h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Giới thiệu danh mục các dự án ưu đãi đầu tư, hạ tầng KCN &amp; giải pháp tài chính xanh hỗ trợ DNNVV.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> Tiếp cận Quỹ đầu tư
-            </div>
-          </motion.div>
-
-          {/* Card 3 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sme shadow-sme-hover flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <span className="text-xs font-black text-[#22C55E] uppercase tracking-widest block">03</span>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D3B2E] flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0D3B2E]">Ký kết hợp tác (MOU)</h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Nơi diễn ra các nghi thức ký kết Biên bản ghi nhớ hợp tác chiến lược, hợp đồng kinh tế giá trị cao.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> Ký kết hợp đồng ngay sự kiện
-            </div>
-          </motion.div>
-
-          {/* Card 4 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sme shadow-sme-hover flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <span className="text-xs font-black text-[#22C55E] uppercase tracking-widest block">04</span>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D3B2E] flex items-center justify-center font-bold">
-                <Award className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0D3B2E]">Quảng bá Thái Nguyên</h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Tôn vinh văn hóa Trà Đệ nhất danh sơn, giới thiệu môi trường đầu tư năng động của tỉnh Thái Nguyên.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> Quảng bá thương hiệu địa phương
-            </div>
-          </motion.div>
+          {(data.featureCards && data.featureCards.length > 0 ? data.featureCards : DEFAULT_ABOUT.featureCards).map((card, idx) => {
+            const iconMap: Record<string, any> = {
+              Target, Users, ShieldCheck, Award, Landmark, Crown, TrendingUp, Building2, Globe2, Factory
+            };
+            const Icon = iconMap[card.iconName || ""] || Target;
+            return (
+              <motion.div
+                key={card.id || idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.05 + idx * 0.1 }}
+                className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sme shadow-sme-hover flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-3">
+                  <span className="text-xs font-black text-[#22C55E] uppercase tracking-widest block">
+                    {card.rank || `0${idx + 1}`}
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D3B2E] flex items-center justify-center font-bold">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#0D3B2E]">{card.title}</h3>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    {card.description}
+                  </p>
+                </div>
+                {card.footerLabel && (
+                  <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> {card.footerLabel}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
 

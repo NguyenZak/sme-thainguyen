@@ -23,10 +23,10 @@ export default function Footer({ content }: { content?: FooterContent }) {
           {/* Col 1: Organizer Brand (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-xl bg-white p-1 shadow-md">
+              <div className="relative w-12 h-12 rounded-xl bg-white p-1 shadow-md shrink-0">
                 <Image
-                  src="/logo.png"
-                  alt="TASME Logo"
+                  src={footer.logoSrc || "/logo.png"}
+                  alt={footer.brandName || "TASME Logo"}
                   fill
                   className="object-contain p-0.5"
                 />
@@ -36,10 +36,10 @@ export default function Footer({ content }: { content?: FooterContent }) {
                   className="text-base font-extrabold text-white tracking-tight"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
-                  TASME THÁI NGUYÊN
+                  {footer.brandName || "TASME THÁI NGUYÊN"}
                 </h3>
                 <p className="text-xs text-[#F59E0B] font-semibold">
-                  Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên
+                  {footer.brandSub || "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên"}
                 </p>
               </div>
             </div>

@@ -1,9 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
-import { Save, CheckCircle2, AlertCircle, Loader2, Send, FileSpreadsheet, Bot, Mail, Eye, EyeOff, LayoutGrid } from "lucide-react";
+import { uploadImageToStorage } from "@/lib/cmsClient";
+import {
+  Save,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Send,
+  FileSpreadsheet,
+  Bot,
+  Mail,
+  Eye,
+  EyeOff,
+  LayoutGrid,
+  Image as ImageIcon,
+  Upload,
+  RotateCcw,
+  Globe,
+  Sparkles,
+  Copy,
+  ExternalLink,
+  RefreshCw,
+} from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
 interface GeneralEditorProps {
@@ -25,22 +47,80 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
   }, [initialFooter]);
 
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
   const [testingTg, setTestingTg] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.warning("File quá lớn!", "Vui lòng chọn ảnh logo dung lượng dưới 5MB để tải trang nhanh.");
+      return;
+    }
+
+    setUploadingLogo(true);
+    try {
+      const { url, error } = await uploadImageToStorage(file);
+      if (error || !url) {
+        toast.error("Tải ảnh thất bại!", error || "Lỗi không xác định khi upload.");
+      } else {
+        setConfig((prev) => ({ ...prev, logoUrl: url }));
+        setFooter((prev) => ({ ...prev, logoSrc: url }));
+        toast.success("Tải Logo thành công! 🖼️", "Đã cập nhật logo mới cho website.");
+      }
+    } catch (err: any) {
+      toast.error("Lỗi upload ảnh!", err?.message || "Không thể upload");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.warning("File quá lớn!", "Vui lòng chọn ảnh favicon dưới 2MB.");
+      return;
+    }
+
+    setUploadingFavicon(true);
+    try {
+      const { url, error } = await uploadImageToStorage(file);
+      if (error || !url) {
+        toast.error("Tải favicon thất bại!", error || "Lỗi không xác định.");
+      } else {
+        setConfig((prev) => ({ ...prev, faviconUrl: url }));
+        toast.success("Tải Favicon thành công! 🌐", "Đã cập nhật biểu tượng favicon cho trình duyệt.");
+      }
+    } catch (err: any) {
+      toast.error("Lỗi upload favicon!", err?.message || "Không thể upload");
+    } finally {
+      setUploadingFavicon(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMsg(null);
 
+    const updatedFooter = {
+      ...footer,
+      logoSrc: config.logoUrl || footer.logoSrc || "/logo.png",
+    };
+
     const res1 = await updateSectionAction("site_config", config);
-    const res2 = await updateSectionAction("footer", footer);
+    const res2 = await updateSectionAction("footer", updatedFooter);
 
     setSaving(false);
     if (res1.success && res2.success) {
-      toast.success("Lưu thành công!", "Đã cập nhật cấu hình chung, Telegram & Google Sheets.");
-      setMsg({ type: "success", text: "Đã cập nhật cấu hình chung, Telegram & Google Sheets thành công!" });
-      onSaveSuccess?.(config, footer);
+      toast.success("Lưu thành công! 🎉", "Đã cập nhật logo, favicon, cấu hình chung, Telegram & Google Sheets.");
+      setMsg({ type: "success", text: "Đã cập nhật logo, favicon, cấu hình chung, Telegram & Google Sheets thành công!" });
+      onSaveSuccess?.(config, updatedFooter);
     } else {
       toast.error("Lưu thất bại!", res1.error || res2.error || "Lỗi khi lưu dữ liệu.");
       setMsg({ type: "error", text: res1.error || res2.error || "Lỗi khi lưu dữ liệu." });
@@ -271,6 +351,219 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* ── CARD: QUẢN LÝ LOGO & FAVICON WEBSITE ─────────────────────────── */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
+              <Sparkles className="w-4 h-4 text-emerald-700" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">HÌNH ẢNH LOGO & FAVICON WEBSITE</h3>
+              <p className="text-[11px] text-slate-500">Quản lý hình ảnh thương hiệu hiển thị trên Header, Footer, tab trình duyệt và chia sẻ liên kết mạng xã hội.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* ── Sub-card 1: Logo Website ────────────────────── */}
+          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-900">1. Logo Chính Website</span>
+                <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">
+                  Header & Footer
+                </span>
+              </div>
+            </div>
+
+            {/* Dual Theme Preview Box */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Header Dark Green Preview */}
+              <div className="flex flex-col items-center gap-1.5">
+                <div className="w-full h-24 rounded-xl bg-[#0B3026] p-3 border border-emerald-800 shadow-inner flex items-center justify-center relative overflow-hidden">
+                  {config.logoUrl ? (
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={config.logoUrl}
+                        alt="Logo Preview Header"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <span className="text-xs text-emerald-300 font-bold">Chưa có logo</span>
+                  )}
+                </div>
+                <span className="text-[10px] text-slate-500 font-semibold">Xem trên Header (Nền tối)</span>
+              </div>
+
+              {/* White Background Preview */}
+              <div className="flex flex-col items-center gap-1.5">
+                <div className="w-full h-24 rounded-xl bg-white p-3 border border-slate-200 shadow-sm flex items-center justify-center relative overflow-hidden">
+                  {config.logoUrl ? (
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={config.logoUrl}
+                        alt="Logo Preview Light"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400 font-bold">Chưa có logo</span>
+                  )}
+                </div>
+                <span className="text-[10px] text-slate-500 font-semibold">Xem trên Nền sáng</span>
+              </div>
+            </div>
+
+            {/* Logo Actions */}
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0">
+                {uploadingLogo ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                <span>{uploadingLogo ? "Đang tải ảnh lên..." : "Tải Logo từ máy tính"}</span>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                  disabled={uploadingLogo}
+                />
+              </label>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setConfig((prev) => ({ ...prev, logoUrl: "/logo.png" }));
+                  setFooter((prev) => ({ ...prev, logoSrc: "/logo.png" }));
+                  toast.info("Đã đặt lại!", "Logo đã được đưa về đường dẫn mặc định (/logo.png).");
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors"
+                title="Đặt lại logo mặc định"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Mặc định</span>
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Đường dẫn URL Logo</label>
+              <input
+                type="text"
+                placeholder="/logo.png hoặc https://..."
+                value={config.logoUrl || ""}
+                onChange={(e) => {
+                  setConfig({ ...config, logoUrl: e.target.value });
+                  setFooter({ ...footer, logoSrc: e.target.value });
+                }}
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Khuyên dùng: <b>PNG nền trong suốt</b> hoặc SVG, WebP. Tự động đồng bộ sang Header & Footer.
+              </p>
+            </div>
+          </div>
+
+          {/* ── Sub-card 2: Favicon Website ────────────────── */}
+          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-900">2. Favicon Trình Duyệt</span>
+                <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full border border-indigo-200">
+                  Tab & Bookmark
+                </span>
+              </div>
+            </div>
+
+            {/* Interactive Browser Tab Mockup */}
+            <div className="w-full bg-slate-200/90 rounded-xl p-2.5 border border-slate-300 shadow-inner">
+              <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1.5 px-1 flex items-center justify-between">
+                <span>Mô phỏng Tab trình duyệt Chrome / Safari</span>
+                <span className="text-[9px] bg-slate-300/80 px-1.5 py-0.5 rounded font-mono">Live Mockup</span>
+              </div>
+
+              {/* Tab element */}
+              <div className="max-w-xs bg-white rounded-t-lg px-3 py-2 border-t border-x border-slate-300/80 shadow-sm flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-4 h-4 relative shrink-0 rounded overflow-hidden">
+                    <Image
+                      src={config.faviconUrl || config.logoUrl || "/logo.png"}
+                      alt="Favicon Tab Preview"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-slate-800 truncate">
+                    {config.metaTitle || config.siteName || "DIỄN ĐÀN SME VIỆT NAM 2026"}
+                  </span>
+                </div>
+                <span className="text-slate-400 hover:text-slate-600 text-xs font-bold leading-none px-1 cursor-default">
+                  ×
+                </span>
+              </div>
+              <div className="h-1 bg-white rounded-b-lg shadow-sm" />
+            </div>
+
+            {/* Favicon Actions */}
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0">
+                {uploadingFavicon ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                <span>{uploadingFavicon ? "Đang tải favicon..." : "Tải Favicon từ máy tính"}</span>
+                <input
+                  type="file"
+                  accept="image/x-icon,image/png,image/svg+xml,image/jpeg,image/webp,.ico,.png"
+                  className="hidden"
+                  onChange={handleFaviconUpload}
+                  disabled={uploadingFavicon}
+                />
+              </label>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const src = config.logoUrl || "/logo.png";
+                  setConfig((prev) => ({ ...prev, faviconUrl: src }));
+                  toast.success("Đã đồng bộ từ Logo! 🔄", "Favicon đã được gán trùng với ảnh Logo chính.");
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 rounded-xl text-xs font-bold transition-colors"
+                title="Sử dụng ảnh Logo làm Favicon"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Dùng từ Logo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setConfig((prev) => ({ ...prev, faviconUrl: "/logo.png" }));
+                  toast.info("Đã đặt lại!", "Favicon đã được đưa về mặc định (/logo.png).");
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors"
+                title="Đặt lại favicon mặc định"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Mặc định</span>
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Đường dẫn URL Favicon (.ico / .png / .svg)</label>
+              <input
+                type="text"
+                placeholder="/logo.png hoặc /favicon.ico"
+                value={config.faviconUrl || ""}
+                onChange={(e) => setConfig({ ...config, faviconUrl: e.target.value })}
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+              <p className="text-[10px] text-slate-500 mt-1">
+                Kích cỡ tối ưu: <b>32x32px, 64x64px, hoặc 180x180px</b> (tương thích cả trình duyệt máy tính, điện thoại & Apple Touch Icon).
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

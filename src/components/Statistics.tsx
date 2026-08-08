@@ -50,7 +50,15 @@ export default function Statistics({ content }: { content?: StatisticsContent })
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-12 mb-10 relative z-10">
-      <div className={`bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-5 sm:p-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-${Math.min(items.length, 5)} gap-4 sm:gap-6`}>
+      <div
+        className="bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-5 sm:p-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6"
+        style={{
+          gridTemplateColumns:
+            items.length <= 4
+              ? `repeat(${items.length}, minmax(0, 1fr))`
+              : undefined,
+        }}
+      >
         {items.map((item, idx) => {
           const IconComp = ICON_MAP[item.iconName || ""] || MapPin;
 

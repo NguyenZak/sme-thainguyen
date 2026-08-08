@@ -13,120 +13,38 @@ import {
   Crown,
   Gem,
   Sparkles,
+  Layers,
 } from "lucide-react";
 import Image from "next/image";
-import { DEFAULT_SPONSORS, SponsorItem, SponsorsContent } from "@/constants/defaultContent";
-
-interface SponsorTier {
-  name: string;
-  badgeColor: string;
-  borderAccent: string;
-  price: string;
-  popular?: boolean;
-  perks: string[];
-}
-
-const SPONSOR_TIERS: SponsorTier[] = [
-  {
-    name: "Nhà tài trợ Chiến lược",
-    badgeColor: "bg-purple-900 text-white font-extrabold",
-    borderAccent: "border-purple-600 shadow-purple-100",
-    price: "Từ 100.000.000 VNĐ (Tối đa 01)",
-    popular: true,
-    perks: [
-      "Logo mức 100% - Vị trí ưu tiên 1 trên nhận diện, backdrop & màn hình LED",
-      "01 Gian trưng bày tiêu chuẩn vị trí ưu tiên 1",
-      "Phát biểu tối đa 05 phút hoặc tham gia 01 phiên đối thoại chính",
-      "12 Thẻ Thư mời Đại biểu tham dự trọn gói (Gala & Ăn ở)",
-      "Tối đa 10 lịch hẹn B2B / Investment Matching ưu tiên",
-      "Video thương hiệu 60s (04 lượt phát trước phiên chính & Gala)",
-      "03 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
-      "Kỷ niệm chương đặc biệt + Báo cáo quyền lợi riêng sau sự kiện",
-    ],
-  },
-  {
-    name: "Nhà tài trợ Kim Cương",
-    badgeColor: "bg-[#0D3B2E] text-white font-bold",
-    borderAccent: "border-emerald-600 shadow-emerald-100",
-    price: "Từ 70.000.000 VNĐ (Tối đa 02)",
-    perks: [
-      "Logo mức 85% - Vị trí ưu tiên tại các hoạt động trọng tâm",
-      "01 Gian trưng bày vị trí ưu tiên",
-      "Ưu tiên xem xét 01 vị trí đối thoại chính quyền - doanh nghiệp",
-      "08 Thẻ Thư mời Đại biểu tham dự trọn gói",
-      "Tối đa 08 lịch hẹn B2B Matching ưu tiên",
-      "Video thương hiệu 45s (03 lượt phát trước phiên chính/Gala)",
-      "02 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
-      "Kỷ niệm chương + Báo cáo quyền lợi riêng sau sự kiện",
-    ],
-  },
-  {
-    name: "Nhà tài trợ Vàng",
-    badgeColor: "bg-amber-500 text-slate-950 font-bold",
-    borderAccent: "border-amber-300 shadow-amber-50",
-    price: "Từ 50.000.000 VNĐ (Tối đa 03)",
-    perks: [
-      "Logo mức 70% trên bộ nhận diện chính & truyền thông",
-      "01 Gian trưng bày tiêu chuẩn",
-      "06 Thẻ Thư mời Đại biểu tham dự trọn gói",
-      "Tối đa 06 lịch hẹn B2B Matching ưu tiên",
-      "Video thương hiệu 30s (02 lượt phát)",
-      "01 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
-      "Kỷ niệm chương + Báo cáo quyền lợi rút gọn",
-    ],
-  },
-  {
-    name: "Nhà tài trợ Bạc",
-    badgeColor: "bg-slate-700 text-white font-bold",
-    borderAccent: "border-slate-300",
-    price: "Từ 30.000.000 VNĐ (Tối đa 05)",
-    perks: [
-      "Logo mức 55% tại các điểm chạm phù hợp",
-      "01 Gian trưng bày tiêu chuẩn (nếu còn vị trí)",
-      "04 Thẻ Thư mời Đại biểu tham dự trọn gói",
-      "Tối đa 04 lịch hẹn B2B Matching ưu tiên",
-      "Video thương hiệu 30s (01 lượt phát)",
-      "01 Bài giới thiệu tổng hợp trên kênh truyền thông BTC",
-      "Chứng nhận Nhà tài trợ Bạc + Báo cáo chung",
-    ],
-  },
-  {
-    name: "Nhà tài trợ Đồng",
-    badgeColor: "bg-amber-800 text-white font-bold",
-    borderAccent: "border-amber-200",
-    price: "Từ 20.000.000 VNĐ (Tối đa 10)",
-    perks: [
-      "Logo mức 40% ở nhóm đồng tài trợ",
-      "Ưu đãi 50% chi phí gian hàng triển lãm",
-      "02 Thẻ Thư mời Đại biểu tham dự trọn gói",
-      "Tối đa 02 lịch hẹn B2B Matching",
-      "Bài giới thiệu tổng hợp & Chứng nhận Nhà tài trợ Đồng",
-    ],
-  },
-  {
-    name: "Đơn vị Đồng hành",
-    badgeColor: "bg-teal-700 text-white font-bold",
-    borderAccent: "border-teal-300",
-    price: "Từ 10.000.000 VNĐ đến dưới 19.000.000 VNĐ",
-    perks: [
-      "Ghi nhận logo/thương hiệu theo hạng mục tài trợ cụ thể",
-      "01 Thẻ Thư mời Đại biểu tham dự trọn gói",
-      "Bài cảm ơn chung & Thư cảm ơn từ Ban Tổ chức TASME",
-    ],
-  },
-];
+import {
+  DEFAULT_SPONSORS,
+  SponsorItem,
+  SponsorPackageTier,
+  SponsorPriorityCategory,
+  SponsorMilestone,
+  SponsorsContent,
+} from "@/constants/defaultContent";
 
 export default function SponsorSection({ content }: { content?: SponsorsContent }) {
+  const data = content || DEFAULT_SPONSORS;
   const sponsorsList: SponsorItem[] =
-    content?.items && content.items.length > 0
-      ? content.items
-      : DEFAULT_SPONSORS.items;
+    data.items && data.items.length > 0 ? data.items : DEFAULT_SPONSORS.items;
+  const packages: SponsorPackageTier[] =
+    data.packages && data.packages.length > 0 ? data.packages : (DEFAULT_SPONSORS.packages || []);
+  const priorityCategories: SponsorPriorityCategory[] =
+    data.priorityCategories && data.priorityCategories.length > 0
+      ? data.priorityCategories
+      : (DEFAULT_SPONSORS.priorityCategories || []);
+  const milestones: SponsorMilestone[] =
+    data.milestones && data.milestones.length > 0
+      ? data.milestones
+      : (DEFAULT_SPONSORS.milestones || []);
 
-  const badgeText = content?.badge || DEFAULT_SPONSORS.badge;
-  const titleText = content?.title || DEFAULT_SPONSORS.title;
-  const subtitleText = content?.subtitle || DEFAULT_SPONSORS.subtitle;
+  const badgeText = data.badge || DEFAULT_SPONSORS.badge;
+  const titleText = data.title || DEFAULT_SPONSORS.title;
+  const subtitleText = data.subtitle || DEFAULT_SPONSORS.subtitle;
 
-  // Filter sponsors by tier category
+  // Filter confirmed sponsors by tier category
   const coOrganizers = sponsorsList.filter((sp) => sp.tier === "co-organizer");
   const diamondSponsors = sponsorsList.filter((sp) => sp.tier === "diamond");
   const goldSponsors = sponsorsList.filter((sp) => sp.tier === "gold");
@@ -138,7 +56,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
   );
 
   const handleDownloadPDF = () => {
-    const pdfUrl = content?.prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
+    const pdfUrl = data.prospectusPdfUrl || DEFAULT_SPONSORS.prospectusPdfUrl;
     if (pdfUrl) {
       window.open(pdfUrl, "_blank");
     } else {
@@ -191,13 +109,14 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
   };
 
   return (
-    <section id="sponsors" className="py-20 bg-[#F4FBF7]">
+    <section id="sponsors" className="py-20 bg-[#F4FBF7] scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         
         {/* ===================================================== */}
-        {/* SECTION 1: KHU VỰC KHÔNG CARD - CHỈ HIỂN THỊ LOGO      */}
+        {/* CORE: BẢNG CÁC GÓI QUYỀN LỢI ĐỒNG HÀNH TÀI TRỢ         */}
         {/* ===================================================== */}
-        <div className="space-y-12">
+        <div id="sponsor-packages" className="space-y-12">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -205,7 +124,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto space-y-4"
           >
-            <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
+            <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider border border-amber-200">
               {badgeText}
             </span>
             <h2
@@ -217,124 +136,10 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             <p className="text-slate-600 text-base sm:text-lg">
               {subtitleText}
             </p>
-          </motion.div>
-
-          {/* Group 1: Đơn vị Trực tiếp Chỉ đạo & Tổ chức */}
-          {coOrganizers.length > 0 && (
-            <div className="space-y-4 text-center">
-              <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-purple-900 bg-purple-100/60 px-4 py-1.5 rounded-full border border-purple-200">
-                <Crown className="w-4 h-4 text-purple-700" />
-                <span>ĐƠN VỊ TRỰC TIẾP CHỈ ĐẠO &amp; TỔ CHỨC</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-4xl mx-auto pt-2">
-                {coOrganizers.map((sp) => renderLogoTile(sp, "h-20 sm:h-24"))}
-              </div>
-            </div>
-          )}
-
-          {/* Group 2: Nhà Tài Trợ Kim Cương */}
-          {diamondSponsors.length > 0 && (
-            <div className="space-y-4 text-center pt-4">
-              <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-950 bg-emerald-100/60 px-4 py-1.5 rounded-full border border-emerald-200">
-                <Gem className="w-4 h-4 text-emerald-600" />
-                <span>NHÀ TÀI TRỢ KIM CƯƠNG</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto pt-2">
-                {diamondSponsors.map((sp) => renderLogoTile(sp, "h-16 sm:h-20"))}
-              </div>
-            </div>
-          )}
-
-          {/* Group 3: Nhà Tài Trợ Vàng */}
-          {goldSponsors.length > 0 && (
-            <div className="space-y-4 text-center pt-4">
-              <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-950 bg-amber-100/60 px-4 py-1.5 rounded-full border border-amber-200">
-                <Sparkles className="w-4 h-4 text-amber-600" />
-                <span>NHÀ TÀI TRỢ VÀNG</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-10 max-w-5xl mx-auto pt-2">
-                {goldSponsors.map((sp) => renderLogoTile(sp, "h-14 sm:h-16"))}
-              </div>
-            </div>
-          )}
-
-          {/* Group 4: Nhà Tài Trợ Bạc & Đồng */}
-          {silverBronzeSponsors.length > 0 && (
-            <div className="space-y-4 text-center pt-4">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-200/60 px-4 py-1.5 rounded-full border border-slate-300">
-                <ShieldCheck className="w-4 h-4 text-slate-600" />
-                <span>NHÀ TÀI TRỢ BẠC &amp; ĐỒNG</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-5xl mx-auto pt-2">
-                {silverBronzeSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
-              </div>
-            </div>
-          )}
-
-          {/* Group 5: Đơn Vị Đồng Hành & Bảo Trợ Truyền Thông */}
-          {companionSponsors.length > 0 && (
-            <div className="space-y-4 text-center pt-4">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-900 bg-teal-100/60 px-4 py-1.5 rounded-full border border-teal-200">
-                <Handshake className="w-4 h-4 text-teal-600" />
-                <span>ĐƠN VỊ ĐỒNG HÀNH &amp; BẢO TRỢ TRUYỀN THÔNG</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-6xl mx-auto pt-2">
-                {companionSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
-              </div>
-            </div>
-          )}
-
-          {/* Banner kêu gọi tài trợ tiếp theo */}
-          <div className="bg-gradient-to-r from-[#0D3B2E] to-[#124e3d] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg border border-emerald-800 mt-8">
-            <div className="space-y-2 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Cơ Hội Khẳng Định Thương Hiệu</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold">
-                Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp &amp; Lãnh đạo
-              </h3>
-              <p className="text-emerald-200 text-xs sm:text-sm max-w-xl">
-                Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP.
-              </p>
-            </div>
-            <a
-              href="#sponsor-packages"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs sm:text-sm bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md transition-all shrink-0 cursor-pointer"
-            >
-              <Handshake className="w-4 h-4" />
-              <span>Xem Bảng Gói Tài Trợ</span>
-            </a>
-          </div>
-        </div>
-
-        {/* ===================================================== */}
-        {/* SECTION 2: BẢNG CÁC GÓI QUYỀN LỢI ĐỒNG HÀNH TÀI TRỢ   */}
-        {/* ===================================================== */}
-        <div id="sponsor-packages" className="pt-8 space-y-12">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto space-y-4"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider border border-amber-200">
-              THƯ MỜI TÀI TRỢ &amp; CÁC GÓI QUYỀN LỢI
-            </span>
-            <h2
-              className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
-              style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
-            >
-              Các Gói Quyền Lợi Đồng Hành Tài Trợ
-            </h2>
-            <p className="text-slate-600 text-base sm:text-lg">
-              Lựa chọn gói tài trợ phù hợp với chiến lược quảng bá thương hiệu của Doanh nghiệp bạn.
-            </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
               <button
+                type="button"
                 onClick={handleDownloadPDF}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm bg-white text-[#0D3B2E] border border-emerald-200 shadow-sm hover:shadow transition-all cursor-pointer"
               >
@@ -351,7 +156,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                     })
                   )
                 }
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-md transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-md transition-all cursor-pointer"
               >
                 <Award className="w-4 h-4" />
                 <span>Đăng ký Tài trợ ngay</span>
@@ -361,21 +166,21 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
 
           {/* Sponsor Tier Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SPONSOR_TIERS.map((tier, idx) => (
+            {packages.map((tier, idx) => (
               <motion.div
-                key={idx}
+                key={tier.id || idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
-                className={`bg-white rounded-2xl p-6 border ${tier.borderAccent} shadow-sme hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden ${
+                className={`bg-white rounded-2xl p-6 border ${tier.borderAccent || "border-slate-200"} shadow-sme hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden ${
                   tier.popular ? "ring-2 ring-[#22C55E]" : ""
                 }`}
               >
                 <div className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${tier.badgeColor}`}>
+                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${tier.badgeColor || "bg-slate-900 text-white"}`}>
                         {tier.name}
                       </span>
                       {tier.popular && (
@@ -431,70 +236,174 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             ))}
           </div>
 
-          {/* Section 5 & 6: Hạng mục Tài trợ Ưu tiên & Mốc Thời gian Khuyến nghị */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
-            {/* Left 6 cols: Hạng mục Tài trợ Ưu tiên */}
-            <div className="lg:col-span-6 bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
-              <div className="space-y-2">
-                <span className="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase">
-                  Tài Trợ Hạng Mục Cụ Thể
-                </span>
-                <h3 className="text-xl font-extrabold text-[#0D3B2E]">Các Hạng Mục Tài Trợ Ưu Tiên</h3>
-                <p className="text-xs text-slate-600">
-                  Ngoài gói tài trợ tổng thể, BTC tiếp nhận đồng hành theo từng hạng mục chuyên biệt với giá trị quy đổi linh hoạt.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  { name: "Vietnam SME Networking Gala (18/9)", fee: "Từ 100 Triệu" },
-                  { name: "Gala Chào mừng Đại hội (19/9)", fee: "Từ 70 Triệu" },
-                  { name: "Lễ Trà Kết nối & Tea Break Signature", fee: "Từ 50 Triệu" },
-                  { name: "Nền tảng B2B - Công nghệ - Kết nối", fee: "Từ 30 Triệu" },
-                  { name: "Phương tiện - Logistics - Đón đoàn", fee: "Từ 20 Triệu" },
-                  { name: "Truyền thông - Quay chụp - Livestream", fee: "Từ 10 Triệu" },
-                  { name: "Quà tặng & Bộ tài liệu đại biểu", fee: "Từ 10 Triệu" },
-                  { name: "Gian hàng - In ấn - Nhận diện", fee: "Từ 10 Triệu" },
-                ].map((item, i) => (
-                  <div key={i} className="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs space-y-1">
-                    <p className="text-xs font-bold text-slate-800 leading-tight">{item.name}</p>
-                    <p className="text-[11px] font-extrabold text-[#22C55E]">{item.fee}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right 6 cols: Mốc Thời gian Tiếp nhận */}
-            <div className="lg:col-span-6 bg-[#0B3026] text-white rounded-3xl p-6 sm:p-8 border border-emerald-800 space-y-6">
-              <div className="space-y-2">
-                <span className="inline-block px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase border border-emerald-500/30">
-                  Tiến Độ Triển Khai
-                </span>
-                <h3 className="text-xl font-extrabold text-white">Mốc Thời Gian Quyền Lợi Nhà Tài Trợ</h3>
-                <p className="text-xs text-emerald-200">
-                  Vui lòng hoàn tất đăng ký theo các mốc khuyến nghị để bảo đảm đầy đủ quyền lợi nhận diện trên ấn phẩm chính.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { time: "Trước 31/08/2026", desc: "Đăng ký gói tài trợ để bảo đảm quyền lợi trên toàn bộ ấn phẩm chính." },
-                  { time: "Trước 05/09/2026", desc: "Cung cấp Logo, hồ sơ thương hiệu, video & danh sách đại biểu." },
-                  { time: "Trước 10/09/2026", desc: "Hoàn tất kinh phí hoặc bàn giao hiện vật/dịch vụ đồng hành." },
-                  { time: "11 – 17/09/2026", desc: "Truyền thông cao điểm; duyệt kỹ thuật gian hàng & vật phẩm sự kiện." },
-                  { time: "18 – 20/09/2026", desc: "Chính thức diễn ra chuỗi sự kiện tại May Plaza Hotel Thái Nguyên." },
-                ].map((m, idx) => (
-                  <div key={idx} className="flex items-start gap-3 bg-emerald-950/70 p-3 rounded-xl border border-emerald-800/80">
-                    <span className="px-2 py-0.5 rounded bg-[#22C55E] text-white text-[10px] font-extrabold shrink-0 mt-0.5">
-                      {m.time}
+          {/* Hạng mục Tài trợ Ưu tiên & Mốc Thời gian Khuyến nghị */}
+          {(priorityCategories.length > 0 || milestones.length > 0) && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+              {/* Left 6 cols: Hạng mục Tài trợ Ưu tiên */}
+              {priorityCategories.length > 0 && (
+                <div className="lg:col-span-6 bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
+                  <div className="space-y-2">
+                    <span className="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase">
+                      Tài Trợ Hạng Mục Cụ Thể
                     </span>
-                    <p className="text-xs text-emerald-100 font-medium leading-relaxed">{m.desc}</p>
+                    <h3 className="text-xl font-extrabold text-[#0D3B2E]">Các Hạng Mục Tài Trợ Ưu Tiên</h3>
+                    <p className="text-xs text-slate-600">
+                      Ngoài gói tài trợ tổng thể, BTC tiếp nhận đồng hành theo từng hạng mục chuyên biệt với giá trị quy đổi linh hoạt.
+                    </p>
                   </div>
-                ))}
-              </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {priorityCategories.map((item, i) => (
+                      <div key={item.id || i} className="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs space-y-1">
+                        <p className="text-xs font-bold text-slate-800 leading-tight">{item.name}</p>
+                        <p className="text-[11px] font-extrabold text-[#22C55E]">{item.fee}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Right 6 cols: Mốc Thời gian Tiếp nhận */}
+              {milestones.length > 0 && (
+                <div className="lg:col-span-6 bg-[#0B3026] text-white rounded-3xl p-6 sm:p-8 border border-emerald-800 space-y-6">
+                  <div className="space-y-2">
+                    <span className="inline-block px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase border border-emerald-500/30">
+                      Tiến Độ Triển Khai
+                    </span>
+                    <h3 className="text-xl font-extrabold text-white">Mốc Thời Gian Quyền Lợi Nhà Tài Trợ</h3>
+                    <p className="text-xs text-emerald-200">
+                      Vui lòng hoàn tất đăng ký theo các mốc khuyến nghị để bảo đảm đầy đủ quyền lợi nhận diện trên ấn phẩm chính.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {milestones.map((m, idx) => (
+                      <div key={m.id || idx} className="flex items-start gap-3 bg-emerald-950/70 p-3 rounded-xl border border-emerald-800/80">
+                        <span className="px-2 py-0.5 rounded bg-[#22C55E] text-white text-[10px] font-extrabold shrink-0 mt-0.5">
+                          {m.time}
+                        </span>
+                        <p className="text-xs text-emerald-100 font-medium leading-relaxed">{m.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
+
+        {/* ===================================================== */}
+        {/* SECTION 2: DANH SÁCH LOGO ĐƠN VỊ ĐỒNG HÀNH ĐÃ XÁC NHẬN */}
+        {/* ===================================================== */}
+        {sponsorsList.length > 0 && (
+          <div className="space-y-10 pt-10 border-t border-emerald-800/20">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
+                ĐỐI TÁC ĐỒNG HÀNH ĐÃ XÁC NHẬN
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0D3B2E]">
+                Các Doanh Nghiệp &amp; Đơn Vị Đồng Hành Cùng Diễn Đàn
+              </h3>
+            </div>
+
+            {/* Group 1: Đơn vị Trực tiếp Chỉ đạo & Tổ chức */}
+            {coOrganizers.length > 0 && (
+              <div className="space-y-4 text-center">
+                <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-purple-900 bg-purple-100/60 px-4 py-1.5 rounded-full border border-purple-200">
+                  <Crown className="w-4 h-4 text-purple-700" />
+                  <span>ĐƠN VỊ TRỰC TIẾP CHỈ ĐẠO &amp; TỔ CHỨC</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-4xl mx-auto pt-2">
+                  {coOrganizers.map((sp) => renderLogoTile(sp, "h-20 sm:h-24"))}
+                </div>
+              </div>
+            )}
+
+            {/* Group 2: Nhà Tài Trợ Kim Cương */}
+            {diamondSponsors.length > 0 && (
+              <div className="space-y-4 text-center pt-4">
+                <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-950 bg-emerald-100/60 px-4 py-1.5 rounded-full border border-emerald-200">
+                  <Gem className="w-4 h-4 text-emerald-600" />
+                  <span>NHÀ TÀI TRỢ KIM CƯƠNG</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto pt-2">
+                  {diamondSponsors.map((sp) => renderLogoTile(sp, "h-16 sm:h-20"))}
+                </div>
+              </div>
+            )}
+
+            {/* Group 3: Nhà Tài Trợ Vàng */}
+            {goldSponsors.length > 0 && (
+              <div className="space-y-4 text-center pt-4">
+                <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-950 bg-amber-100/60 px-4 py-1.5 rounded-full border border-amber-200">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <span>NHÀ TÀI TRỢ VÀNG</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-10 max-w-5xl mx-auto pt-2">
+                  {goldSponsors.map((sp) => renderLogoTile(sp, "h-14 sm:h-16"))}
+                </div>
+              </div>
+            )}
+
+            {/* Group 4: Nhà Tài Trợ Bạc & Đồng */}
+            {silverBronzeSponsors.length > 0 && (
+              <div className="space-y-4 text-center pt-4">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-200/60 px-4 py-1.5 rounded-full border border-slate-300">
+                  <ShieldCheck className="w-4 h-4 text-slate-600" />
+                  <span>NHÀ TÀI TRỢ BẠC &amp; ĐỒNG</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-5xl mx-auto pt-2">
+                  {silverBronzeSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
+                </div>
+              </div>
+            )}
+
+            {/* Group 5: Đơn Vị Đồng Hành & Bảo Trợ Truyền Thông */}
+            {companionSponsors.length > 0 && (
+              <div className="space-y-4 text-center pt-4">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-900 bg-teal-100/60 px-4 py-1.5 rounded-full border border-teal-200">
+                  <Handshake className="w-4 h-4 text-teal-600" />
+                  <span>ĐƠN VỊ ĐỒNG HÀNH &amp; BẢO TRỢ TRUYỀN THÔNG</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-6xl mx-auto pt-2">
+                  {companionSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Banner kêu gọi tài trợ tiếp theo */}
+        <div className="bg-gradient-to-r from-[#0D3B2E] to-[#124e3d] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg border border-emerald-800">
+          <div className="space-y-2 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Cơ Hội Khẳng Định Thương Hiệu</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-extrabold">
+              Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp &amp; Lãnh đạo
+            </h3>
+            <p className="text-emerald-200 text-xs sm:text-sm max-w-xl">
+              Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP.
+            </p>
+          </div>
+          <a
+            href="#register"
+            onClick={() =>
+              typeof window !== "undefined" &&
+              window.dispatchEvent(
+                new CustomEvent("selectRegistrationTab", {
+                  detail: { tab: "sponsor" },
+                })
+              )
+            }
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs sm:text-sm bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md transition-all shrink-0 cursor-pointer"
+          >
+            <Handshake className="w-4 h-4" />
+            <span>Đăng Ký Đồng Hành Ngay</span>
+          </a>
+        </div>
+
       </div>
     </section>
   );

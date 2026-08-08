@@ -23,6 +23,9 @@ export interface SiteConfig {
   metaDescription: string;
   eventDateISO: string;
   eventPriceVND: number;
+  logoUrl?: string;
+  faviconUrl?: string;
+  ogImageUrl?: string;
   telegramBotToken?: string;
   telegramChatId?: string;
   telegramThreadIdDelegate?: string;
@@ -41,12 +44,20 @@ export interface SiteConfig {
 
 export interface HeroContent {
   badgeText: string;
+  honorBadgeText?: string;
+  titlePrefix?: string;
+  titleSuffix?: string;
   mainTitle: string;
   subTitle: string;
+  englishTitle?: string;
+  sloganText?: string;
   keywords: string[];
   tickerMessages: string[];
+  countdownLabel?: string;
   eventDateText: string;
+  dateLabel?: string;
   targetDateISO: string;
+  venueLabel?: string;
   venueText: string;
   primaryCtaText: string;
   primaryCtaLink: string;
@@ -196,6 +207,28 @@ export interface TicketFeeContent {
   guaranteeText: string;
 }
 
+export interface SponsorPackageTier {
+  id: string;
+  name: string;
+  price: string;
+  badgeColor?: string;
+  borderAccent?: string;
+  popular?: boolean;
+  perks: string[];
+}
+
+export interface SponsorPriorityCategory {
+  id: string;
+  name: string;
+  fee: string;
+}
+
+export interface SponsorMilestone {
+  id: string;
+  time: string;
+  desc: string;
+}
+
 export interface SponsorItem {
   id: string;
   name: string;
@@ -210,6 +243,9 @@ export interface SponsorsContent {
   title: string;
   subtitle: string;
   prospectusPdfUrl?: string;
+  packages?: SponsorPackageTier[];
+  priorityCategories?: SponsorPriorityCategory[];
+  milestones?: SponsorMilestone[];
   items: SponsorItem[];
 }
 
@@ -229,25 +265,38 @@ export interface BoothsContent {
   title: string;
   subtitle: string;
   mapImageUrl: string;
-  totalBooths: number;
-  availableBooths: number;
-  priceVND?: number;
+  totalBooths?: number;
+  availableBooths?: number;
+  boothPackageBadge?: string;
   boothPackageTitle?: string;
   boothPackageSubtitle?: string;
+  boothPackageNote?: string;
+  priceVND?: number;
+  priceFormatted?: string;
+  priceUnit?: string;
   inclusions?: string[];
+  ctaText?: string;
+  modalTitle?: string;
+  modalSubtitle?: string;
+  modalBottomNote?: string;
   items: BoothItem[];
 }
 
 export interface FooterContent {
   aboutText: string;
+  logoSrc?: string;
+  brandName?: string;
+  brandSub?: string;
   contactAddress: string;
   contactHotline: string;
   contactEmail: string;
   workingHours: string;
+  mapEmbedUrl?: string;
   socialLinks: {
     facebook?: string;
     zalo?: string;
     youtube?: string;
+    tiktok?: string;
     linkedin?: string;
   };
   copyrightText: string;
@@ -264,6 +313,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   metaDescription: "Sự kiện xúc tiến thương mại cấp quốc gia quy tụ 500+ đại biểu, 100+ gian hàng triển lãm, kết nối B2B & xúc tiến đầu tư FDI.",
   eventDateISO: "2026-09-18T08:00:00+07:00",
   eventPriceVND: 1450000,
+  logoUrl: "/logo.png",
+  faviconUrl: "/logo.png",
+  ogImageUrl: "/images/hero-bg.jpg",
   telegramBotToken: "",
   telegramChatId: "",
   telegramThreadIdDelegate: "",
@@ -281,9 +333,14 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 };
 
 export const DEFAULT_HERO: HeroContent = {
-  badgeText: "VIETNAM SME PROSPERITY LINK 2026 • CHÀO MỪNG ĐẠI HỘI TASME NHIỆM KỲ 2026 - 2031",
+  badgeText: "Chào mừng Đại hội HHDNNVV tỉnh Thái Nguyên · Nhiệm kỳ 2026 – 2031",
+  honorBadgeText: "🏅 Huân chương Lao động hạng Ba",
+  titlePrefix: "DIỄN ĐÀN",
+  titleSuffix: "SME VIỆT NAM 2026",
   mainTitle: "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG",
   subTitle: "DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026",
+  englishTitle: "Vietnam SME Prosperity Link Forum 2026",
+  sloganText: "“Kết nối giao thương, vươn tầm quốc tế” • Connecting SME – Going Global",
   keywords: [
     "KẾT NỐI GIAO THƯƠNG",
     "VƯƠN TẦM QUỐC TẾ",
@@ -296,8 +353,11 @@ export const DEFAULT_HERO: HeroContent = {
     "⭐ Tập đoàn May Plaza công bố trở thành Nhà tài trợ Kim Cương chính thức",
     "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói",
   ],
+  countdownLabel: "Đếm ngược sự kiện:",
+  dateLabel: "Thời gian",
   eventDateText: "18 - 20 tháng 09, 2026",
   targetDateISO: "2026-09-18T08:00:00+07:00",
+  venueLabel: "Địa điểm",
   venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
   primaryCtaText: "ĐĂNG KÝ ĐẠI BIỂU THAM GIA",
   primaryCtaLink: "#register",
@@ -672,10 +732,122 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
 };
 
 export const DEFAULT_SPONSORS: SponsorsContent = {
-  badge: "ĐỐI TÁC & NHÀ TÀI TRỢ",
-  title: "Danh Sách Nhà Tài Trợ & Đơn Vị Đồng Hành",
-  subtitle: "Xin chân thành cảm ơn các Tập đoàn, Ngân hàng, Doanh nghiệp và Đơn vị truyền thông đã tin tưởng và đồng hành cùng Diễn đàn SME Việt Nam 2026.",
+  badge: "THƯ MỜI TÀI TRỢ & CÁC GÓI QUYỀN LỢI",
+  title: "Các Gói Quyền Lợi Đồng Hành Tài Trợ",
+  subtitle: "Lựa chọn gói tài trợ phù hợp với chiến lược quảng bá thương hiệu, tiếp cận 500+ CEO, doanh nghiệp SME & nhà đầu tư FDI.",
   prospectusPdfUrl: "",
+  packages: [
+    {
+      id: "pkg-1",
+      name: "Nhà tài trợ Chiến lược",
+      badgeColor: "bg-purple-900 text-white font-extrabold",
+      borderAccent: "border-purple-600 shadow-purple-100",
+      price: "Từ 100.000.000 VNĐ (Tối đa 01)",
+      popular: true,
+      perks: [
+        "Logo mức 100% - Vị trí ưu tiên 1 trên nhận diện, backdrop & màn hình LED",
+        "01 Gian trưng bày tiêu chuẩn vị trí ưu tiên 1",
+        "Phát biểu tối đa 05 phút hoặc tham gia 01 phiên đối thoại chính",
+        "12 Thẻ Thư mời Đại biểu tham dự trọn gói (Gala & Ăn ở)",
+        "Tối đa 10 lịch hẹn B2B / Investment Matching ưu tiên",
+        "Video thương hiệu 60s (04 lượt phát trước phiên chính & Gala)",
+        "03 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+        "Kỷ niệm chương đặc biệt + Báo cáo quyền lợi riêng sau sự kiện",
+      ],
+    },
+    {
+      id: "pkg-2",
+      name: "Nhà tài trợ Kim Cương",
+      badgeColor: "bg-[#0D3B2E] text-white font-bold",
+      borderAccent: "border-emerald-600 shadow-emerald-100",
+      price: "Từ 70.000.000 VNĐ (Tối đa 02)",
+      perks: [
+        "Logo mức 85% - Vị trí ưu tiên tại các hoạt động trọng tâm",
+        "01 Gian trưng bày vị trí ưu tiên",
+        "Ưu tiên xem xét 01 vị trí đối thoại chính quyền - doanh nghiệp",
+        "08 Thẻ Thư mời Đại biểu tham dự trọn gói",
+        "Tối đa 08 lịch hẹn B2B Matching ưu tiên",
+        "Video thương hiệu 45s (03 lượt phát trước phiên chính/Gala)",
+        "02 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+        "Kỷ niệm chương + Báo cáo quyền lợi riêng sau sự kiện",
+      ],
+    },
+    {
+      id: "pkg-3",
+      name: "Nhà tài trợ Vàng",
+      badgeColor: "bg-amber-500 text-slate-950 font-bold",
+      borderAccent: "border-amber-300 shadow-amber-50",
+      price: "Từ 50.000.000 VNĐ (Tối đa 03)",
+      perks: [
+        "Logo mức 70% trên bộ nhận diện chính & truyền thông",
+        "01 Gian trưng bày tiêu chuẩn",
+        "06 Thẻ Thư mời Đại biểu tham dự trọn gói",
+        "Tối đa 06 lịch hẹn B2B Matching ưu tiên",
+        "Video thương hiệu 30s (02 lượt phát)",
+        "01 Bài giới thiệu riêng trên kênh truyền thông của Ban Tổ chức",
+        "Kỷ niệm chương + Báo cáo quyền lợi rút gọn",
+      ],
+    },
+    {
+      id: "pkg-4",
+      name: "Nhà tài trợ Bạc",
+      badgeColor: "bg-slate-700 text-white font-bold",
+      borderAccent: "border-slate-300",
+      price: "Từ 30.000.000 VNĐ (Tối đa 05)",
+      perks: [
+        "Logo mức 55% tại các điểm chạm phù hợp",
+        "01 Gian trưng bày tiêu chuẩn (nếu còn vị trí)",
+        "04 Thẻ Thư mời Đại biểu tham dự trọn gói",
+        "Tối đa 04 lịch hẹn B2B Matching ưu tiên",
+        "Video thương hiệu 30s (01 lượt phát)",
+        "01 Bài giới thiệu tổng hợp trên kênh truyền thông BTC",
+        "Chứng nhận Nhà tài trợ Bạc + Báo cáo chung",
+      ],
+    },
+    {
+      id: "pkg-5",
+      name: "Nhà tài trợ Đồng",
+      badgeColor: "bg-amber-800 text-white font-bold",
+      borderAccent: "border-amber-200",
+      price: "Từ 20.000.000 VNĐ (Tối đa 10)",
+      perks: [
+        "Logo mức 40% ở nhóm đồng tài trợ",
+        "Ưu đãi 50% chi phí gian hàng triển lãm",
+        "02 Thẻ Thư mời Đại biểu tham dự trọn gói",
+        "Tối đa 02 lịch hẹn B2B Matching",
+        "Bài giới thiệu tổng hợp & Chứng nhận Nhà tài trợ Đồng",
+      ],
+    },
+    {
+      id: "pkg-6",
+      name: "Đơn vị Đồng hành",
+      badgeColor: "bg-teal-700 text-white font-bold",
+      borderAccent: "border-teal-300",
+      price: "Từ 10.000.000 VNĐ đến dưới 19.000.000 VNĐ",
+      perks: [
+        "Ghi nhận logo/thương hiệu theo hạng mục tài trợ cụ thể",
+        "01 Thẻ Thư mời Đại biểu tham dự trọn gói",
+        "Bài cảm ơn chung & Thư cảm ơn từ Ban Tổ chức TASME",
+      ],
+    },
+  ],
+  priorityCategories: [
+    { id: "cat-1", name: "Vietnam SME Networking Gala (18/9)", fee: "Từ 100 Triệu" },
+    { id: "cat-2", name: "Gala Chào mừng Đại hội (19/9)", fee: "Từ 70 Triệu" },
+    { id: "cat-3", name: "Lễ Trà Kết nối & Tea Break Signature", fee: "Từ 50 Triệu" },
+    { id: "cat-4", name: "Nền tảng B2B - Công nghệ - Kết nối", fee: "Từ 30 Triệu" },
+    { id: "cat-5", name: "Phương tiện - Logistics - Đón đoàn", fee: "Từ 20 Triệu" },
+    { id: "cat-6", name: "Truyền thông - Quay chụp - Livestream", fee: "Từ 10 Triệu" },
+    { id: "cat-7", name: "Quà tặng & Bộ tài liệu đại biểu", fee: "Từ 10 Triệu" },
+    { id: "cat-8", name: "Gian hàng - In ấn - Nhận diện", fee: "Từ 10 Triệu" },
+  ],
+  milestones: [
+    { id: "ms-1", time: "Trước 31/08/2026", desc: "Đăng ký gói tài trợ để bảo đảm quyền lợi trên toàn bộ ấn phẩm chính." },
+    { id: "ms-2", time: "Trước 05/09/2026", desc: "Cung cấp Logo, hồ sơ thương hiệu, video & danh sách đại biểu." },
+    { id: "ms-3", time: "Trước 10/09/2026", desc: "Hoàn tất kinh phí hoặc bàn giao hiện vật/dịch vụ đồng hành." },
+    { id: "ms-4", time: "11 – 17/09/2026", desc: "Truyền thông cao điểm; duyệt kỹ thuật gian hàng & vật phẩm sự kiện." },
+    { id: "ms-5", time: "18 – 20/09/2026", desc: "Chính thức diễn ra chuỗi sự kiện tại May Plaza Hotel Thái Nguyên." },
+  ],
   items: [
     {
       id: "sp-1",
@@ -735,12 +907,30 @@ export const DEFAULT_BOOTHS: BoothsContent = {
   mapImageUrl: "/images/so-do.jpg",
   totalBooths: 100,
   availableBooths: 35,
+  boothPackageBadge: "Gian hàng tiêu chuẩn",
+  boothPackageTitle: "Gian hàng Triển lãm 2m x 1,5m",
+  boothPackageNote: "Mỗi gian hàng BTC sẽ sắp sẵn 2 bàn + 2 ghế + 1 Standee",
+  priceVND: 8500000,
+  priceFormatted: "8.500.000",
+  priceUnit: "VNĐ / Gian",
+  inclusions: [
+    "Mặt bằng gian tiêu chuẩn diện tích 2m x 1,5m theo sơ đồ Ban Tổ chức",
+    "01 Standee, Vách ngăn, biển tên gian & hệ khung trưng bày chuyên nghiệp",
+    "Ổ cắm điện & kết nối Internet Wi-Fi tốc độ cao riêng khu vực",
+    "02 Bàn + 02 Ghế tiêu chuẩn + Hệ chiếu sáng & điện 220V",
+    "Hiển thị logo & thông tin doanh nghiệp trên sơ đồ & catalogue Diễn đàn",
+    "Hỗ trợ vận chuyển, sắp xếp hàng hóa ngày lắp đặt (18/9)",
+  ],
+  ctaText: "Đăng ký gian hàng ngay",
+  modalTitle: "Sơ đồ Chi tiết Mặt bằng Triển lãm",
+  modalSubtitle: "Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.",
+  modalBottomNote: "Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza",
   items: [
     {
       id: "b-101",
       boothCode: "A-01",
       areaName: "Khu Vực A - Công Nghệ & Chuyển Đổi Số",
-      size: "3m x 3m",
+      size: "2m x 1.5m",
       priceVND: 8500000,
       status: "available",
       description: "Gian hàng góc 2 mặt tiền ngay lối vào chính"
@@ -749,8 +939,8 @@ export const DEFAULT_BOOTHS: BoothsContent = {
       id: "b-102",
       boothCode: "A-02",
       areaName: "Khu Vực A - Công Nghệ & Chuyển Đổi Số",
-      size: "3m x 3m",
-      priceVND: 7500000,
+      size: "2m x 1.5m",
+      priceVND: 8500000,
       status: "reserved",
       reservedBy: "Công ty Cổ phần Công nghệ ABC",
       description: "Gian hàng tiêu chuẩn"
@@ -836,14 +1026,19 @@ export const DEFAULT_SPEAKERS: SpeakersContent = {
 
 export const DEFAULT_FOOTER: FooterContent = {
   aboutText: "Diễn đàn Kết nối Giao thương SME Việt Nam 2026 là sự kiện xúc tiến thương mại quy mô lớn quy tụ 500+ doanh nghiệp trên toàn quốc.",
+  logoSrc: "/logo.png",
+  brandName: "TASME THÁI NGUYÊN",
+  brandSub: "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên",
   contactAddress: "May Plaza Hotel Thai Nguyen, 668 Phan Đình Phùng, TP. Thái Nguyên",
   contactHotline: "0988.123.456",
   contactEmail: "contact@smevietnam2026.vn",
   workingHours: "Thứ 2 - Thứ 7: 08:00 - 17:30",
+  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3710.158586383637!2d105.8361730761214!3d21.579727980208154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31352723c3cf6d0d%3A0x6a0fcfb2bcf1b1a7!2sMay%20Plaza%20Hotel!5e0!3m2!1svi!2svn!4v1700000000000!5m2!1svi!2svn",
   socialLinks: {
     facebook: "https://facebook.com",
     zalo: "https://zalo.me",
-    youtube: "https://youtube.com"
+    youtube: "https://youtube.com",
+    tiktok: "https://tiktok.com",
   },
   copyrightText: "© 2026 Diễn đàn SME Việt Nam. Bảo lưu mọi quyền."
 };

@@ -28,6 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     siteConfig.metaDescription ||
     "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam. 18-20/09/2026 tại May Plaza Hotel Thái Nguyên.";
+  const iconUrl = siteConfig.faviconUrl || siteConfig.logoUrl || "/logo.png";
+  const ogImgUrl = siteConfig.ogImageUrl || siteConfig.logoUrl || "/images/hero-bg.jpg";
 
   return {
     metadataBase: new URL("https://sme-thainguyen.vercel.app"),
@@ -44,6 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "Tài trợ diễn đàn SME",
     ],
     authors: [{ name: siteConfig.organizer || "Hiệp hội DNNVV tỉnh Thái Nguyên (TASME)" }],
+    icons: {
+      icon: iconUrl,
+      shortcut: iconUrl,
+      apple: iconUrl,
+    },
     openGraph: {
       title,
       description,
@@ -51,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: siteConfig.siteName || "DIỄN ĐÀN SME VIỆT NAM 2026",
       images: [
         {
-          url: "/images/hero-bg.jpg",
+          url: ogImgUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -64,7 +71,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: ["/images/hero-bg.jpg"],
+      images: [ogImgUrl],
     },
     robots: {
       index: true,
@@ -75,18 +82,22 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { ToastContainer } from "@/components/ui/Toast";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteConfig = await getSectionContent<SiteConfig>("site_config");
+  const faviconHref = siteConfig.faviconUrl || siteConfig.logoUrl || "/logo.png";
+
   return (
     <html
       lang="vi"
       className={`${wixDisplay.variable} ${inter.variable} scroll-smooth`}
     >
       <head>
-        <link rel="icon" href="/logo.png" />
+        <link rel="icon" href={faviconHref} />
+        <link rel="apple-touch-icon" href={faviconHref} />
       </head>
       <body className="min-h-screen bg-[#F8FAFC] text-[#1A1A1A] antialiased selection:bg-[#0B5ED7] selection:text-white">
         {children}

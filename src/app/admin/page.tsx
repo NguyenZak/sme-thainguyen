@@ -15,6 +15,7 @@ import TicketFeeEditor from "@/components/admin/TicketFeeEditor";
 import SponsorsEditor from "@/components/admin/SponsorsEditor";
 import BoothsEditor from "@/components/admin/BoothsEditor";
 import RegistrationEditor from "@/components/admin/RegistrationEditor";
+import FooterEditor from "@/components/admin/FooterEditor";
 import RegistrationsManager from "@/components/admin/RegistrationsManager";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -193,6 +194,17 @@ export default function AdminPage() {
                 <SponsorsEditor initialSponsors={data.sponsors} />
               )}
               {activeTab === "booths" && <BoothsEditor initialBooths={data.booths} />}
+              {activeTab === "footer" && (
+                <FooterEditor
+                  initialFooter={data.footer}
+                  onSaveSuccess={(updatedFooter) => {
+                    setData((prev) => ({
+                      ...prev,
+                      footer: updatedFooter,
+                    }));
+                  }}
+                />
+              )}
               {activeTab === "registrations" && <RegistrationsManager />}
             </>
           )}

@@ -38,6 +38,18 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
   const subtitle = content?.subtitle || DEFAULT_BOOTHS.subtitle;
   const mapImageUrl = content?.mapImageUrl || DEFAULT_BOOTHS.mapImageUrl || "/images/so-do.jpg";
 
+  const boothPackageBadge = content?.boothPackageBadge || DEFAULT_BOOTHS.boothPackageBadge || "Gian hàng tiêu chuẩn";
+  const boothPackageTitle = content?.boothPackageTitle || DEFAULT_BOOTHS.boothPackageTitle || "Gian hàng Triển lãm 2m x 1,5m";
+  const boothPackageNote = content?.boothPackageNote || DEFAULT_BOOTHS.boothPackageNote || "Mỗi gian hàng BTC sẽ sắp sẵn 2 bàn + 2 ghế + 1 Standee";
+  const priceFormatted = content?.priceFormatted || (content?.priceVND ? content.priceVND.toLocaleString("vi-VN") : DEFAULT_BOOTHS.priceFormatted || "8.500.000");
+  const priceUnit = content?.priceUnit || DEFAULT_BOOTHS.priceUnit || "VNĐ / Gian";
+  const inclusions = (content?.inclusions && content.inclusions.length > 0) ? content.inclusions : (DEFAULT_BOOTHS.inclusions || BOOTH_INCLUSIONS);
+  const ctaText = content?.ctaText || DEFAULT_BOOTHS.ctaText || "Đăng ký gian hàng ngay";
+  const modalTitle = content?.modalTitle || DEFAULT_BOOTHS.modalTitle || "Sơ đồ Chi tiết Mặt bằng Triển lãm";
+  const modalSubtitle = content?.modalSubtitle || DEFAULT_BOOTHS.modalSubtitle || "Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.";
+  const modalBottomNote = content?.modalBottomNote || DEFAULT_BOOTHS.modalBottomNote || "Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza";
+  const boothItems = (content?.items && content.items.length > 0) ? content.items : (DEFAULT_BOOTHS.items || []);
+
   const [floorPlanOpen, setFloorPlanOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -319,26 +331,28 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
           >
             <div className="space-y-2">
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-extrabold uppercase">
-                Gian hàng tiêu chuẩn
+                {boothPackageBadge}
               </span>
               <h3
                 className="text-2xl font-extrabold text-[#0D3B2E]"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
-                Gian hàng Triển lãm 2m x 1,5m
+                {boothPackageTitle}
               </h3>
-              <div className="p-3 bg-amber-500/10 border border-amber-400/40 rounded-xl text-amber-950 text-xs font-bold flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F59E0B] shrink-0" />
-                <span>Mỗi gian hàng BTC sẽ sắp sẵn 2 bàn + 2 ghế + 1 Standee</span>
-              </div>
+              {boothPackageNote && (
+                <div className="p-3 bg-amber-500/10 border border-amber-400/40 rounded-xl text-amber-950 text-xs font-bold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#F59E0B] shrink-0" />
+                  <span>{boothPackageNote}</span>
+                </div>
+              )}
               <div className="flex items-baseline gap-2 pt-1">
                 <span
                   className="text-3xl font-black text-[#22C55E]"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
-                  8.500.000
+                  {priceFormatted}
                 </span>
-                <span className="text-sm font-bold text-slate-600">VNĐ / Gian</span>
+                <span className="text-sm font-bold text-slate-600">{priceUnit}</span>
               </div>
             </div>
 
@@ -346,10 +360,10 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
 
             <div className="space-y-3">
               <p className="text-xs font-bold text-[#0D3B2E] uppercase tracking-wider">
-                Gian hàng tiêu chuẩn – bao gồm:
+                {boothPackageBadge} – bao gồm:
               </p>
               <ul className="space-y-2.5 text-xs font-medium text-slate-700">
-                {BOOTH_INCLUSIONS.map((item, idx) => (
+                {inclusions.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
                     <span>{item}</span>
@@ -372,7 +386,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                 }}
                 className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-md transition-all hover:shadow-lg"
               >
-                <span>Đăng ký gian hàng ngay</span>
+                <span>{ctaText}</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -396,13 +410,13 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                   </div>
                   <div>
                     <h3 className="text-xs sm:text-base font-bold text-white leading-tight flex items-center gap-2">
-                      <span>Sơ đồ Chi tiết Mặt bằng Triển lãm</span>
+                      <span>{modalTitle}</span>
                       <span className="hidden md:inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
                         <Move className="w-3 h-3" /> Kéo chuột di chuyển 4 chiều
                       </span>
                     </h3>
                     <p className="text-[10px] sm:text-xs text-slate-400 hidden sm:block">
-                      Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.
+                      {modalSubtitle}
                     </p>
                   </div>
                 </div>
@@ -599,7 +613,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                 <span className="text-xs text-slate-300 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="line-clamp-1">
-                    Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza
+                    {modalBottomNote}
                   </span>
                 </span>
 

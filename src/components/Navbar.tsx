@@ -33,8 +33,8 @@ export default function Navbar({ content }: { content?: NavbarContent }) {
           <Link href="#" className="flex items-center gap-2 sm:gap-3 group shrink min-w-0 pr-1">
             <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white p-1 shadow-sm border border-emerald-100 transition-transform group-hover:scale-105 shrink-0">
               <Image
-                src={data.logoSrc}
-                alt="Logo"
+                src={data.logoSrc || "/logo.png"}
+                alt={data.brandName || "Logo"}
                 fill
                 className="object-contain p-0.5"
                 priority

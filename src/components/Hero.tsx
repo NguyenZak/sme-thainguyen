@@ -25,19 +25,15 @@ export default function Hero({ content }: { content?: HeroContent }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [tickerIndex, setTickerIndex] = useState(0);
-  const tickers = [
-    "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Đại biểu (2 phút trước)",
-    "⚡ Công ty Cổ phần Công nghệ ABC vừa đăng ký Gian hàng Triển lãm A-05",
-    "⭐ Tập đoàn May Plaza công bố trở thành Nhà tài trợ Kim Cương chính thức",
-    "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói",
-  ];
+  const tickers = data.tickerMessages && data.tickerMessages.length > 0 ? data.tickerMessages : DEFAULT_HERO.tickerMessages;
 
   useEffect(() => {
+    if (!tickers || tickers.length === 0) return;
     const interval = setInterval(() => {
       setTickerIndex((prev) => (prev + 1) % tickers.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [tickers.length]);
+  }, [tickers]);
 
   // GSAP Entrance Timeline Animation
   useGSAP(
@@ -138,22 +134,28 @@ export default function Hero({ content }: { content?: HeroContent }) {
           className="hero-badge flex flex-col items-center gap-3"
         >
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300 shadow-md backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-              <span>Chào mừng Đại hội HHDNNVV tỉnh Thái Nguyên · Nhiệm kỳ 2026 – 2031</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[11px] sm:text-xs font-bold text-amber-300 shadow-md backdrop-blur-md">
-              🏅 Huân chương Lao động hạng Ba
-            </span>
+            {data.badgeText && (
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300 shadow-md backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
+                <span>{data.badgeText}</span>
+              </span>
+            )}
+            {data.honorBadgeText && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[11px] sm:text-xs font-bold text-amber-300 shadow-md backdrop-blur-md">
+                {data.honorBadgeText}
+              </span>
+            )}
           </div>
 
           {/* Dynamic Social Proof Live Ticker */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-900/60 border border-emerald-400/30 text-xs font-medium text-emerald-200 backdrop-blur-md shadow-inner transition-all">
-            <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-            <span className="animate-in fade-in transition-all duration-300">
-              {tickers[tickerIndex]}
-            </span>
-          </div>
+          {tickers && tickers.length > 0 && (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-900/60 border border-emerald-400/30 text-xs font-medium text-emerald-200 backdrop-blur-md shadow-inner transition-all">
+              <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+              <span className="animate-in fade-in transition-all duration-300">
+                {tickers[tickerIndex % tickers.length]}
+              </span>
+            </div>
+          )}
         </motion.div>
 
         {/* Main Headline (Typewriter Effect Animation) */}
@@ -167,19 +169,23 @@ export default function Hero({ content }: { content?: HeroContent }) {
             className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            DIỄN ĐÀN <br />
+            {data.titlePrefix !== undefined && data.titlePrefix !== "" ? data.titlePrefix : "DIỄN ĐÀN"} <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-amber-300 inline-block min-h-[1.25em] py-2 -my-2">
               {currentText}
               <span className="text-[#F59E0B] animate-pulse font-normal ml-0.5 opacity-90">|</span>
             </span> <br />
-            SME VIỆT NAM 2026
+            {data.titleSuffix !== undefined && data.titleSuffix !== "" ? data.titleSuffix : "SME VIỆT NAM 2026"}
           </h1>
-          <p className="text-sm sm:text-xl font-medium text-emerald-200 tracking-wide">
-            Vietnam SME Prosperity Link Forum 2026
-          </p>
-          <p className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2">
-            &ldquo;Kết nối giao thương, vươn tầm quốc tế&rdquo; • Connecting SME – Going Global
-          </p>
+          {data.englishTitle && (
+            <p className="text-sm sm:text-xl font-medium text-emerald-200 tracking-wide">
+              {data.englishTitle}
+            </p>
+          )}
+          {data.sloganText && (
+            <p className="text-xs sm:text-lg text-slate-200 italic max-w-3xl mx-auto px-2">
+              {data.sloganText}
+            </p>
+          )}
         </motion.div>
 
         {/* Live Countdown Timer (Mobile Grid Optimized) */}
@@ -191,7 +197,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
         >
           <div className="flex items-center gap-2 text-[11px] sm:text-xs font-bold text-amber-400 uppercase tracking-wider sm:pr-3 sm:border-r border-slate-800">
             <Clock className="w-4 h-4 animate-spin text-[#F59E0B]" />
-            <span>Đếm ngược sự kiện:</span>
+            <span>{data.countdownLabel || "Đếm ngược sự kiện:"}</span>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 text-center">
@@ -237,7 +243,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
               <Calendar className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">Thời gian</p>
+              <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">{data.dateLabel || "Thời gian"}</p>
               <p className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">{data.eventDateText || "18–20/09/2026"}</p>
             </div>
           </div>
@@ -247,7 +253,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
               <MapPin className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">Địa điểm</p>
+              <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">{data.venueLabel || "Địa điểm"}</p>
               <p className="text-xs sm:text-sm font-bold text-white whitespace-nowrap leading-tight">{data.venueText || "May Plaza Hotel, Thái Nguyên"}</p>
             </div>
           </div>
@@ -256,59 +262,63 @@ export default function Hero({ content }: { content?: HeroContent }) {
         {/* 3 Action Buttons - Stacked Full-Width on Mobile for Thumb Ergonomics */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-3 pb-4 sm:pb-6 w-full max-w-xl sm:max-w-none mx-auto relative z-50">
           {/* 1st Order Primary CTA: Delegate Registration */}
-          <a
-            id="cta-1"
-            href={data.primaryCtaLink || "#register"}
-            onClick={(e) => {
-              if (typeof window !== "undefined") {
-                window.dispatchEvent(
-                  new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } })
-                );
-              }
-            }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
-          >
-            <Ticket className="w-4 h-4" />
-            <span>{data.primaryCtaText || "ĐĂNG KÝ ĐẠI BIỂU THAM GIA"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          {data.primaryCtaText && (
+            <a
+              id="cta-1"
+              href={data.primaryCtaLink || "#register"}
+              onClick={(e) => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(
+                    new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } })
+                  );
+                }
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-xl shadow-emerald-950/60 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+            >
+              <Ticket className="w-4 h-4" />
+              <span>{data.primaryCtaText}</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          )}
 
           {/* 2nd Order Secondary CTA: Booth Exhibition Registration */}
-          <a
-            id="cta-2"
-            href={data.secondaryCtaLink || "#register"}
-            onClick={(e) => {
-              if (typeof window !== "undefined") {
-                window.dispatchEvent(
-                  new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } })
-                );
-              }
-            }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
-          >
-            <Store className="w-4 h-4 text-slate-950" />
-            <span>{data.secondaryCtaText || "ĐĂNG KÝ GIAN HÀNG"}</span>
-          </a>
+          {data.secondaryCtaText && (
+            <a
+              id="cta-2"
+              href={data.secondaryCtaLink || "#register"}
+              onClick={(e) => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(
+                    new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } })
+                  );
+                }
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+            >
+              <Store className="w-4 h-4 text-slate-950" />
+              <span>{data.secondaryCtaText}</span>
+            </a>
+          )}
 
           {/* 3rd Order Tertiary CTA: Sponsor Packages Prospectus */}
-          <a
-            id="cta-3"
-            href={data.tertiaryCtaLink || "#sponsors"}
-            onClick={(e) => {
-              if (typeof window !== "undefined") {
-                window.dispatchEvent(
-                  new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } })
-                );
-              }
-            }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
-          >
-            <Award className="w-4 h-4 text-emerald-400" />
-            <span>{data.tertiaryCtaText || "THAM KHẢO GÓI TÀI TRỢ"}</span>
-          </a>
+          {data.tertiaryCtaText && (
+            <a
+              id="cta-3"
+              href={data.tertiaryCtaLink || "#sponsors"}
+              onClick={(e) => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(
+                    new CustomEvent("selectRegistrationTab", { detail: { tab: "sponsor" } })
+                  );
+                }
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-slate-900/80 hover:bg-slate-950 text-white border border-emerald-500/40 backdrop-blur-md transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+            >
+              <Award className="w-4 h-4 text-emerald-400" />
+              <span>{data.tertiaryCtaText}</span>
+            </a>
+          )}
         </div>
-
-        {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}
       </div>
     </section>
   );

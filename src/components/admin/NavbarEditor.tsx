@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { NavbarContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
-import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from "lucide-react";
+import { uploadImageToStorage } from "@/lib/cmsClient";
+import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, Upload, RotateCcw, Image as ImageIcon } from "lucide-react";
+import { toast } from "@/components/ui/Toast";
 
 interface NavbarEditorProps {
   initialNavbar: NavbarContent;
@@ -12,7 +15,33 @@ interface NavbarEditorProps {
 export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
   const [navbar, setNavbar] = useState<NavbarContent>(initialNavbar);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.warning("File quá lớn!", "Vui lòng chọn ảnh logo dưới 5MB để tối ưu tốc độ tải trang.");
+      return;
+    }
+
+    setUploadingLogo(true);
+    try {
+      const { url, error } = await uploadImageToStorage(file);
+      if (error || !url) {
+        toast.error("Tải ảnh thất bại!", error || "Không thể upload file.");
+      } else {
+        setNavbar((prev) => ({ ...prev, logoSrc: url }));
+        toast.success("Tải logo thành công! 🖼️", "Đã cập nhật logo cho thanh điều hướng.");
+      }
+    } catch (err: any) {
+      toast.error("Lỗi khi tải ảnh!", err?.message || "Lỗi không xác định");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
 
   const handleNavLinkChange = (index: number, key: keyof NavbarContent["navLinks"][0], value: string) => {
     const updated = [...navbar.navLinks];
@@ -43,8 +72,10 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      toast.success("Lưu thành công! 🎉", "Cấu hình thanh điều hướng và logo đã được cập nhật.");
       setMsg({ type: "success", text: "Đã lưu cấu hình Navbar thành công!" });
     } else {
+      toast.error("Lưu thất bại!", res.error || "Không thể lưu thay đổi.");
       setMsg({ type: "error", text: res.error || "Không thể lưu thay đổi." });
     }
   };
@@ -53,8 +84,8 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
     <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Thanh điều hướng (Navbar)</h2>
-          <p className="text-xs text-slate-500 mt-1">Quản lý logo, tiêu đề thương hiệu, liên kết menu và nút kêu gọi hành động.</p>
+          <h2 className="text-xl font-bold text-slate-900">Thanh điều hướng (Navbar) & Logo</h2>
+          <p className="text-xs text-slate-500 mt-1">Quản lý logo thương hiệu, tiêu đề, liên kết menu và nút kêu gọi hành động.</p>
         </div>
         <button
           type="submit"
@@ -79,11 +110,113 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH LOGO & THƯƠNG HIỆU</h3>
+      {/* ── CARD: CẤU HÌNH LOGO & THƯƠNG HIỆU ─────────────────────────── */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
+              <ImageIcon className="w-4 h-4 text-emerald-700" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH LOGO & THƯƠNG HIỆU</h3>
+              <p className="text-[11px] text-slate-500">Logo hiển thị tại góc trái thanh Menu điều hướng và các vị trí thương hiệu.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Logo Preview & Upload Box */}
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            {/* Dark green background mock header */}
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-16 h-16 rounded-xl bg-[#0B3026] p-2 border border-emerald-800 shadow-md flex items-center justify-center relative overflow-hidden shrink-0">
+                {navbar.logoSrc ? (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={navbar.logoSrc}
+                      alt="Logo Preview"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-[10px] text-emerald-300 font-bold">Chưa có</span>
+                )}
+              </div>
+              <span className="text-[10px] text-slate-500 font-medium">Xem trên Header</span>
+            </div>
+
+            {/* Light background mock */}
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-16 h-16 rounded-xl bg-white p-2 border border-slate-200 shadow-sm flex items-center justify-center relative overflow-hidden shrink-0">
+                {navbar.logoSrc ? (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={navbar.logoSrc}
+                      alt="Logo Preview"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-[10px] text-slate-400 font-bold">Chưa có</span>
+                )}
+              </div>
+              <span className="text-[10px] text-slate-500 font-medium">Nền trắng</span>
+            </div>
+
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-slate-900">
+                {navbar.brandName || "Chưa đặt tên thương hiệu"}
+              </div>
+              <p className="text-[11px] text-slate-500 max-w-sm">
+                Định dạng khuyên dùng: <b>PNG nền trong suốt (transparent)</b> hoặc SVG, WebP.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <label className="inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0">
+              {uploadingLogo ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+              <span>{uploadingLogo ? "Đang tải ảnh..." : "Tải Logo từ máy tính"}</span>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                className="hidden"
+                onChange={handleLogoUpload}
+                disabled={uploadingLogo}
+              />
+            </label>
+
+            <button
+              type="button"
+              onClick={() => {
+                setNavbar({ ...navbar, logoSrc: "/logo.png" });
+                toast.info("Đã đặt lại!", "Logo đã được đưa về đường dẫn mặc định (/logo.png).");
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors shrink-0"
+              title="Đặt lại logo mặc định"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Mặc định</span>
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Đường dẫn URL Logo hoặc Tên file</label>
+            <input
+              type="text"
+              placeholder="/logo.png hoặc https://..."
+              value={navbar.logoSrc}
+              onChange={(e) => setNavbar({ ...navbar, logoSrc: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-mono focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Tên Thương Hiệu</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Tên Thương Hiệu Chính</label>
             <input
               type="text"
               value={navbar.brandName}
@@ -92,20 +225,11 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Dòng Phụ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Dòng Phụ (Subtitle thương hiệu)</label>
             <input
               type="text"
               value={navbar.brandSub}
               onChange={(e) => setNavbar({ ...navbar, brandSub: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">URL Logo</label>
-            <input
-              type="text"
-              value={navbar.logoSrc}
-              onChange={(e) => setNavbar({ ...navbar, logoSrc: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
