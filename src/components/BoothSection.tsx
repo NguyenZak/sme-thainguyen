@@ -330,23 +330,28 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                   >
                     Đóng
                   </button>
-                  <a
-                    href="#register"
+                  <button
                     onClick={() => {
                       setFloorPlanOpen(false);
                       if (typeof window !== "undefined") {
-                        window.dispatchEvent(
-                          new CustomEvent("selectRegistrationTab", {
-                            detail: { tab: "booth" },
-                          })
-                        );
+                        setTimeout(() => {
+                          const regEl = document.getElementById("register");
+                          if (regEl) {
+                            regEl.scrollIntoView({ behavior: "smooth" });
+                          }
+                          window.dispatchEvent(
+                            new CustomEvent("selectRegistrationTab", {
+                              detail: { tab: "booth" },
+                            })
+                          );
+                        }, 100);
                       }
                     }}
-                    className="px-5 py-2 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none"
+                    className="px-5 py-2 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none cursor-pointer"
                   >
                     <span>Tiến hành Đăng ký gian</span>
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </motion.div>

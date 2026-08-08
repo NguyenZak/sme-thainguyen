@@ -107,7 +107,7 @@ export default function RegistrationForm({
       if (!targetTab && hash) {
         if (hash.includes("sponsor")) targetTab = "sponsor";
         else if (hash.includes("booth")) targetTab = "booth";
-        else if (hash.includes("delegate") || hash.includes("register")) targetTab = "delegate";
+        else if (hash.includes("delegate")) targetTab = "delegate";
       }
 
       if (targetTab) {
