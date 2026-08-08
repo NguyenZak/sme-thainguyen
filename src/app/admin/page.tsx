@@ -121,7 +121,16 @@ export default function AdminPage() {
             benefits: { ...DEFAULT_BENEFITS, ...(loadedMap.benefits || {}) },
             timeline: { ...DEFAULT_TIMELINE, ...(loadedMap.timeline || {}) },
             ticket_fee: { ...DEFAULT_TICKET_FEE, ...(loadedMap.ticket_fee || {}) },
-            sponsors: { ...DEFAULT_SPONSORS, ...(loadedMap.sponsors || {}) },
+            sponsors: loadedMap.sponsors
+              ? {
+                  ...DEFAULT_SPONSORS,
+                  ...(loadedMap.sponsors as any),
+                  // Array.isArray check: mảng rỗng [] hợp lệ, không fallback về DEFAULT
+                  items: Array.isArray((loadedMap.sponsors as any)?.items)
+                    ? (loadedMap.sponsors as any).items
+                    : DEFAULT_SPONSORS.items,
+                }
+              : DEFAULT_SPONSORS,
             booths: { ...DEFAULT_BOOTHS, ...(loadedMap.booths || {}) },
             registration: { ...DEFAULT_REGISTRATION, ...(loadedMap.registration || {}) },
             faq: { ...DEFAULT_FAQ_CONTENT, ...(loadedMap.faq || {}) },

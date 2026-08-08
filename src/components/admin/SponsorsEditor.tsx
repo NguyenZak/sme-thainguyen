@@ -52,10 +52,10 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
       initialSponsors?.milestones && initialSponsors.milestones.length > 0
         ? initialSponsors.milestones
         : DEFAULT_SPONSORS.milestones || [],
-    items:
-      initialSponsors?.items && initialSponsors.items.length > 0
-        ? initialSponsors.items
-        : DEFAULT_SPONSORS.items || [],
+    // Dùng Array.isArray thay vì length > 0 để tránh fallback khi mảng rỗng hợp lệ
+    items: Array.isArray(initialSponsors?.items)
+      ? initialSponsors.items
+      : DEFAULT_SPONSORS.items || [],
   });
 
   const [saving, setSaving] = useState(false);
