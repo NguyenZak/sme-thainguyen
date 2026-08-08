@@ -11,6 +11,7 @@ import {
 } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
   CheckCircle2,
@@ -494,15 +495,13 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                    Mức Kinh Phí / Giá Tài Trợ (Kèm giới hạn số lượng)
-                  </label>
-                  <input
-                    type="text"
+                  <RichTextarea
+                    label="Mức Kinh Phí / Giá Tài Trợ (Kèm giới hạn số lượng)"
+                    subLabel="💡 Bấm Enter để xuống dòng chủ động"
                     value={pkg.price}
-                    onChange={(e) => handlePackageChange(pIdx, "price", e.target.value)}
-                    placeholder="VD: Từ 70.000.000 VNĐ (Tối đa 02)"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-black text-[#0D3B2E] focus:outline-none"
+                    onChange={(val) => handlePackageChange(pIdx, "price", val)}
+                    placeholder="VD: Từ 100.000.000 VNĐ&#10;(Tối đa 01)"
+                    rows={2}
                   />
                 </div>
               </div>

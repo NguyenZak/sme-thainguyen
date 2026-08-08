@@ -188,7 +188,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                     </div>
                     <div className="pt-1">
                       <p
-                        className="text-xl sm:text-2xl font-black text-[#0D3B2E]"
+                        className="text-xl sm:text-2xl font-black text-[#0D3B2E] whitespace-pre-line leading-snug"
                         style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                       >
                         {tier.price}
