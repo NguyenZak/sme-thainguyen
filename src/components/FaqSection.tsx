@@ -42,14 +42,14 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
 
   return (
     <section id="faq" className="py-20 bg-white border-t border-slate-200/80 scroll-mt-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-4"
+          className="text-center space-y-4 max-w-5xl mx-auto"
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
             <HelpCircle className="w-4 h-4 text-emerald-700" />
@@ -57,7 +57,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
           </div>
 
           <h2
-            className="text-lg sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {title}

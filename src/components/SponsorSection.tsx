@@ -120,18 +120,18 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto space-y-4"
+            className="text-center max-w-5xl mx-auto space-y-4"
           >
             <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider border border-amber-200">
               {badge}
             </span>
             <h2
-              className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+              className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
               style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
             >
               {title}
             </h2>
-            <p className="text-slate-600 text-base sm:text-lg">
+            <p className="text-slate-600 text-base sm:text-lg max-w-3xl mx-auto">
               {subtitle}
             </p>
 

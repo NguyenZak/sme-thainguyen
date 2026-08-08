@@ -71,18 +71,18 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto space-y-4"
+          className="text-center max-w-5xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
             {data.badge || "01 · TỔNG QUAN - Về sự kiện"}
           </span>
           <h2
-            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {data.title || "Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026"}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto">
             {data.descriptionParagraph1 || "Nơi hội tụ & cất cánh của cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam — Sự kiện kinh tế trọng điểm do TASME Thái Nguyên chủ trì, mang sứ mệnh tạo đột phá về kết nối cung cầu, mở rộng chuỗi cung ứng và xúc tiến đầu tư quy mô toàn quốc."}
           </p>
         </motion.div>

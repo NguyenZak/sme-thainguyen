@@ -244,20 +244,20 @@ export default function RegistrationForm({
 
   return (
     <section id="register" className="py-20 bg-[#F4FBF7]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Section 06 Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="space-y-3 text-center"
+          className="space-y-3 text-center max-w-5xl mx-auto"
         >
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
             {registration.sectionBadge}
           </span>
           <h2
-            className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
+            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {registration.sectionTitle}

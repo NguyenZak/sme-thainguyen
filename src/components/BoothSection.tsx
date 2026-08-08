@@ -245,7 +245,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
             {badge}
           </span>
           <h2
-            className="text-lg sm:text-2xl font-extrabold text-[#0D3B2E] tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {title}
