@@ -230,7 +230,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-          className="hero-details hero-glass rounded-2xl p-4 sm:p-6 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 border border-emerald-500/30 text-left shadow-2xl"
+          className="hero-details hero-glass rounded-2xl p-4 sm:p-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 border border-emerald-500/30 text-left shadow-2xl"
         >
           <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-xl hero-glass-card">
             <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shrink-0">
@@ -238,7 +238,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">Thời gian</p>
-              <p className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">18–20/09/2026</p>
+              <p className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">{data.eventDateText || "18–20/09/2026"}</p>
             </div>
           </div>
 
@@ -248,17 +248,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[11px] sm:text-xs text-emerald-200 uppercase font-semibold">Địa điểm</p>
-              <p className="text-xs sm:text-sm font-bold text-white leading-tight">May Plaza Hotel, Thái Nguyên</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-xl hero-glass-card bg-amber-500/10 border-amber-400/30">
-            <div className="w-10 h-10 rounded-lg bg-[#F59E0B] flex items-center justify-center text-slate-950 font-bold shrink-0">
-              <Ticket className="w-5 h-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] sm:text-xs text-amber-200 uppercase font-semibold">Vé Đại biểu trọn gói</p>
-              <p className="text-xs sm:text-sm font-extrabold text-[#F59E0B]">1.450.000 VNĐ</p>
+              <p className="text-xs sm:text-sm font-bold text-white leading-tight">{data.venueText || "May Plaza Hotel, Thái Nguyên"}</p>
             </div>
           </div>
         </motion.div>
@@ -316,9 +306,6 @@ export default function Hero({ content }: { content?: HeroContent }) {
             <Store className="w-4 h-4 text-emerald-400" />
             <span>{data.tertiaryCtaText || "Sơ đồ 100 Gian hàng"}</span>
           </a>
-
-          {/* Add To Calendar Button */}
-          <AddToCalendar variant="hero" />
         </div>
 
         {/* Key Event Statistics Counter (Placed right under CTA buttons at bottom boundary of Hero) */}

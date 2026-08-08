@@ -721,7 +721,7 @@ export const DEFAULT_BOOTHS: BoothsContent = {
   badge: "GIAN HÀNG TRIỂN LÃM",
   title: "Sơ Đồ & Đăng Ký Gian Hàng",
   subtitle: "100+ gian hàng tiêu chuẩn & đặc biệt dành cho các doanh nghiệp giới thiệu sản phẩm dịch vụ.",
-  mapImageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop",
+  mapImageUrl: "/images/so-do.jpg",
   totalBooths: 100,
   availableBooths: 35,
   items: [
