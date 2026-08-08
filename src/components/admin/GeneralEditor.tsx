@@ -49,6 +49,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
+  const [uploadingSeoImage, setUploadingSeoImage] = useState(false);
   const [testingTg, setTestingTg] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -100,6 +101,31 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
       toast.error("Lỗi upload favicon!", err?.message || "Không thể upload");
     } finally {
       setUploadingFavicon(false);
+    }
+  };
+
+  const handleSeoImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      toast.warning("File quá lớn!", "Vui lòng chọn ảnh thumbnail SEO dưới 8MB.");
+      return;
+    }
+
+    setUploadingSeoImage(true);
+    try {
+      const { url, error } = await uploadImageToStorage(file);
+      if (error || !url) {
+        toast.error("Tải ảnh thumbnail SEO thất bại!", error || "Lỗi không xác định.");
+      } else {
+        setConfig((prev) => ({ ...prev, ogImageUrl: url }));
+        toast.success("Tải Thumbnail SEO thành công! 🚀", "Đã cập nhật ảnh đại diện khi gửi link trên Zalo, Facebook, Telegram.");
+      }
+    } catch (err: any) {
+      toast.error("Lỗi upload ảnh SEO!", err?.message || "Không thể upload");
+    } finally {
+      setUploadingSeoImage(false);
     }
   };
 
@@ -926,28 +952,176 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
         </div>
       </div>
 
-      {/* SEO Metadata */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CẤU HÌNH SEO METADATA</h3>
-        
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Thẻ Tiêu Đề Web (Meta Title)</label>
-          <input
-            type="text"
-            value={config.metaTitle}
-            onChange={(e) => setConfig({ ...config, metaTitle: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
-          />
+      {/* ── CARD: CẤU HÌNH SEO METADATA & ẢNH THUMBNAIL OPENGRAPH (ZALO / FACEBOOK) ── */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-800 font-bold text-xs">
+              🔍
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                CẤU HÌNH SEO METADATA & ẢNH THUMBNAIL CHIA SẺ (ZALO, FACEBOOK, TELEGRAM)
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Tối ưu hóa công cụ tìm kiếm Google và ảnh hiển thị đại diện khi gửi link website qua Zalo, Messenger, Facebook, Telegram.
+              </p>
+            </div>
+          </div>
+          <span className="hidden sm:inline-block text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full border border-indigo-200 font-mono">
+            OpenGraph & Twitter Card
+          </span>
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1.5">Thẻ Mô Tả (Meta Description)</label>
-          <textarea
-            rows={3}
-            value={config.metaDescription}
-            onChange={(e) => setConfig({ ...config, metaDescription: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
-          />
+        {/* ── Social Share Card Live Preview (Mô phỏng Zalo & Facebook) ── */}
+        <div className="bg-slate-100/90 rounded-2xl p-4 border border-slate-200 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <span>📱 Mô phỏng hiển thị khi gửi link qua Zalo / Facebook / Telegram:</span>
+            </span>
+            <span className="text-[9px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded font-mono">
+              Live Preview
+            </span>
+          </div>
+
+          <div className="max-w-md mx-auto sm:mx-0 bg-white rounded-2xl border border-slate-300/80 shadow-md overflow-hidden transition-all hover:shadow-lg">
+            {/* Thumbnail Box */}
+            <div className="w-full h-44 bg-slate-900 relative overflow-hidden flex items-center justify-center">
+              {config.ogImageUrl || config.logoUrl ? (
+                <Image
+                  src={config.ogImageUrl || config.logoUrl || "/images/hero-bg.jpg"}
+                  alt="SEO OpenGraph Thumbnail Preview"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="text-center text-slate-400 p-4">
+                  <span className="text-2xl block mb-1">🖼️</span>
+                  <span className="text-xs font-semibold">Chưa có ảnh Thumbnail SEO</span>
+                </div>
+              )}
+              <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono px-2 py-0.5 rounded">
+                1200 x 630 (1.91:1)
+              </div>
+            </div>
+
+            {/* Social Text Container */}
+            <div className="p-3.5 bg-[#F8FAFC] border-t border-slate-200 space-y-1">
+              <div className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider font-mono">
+                SME-THAINGUYEN.VERCEL.APP
+              </div>
+              <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
+                {config.metaTitle || "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026 | May Plaza Hotel Thai Nguyen"}
+              </h4>
+              <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
+                {config.metaDescription || "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SEO Thumbnail Image Actions & Settings ── */}
+        <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-900">
+              1. Ảnh Thumbnail Đại Diện (og:image & twitter:image)
+            </span>
+            <span className="text-[10px] text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full font-bold border border-emerald-200">
+              Khuyên dùng: 1200x630px
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0">
+              {uploadingSeoImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+              <span>{uploadingSeoImage ? "Đang tải ảnh SEO..." : "Tải ảnh Thumbnail SEO từ máy tính"}</span>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/jpg"
+                className="hidden"
+                onChange={handleSeoImageUpload}
+                disabled={uploadingSeoImage}
+              />
+            </label>
+
+            <button
+              type="button"
+              onClick={() => {
+                const logoSrc = config.logoUrl || "/logo.png";
+                setConfig((prev) => ({ ...prev, ogImageUrl: logoSrc }));
+                toast.success("Đã chọn Logo làm ảnh SEO! 🖼️", "Thumbnail đã được gán trùng với ảnh Logo.");
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 rounded-xl text-xs font-bold transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Dùng từ Logo</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setConfig((prev) => ({ ...prev, ogImageUrl: "/images/hero-bg.jpg" }));
+                toast.info("Đã đặt về Banner Hero mặc định!", "Thumbnail đã được chọn là /images/hero-bg.jpg");
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Dùng Banner Mặc định</span>
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+              Đường dẫn URL Ảnh Thumbnail SEO (og:image)
+            </label>
+            <input
+              type="text"
+              placeholder="/images/hero-bg.jpg hoặc https://..."
+              value={config.ogImageUrl || ""}
+              onChange={(e) => setConfig({ ...config, ogImageUrl: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none"
+            />
+            <p className="text-[10px] text-slate-500 mt-1">
+              Ảnh chuẩn tỷ lệ 1.91:1 (khuyến nghị <b>1200 x 630 pixels</b>, định dạng JPG/PNG). Khi gửi link qua Zalo hoặc Facebook, mạng xã hội sẽ tự động kéo tấm ảnh này về làm đại diện kèm tiêu đề và mô tả bên dưới.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Meta Title & Meta Description ── */}
+        <div className="space-y-4">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700">
+                2. Thẻ Tiêu Đề Web (Meta Title / SEO Title)
+              </label>
+              <span className={`text-[10px] font-mono ${(config.metaTitle?.length || 0) > 70 ? "text-amber-600 font-bold" : "text-slate-400"}`}>
+                {config.metaTitle?.length || 0} / 70 ký tự (chuẩn Google)
+              </span>
+            </div>
+            <input
+              type="text"
+              value={config.metaTitle}
+              onChange={(e) => setConfig({ ...config, metaTitle: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700">
+                3. Thẻ Mô Tả (Meta Description)
+              </label>
+              <span className={`text-[10px] font-mono ${(config.metaDescription?.length || 0) > 165 ? "text-amber-600 font-bold" : "text-slate-400"}`}>
+                {config.metaDescription?.length || 0} / 160 ký tự (chuẩn Google)
+              </span>
+            </div>
+            <textarea
+              rows={3}
+              value={config.metaDescription}
+              onChange={(e) => setConfig({ ...config, metaDescription: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 leading-relaxed focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 focus:outline-none transition-all"
+            />
+          </div>
         </div>
       </div>
 

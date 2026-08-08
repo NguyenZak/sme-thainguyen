@@ -66,31 +66,21 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
     heightClass: string = "h-16 sm:h-20"
   ) => {
     const tileNode = (
-      <motion.div
-        whileHover={{ y: -6, scale: 1.03 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        className={`relative ${heightClass} px-5 py-3 bg-white/95 backdrop-blur-sm rounded-2xl border border-emerald-900/10 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 group flex items-center justify-center cursor-pointer min-w-[140px] sm:min-w-[180px]`}
-      >
+      <div className={`relative ${heightClass} flex items-center justify-center p-2 group transition-all duration-300`}>
         {item.logoUrl ? (
           <Image
             src={item.logoUrl}
             alt={item.name}
             width={240}
             height={100}
-            className={`${heightClass} w-auto max-w-[180px] sm:max-w-[220px] object-contain filter group-hover:scale-108 transition-transform duration-300`}
+            className={`${heightClass} w-auto object-contain filter group-hover:scale-108 transition-transform duration-300`}
           />
         ) : (
-          <div className="flex items-center justify-center text-slate-800 font-extrabold text-xs sm:text-sm text-center group-hover:text-emerald-700 transition-colors">
-            <span className="line-clamp-2 px-2">{item.name}</span>
+          <div className="flex items-center justify-center text-slate-800 font-extrabold text-sm sm:text-base text-center group-hover:text-emerald-700 transition-colors">
+            <span className="truncate px-2">{item.name}</span>
           </div>
         )}
-
-        {item.websiteUrl && item.websiteUrl !== "#" && (
-          <span className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600">
-            <ExternalLink className="w-3 h-3" />
-          </span>
-        )}
-      </motion.div>
+      </div>
     );
 
     if (item.websiteUrl && item.websiteUrl !== "#") {
@@ -100,8 +90,8 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
           href={item.websiteUrl}
           target="_blank"
           rel="noopener noreferrer"
-          title={`${item.name} - Nhấp để truy cập website`}
-          className="block"
+          title={item.name}
+          className="block cursor-pointer"
         >
           {tileNode}
         </a>
@@ -303,7 +293,13 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
         {/* SECTION 2: DANH SÁCH LOGO ĐƠN VỊ ĐỒNG HÀNH ĐÃ XÁC NHẬN */}
         {/* ===================================================== */}
         {sponsorsList.length > 0 && (
-          <div className="space-y-10 pt-10 border-t border-emerald-800/20">
+          <motion.div
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="space-y-10 pt-10 border-t border-emerald-800/20"
+          >
             <div className="text-center max-w-2xl mx-auto space-y-2">
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
                 ĐỐI TÁC ĐỒNG HÀNH ĐÃ XÁC NHẬN
@@ -315,7 +311,13 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
 
             {/* Group 1: Đơn vị Trực tiếp Chỉ đạo & Tổ chức */}
             {coOrganizers.length > 0 && (
-              <div className="space-y-4 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="space-y-4 text-center"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-purple-900 bg-purple-100/60 px-4 py-1.5 rounded-full border border-purple-200">
                   <Crown className="w-4 h-4 text-purple-700" />
                   <span>ĐƠN VỊ TRỰC TIẾP CHỈ ĐẠO &amp; TỔ CHỨC</span>
@@ -323,12 +325,18 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                 <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-4xl mx-auto pt-2">
                   {coOrganizers.map((sp) => renderLogoTile(sp, "h-20 sm:h-24"))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Group 2: Nhà Tài Trợ Kim Cương */}
             {diamondSponsors.length > 0 && (
-              <div className="space-y-4 text-center pt-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="space-y-4 text-center pt-4"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-950 bg-emerald-100/60 px-4 py-1.5 rounded-full border border-emerald-200">
                   <Gem className="w-4 h-4 text-emerald-600" />
                   <span>NHÀ TÀI TRỢ KIM CƯƠNG</span>
@@ -336,12 +344,18 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                 <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto pt-2">
                   {diamondSponsors.map((sp) => renderLogoTile(sp, "h-16 sm:h-20"))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Group 3: Nhà Tài Trợ Vàng */}
             {goldSponsors.length > 0 && (
-              <div className="space-y-4 text-center pt-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="space-y-4 text-center pt-4"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-950 bg-amber-100/60 px-4 py-1.5 rounded-full border border-amber-200">
                   <Sparkles className="w-4 h-4 text-amber-600" />
                   <span>NHÀ TÀI TRỢ VÀNG</span>
@@ -349,12 +363,18 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                 <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-10 max-w-5xl mx-auto pt-2">
                   {goldSponsors.map((sp) => renderLogoTile(sp, "h-14 sm:h-16"))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Group 4: Nhà Tài Trợ Bạc & Đồng */}
             {silverBronzeSponsors.length > 0 && (
-              <div className="space-y-4 text-center pt-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+                className="space-y-4 text-center pt-4"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800 bg-slate-200/60 px-4 py-1.5 rounded-full border border-slate-300">
                   <ShieldCheck className="w-4 h-4 text-slate-600" />
                   <span>NHÀ TÀI TRỢ BẠC &amp; ĐỒNG</span>
@@ -362,12 +382,18 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                 <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-5xl mx-auto pt-2">
                   {silverBronzeSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Group 5: Đơn Vị Đồng Hành & Bảo Trợ Truyền Thông */}
             {companionSponsors.length > 0 && (
-              <div className="space-y-4 text-center pt-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="space-y-4 text-center pt-4"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-900 bg-teal-100/60 px-4 py-1.5 rounded-full border border-teal-200">
                   <Handshake className="w-4 h-4 text-teal-600" />
                   <span>ĐƠN VỊ ĐỒNG HÀNH &amp; BẢO TRỢ TRUYỀN THÔNG</span>
@@ -375,13 +401,19 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
                 <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 max-w-6xl mx-auto pt-2">
                   {companionSponsors.map((sp) => renderLogoTile(sp, "h-12 sm:h-14"))}
                 </div>
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Banner kêu gọi tài trợ tiếp theo */}
-        <div className="bg-gradient-to-r from-[#0D3B2E] to-[#124e3d] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg border border-emerald-800">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-[#0D3B2E] to-[#124e3d] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg border border-emerald-800"
+        >
           <div className="space-y-2 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" />
@@ -409,7 +441,7 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             <Handshake className="w-4 h-4" />
             <span>Đăng Ký Đồng Hành Ngay</span>
           </a>
-        </div>
+        </motion.div>
 
       </div>
     </section>

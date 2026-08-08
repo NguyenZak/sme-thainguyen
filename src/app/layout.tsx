@@ -29,7 +29,11 @@ export async function generateMetadata(): Promise<Metadata> {
     siteConfig.metaDescription ||
     "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam. 18-20/09/2026 tại May Plaza Hotel Thái Nguyên.";
   const iconUrl = siteConfig.faviconUrl || siteConfig.logoUrl || "/logo.png";
-  const ogImgUrl = siteConfig.ogImageUrl || siteConfig.logoUrl || "/images/hero-bg.jpg";
+  
+  let rawOg = siteConfig.ogImageUrl || siteConfig.logoUrl || "/images/hero-bg.jpg";
+  const ogImgUrl = rawOg.startsWith("http")
+    ? rawOg
+    : `https://sme-thainguyen.vercel.app${rawOg.startsWith("/") ? "" : "/"}${rawOg}`;
 
   return {
     metadataBase: new URL("https://sme-thainguyen.vercel.app"),
@@ -89,6 +93,40 @@ export default async function RootLayout({
 }) {
   const siteConfig = await getSectionContent<SiteConfig>("site_config");
   const faviconHref = siteConfig.faviconUrl || siteConfig.logoUrl || "/logo.png";
+  
+  let rawOg = siteConfig.ogImageUrl || siteConfig.logoUrl || "/images/hero-bg.jpg";
+  const fullOgImgUrl = rawOg.startsWith("http")
+    ? rawOg
+    : `https://sme-thainguyen.vercel.app${rawOg.startsWith("/") ? "" : "/"}${rawOg}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": siteConfig.siteName || "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026",
+    "description": siteConfig.metaDescription || "Sự kiện xúc tiến thương mại & mở rộng thị trường trọng điểm 2026 dành cho cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam.",
+    "image": [fullOgImgUrl],
+    "startDate": "2026-09-18T08:00:00+07:00",
+    "endDate": "2026-09-20T17:30:00+07:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+      "@type": "Place",
+      "name": "May Plaza Hotel Thai Nguyen",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Số 668 Phan Đình Phùng",
+        "addressLocality": "TP. Thái Nguyên",
+        "addressRegion": "Thái Nguyên",
+        "postalCode": "250000",
+        "addressCountry": "VN"
+      }
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": siteConfig.organizer || "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên (TASME)",
+      "url": "https://sme-thainguyen.vercel.app"
+    }
+  };
 
   return (
     <html
@@ -98,6 +136,15 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href={faviconHref} />
         <link rel="apple-touch-icon" href={faviconHref} />
+        <meta property="og:image" content={fullOgImgUrl} />
+        <meta property="og:image:secure_url" content={fullOgImgUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:image" content={fullOgImgUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="min-h-screen bg-[#F8FAFC] text-[#1A1A1A] antialiased selection:bg-[#0B5ED7] selection:text-white">
         {children}
