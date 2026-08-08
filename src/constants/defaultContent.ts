@@ -365,10 +365,10 @@ export const DEFAULT_STATISTICS: StatisticsContent = {
   items: [
     {
       id: "stat-1",
-      value: 34,
+      value: 63,
       suffix: "",
-      label: "Tỉnh tham gia",
-      subtext: "Hiệp hội doanh nghiệp các tỉnh thành",
+      label: "Tỉnh thành",
+      subtext: "Đại diện hiệp hội doanh nghiệp 63 tỉnh thành",
       iconName: "MapPin"
     },
     {
