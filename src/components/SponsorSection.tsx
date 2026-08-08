@@ -233,60 +233,6 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             ))}
           </div>
 
-          {/* Hạng mục Tài trợ Ưu tiên & Mốc Thời gian Khuyến nghị */}
-          {(priorityCategories.length > 0 || milestones.length > 0) && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
-              {/* Left 6 cols: Hạng mục Tài trợ Ưu tiên */}
-              {priorityCategories.length > 0 && (
-                <div className="lg:col-span-6 bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
-                  <div className="space-y-2">
-                    <span className="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[10px] font-extrabold uppercase">
-                      Tài Trợ Hạng Mục Cụ Thể
-                    </span>
-                    <h3 className="text-xl font-extrabold text-[#0D3B2E]">Các Hạng Mục Tài Trợ Ưu Tiên</h3>
-                    <p className="text-xs text-slate-600">
-                      Ngoài gói tài trợ tổng thể, BTC tiếp nhận đồng hành theo từng hạng mục chuyên biệt với giá trị quy đổi linh hoạt.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {priorityCategories.map((item, i) => (
-                      <div key={item.id || i} className="bg-white p-3 rounded-xl border border-slate-200/70 shadow-2xs space-y-1">
-                        <p className="text-xs font-bold text-slate-800 leading-tight">{item.name}</p>
-                        <p className="text-[11px] font-extrabold text-[#22C55E]">{item.fee}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Right 6 cols: Mốc Thời gian Tiếp nhận */}
-              {milestones.length > 0 && (
-                <div className="lg:col-span-6 bg-[#0B3026] text-white rounded-3xl p-6 sm:p-8 border border-emerald-800 space-y-6">
-                  <div className="space-y-2">
-                    <span className="inline-block px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase border border-emerald-500/30">
-                      Tiến Độ Triển Khai
-                    </span>
-                    <h3 className="text-xl font-extrabold text-white">Mốc Thời Gian Quyền Lợi Nhà Tài Trợ</h3>
-                    <p className="text-xs text-emerald-200">
-                      Vui lòng hoàn tất đăng ký theo các mốc khuyến nghị để bảo đảm đầy đủ quyền lợi nhận diện trên ấn phẩm chính.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    {milestones.map((m, idx) => (
-                      <div key={m.id || idx} className="flex items-start gap-3 bg-emerald-950/70 p-3 rounded-xl border border-emerald-800/80">
-                        <span className="px-2 py-0.5 rounded bg-[#22C55E] text-white text-[10px] font-extrabold shrink-0 mt-0.5">
-                          {m.time}
-                        </span>
-                        <p className="text-xs text-emerald-100 font-medium leading-relaxed">{m.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* ===================================================== */}

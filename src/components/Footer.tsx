@@ -60,15 +60,27 @@ export default function Footer({ content }: { content?: FooterContent }) {
                   </span>
                 </div>
               )}
-              {footer.contactHotline && (
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 text-[#22C55E] shrink-0" />
-                  <span>
-                    <strong className="text-white">Hotline Ban tổ chức:</strong>{" "}
-                    {footer.contactHotline}
-                  </span>
-                </div>
-              )}
+              {(() => {
+                const hotlines = footer.contactHotlines?.length
+                  ? footer.contactHotlines
+                  : footer.contactHotline
+                  ? [footer.contactHotline]
+                  : [];
+                return hotlines.length > 0 ? (
+                  <div className="flex items-start gap-2.5">
+                    <Phone className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-white">Hotline Ban tổ chức:</strong>
+                      {hotlines.map((phone, i) => (
+                        <span key={i} className="block">
+                          {phone}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
               {footer.contactEmail && (
                 <div className="flex items-center gap-2.5">
                   <Mail className="w-4 h-4 text-[#22C55E] shrink-0" />

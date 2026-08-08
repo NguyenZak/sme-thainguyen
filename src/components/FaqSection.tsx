@@ -37,6 +37,8 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
     return matchesCategory && matchesSearch;
   });
 
+  if (data.visible === false) return null;
+
   return (
     <section id="faq" className="py-20 bg-white border-t border-slate-200/80 scroll-mt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">

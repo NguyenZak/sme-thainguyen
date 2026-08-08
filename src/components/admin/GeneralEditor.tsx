@@ -260,6 +260,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     { id: "booths", label: "Sơ đồ & Đăng ký 100 gian hàng triển lãm", icon: "🎪" },
     { id: "ticket_fee", label: "Bảng giá vé & Chi phí tham dự", icon: "🎟️" },
     { id: "registration", label: "Form Đăng ký trực tuyến", icon: "📝" },
+    { id: "faq", label: "Câu Hỏi Thường Gặp (FAQ)", icon: "❓" },
   ];
 
   const toggleSection = async (sectionId: string) => {

@@ -139,6 +139,21 @@ export default function FaqEditor({ initialContent }: { initialContent?: FaqCont
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Visible Toggle */}
+          <button
+            type="button"
+            onClick={() => setContent((prev) => ({ ...prev, visible: prev.visible === false ? true : false }))}
+            className={`px-3.5 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              content.visible === false
+                ? "bg-slate-100 border-slate-300 text-slate-500 hover:bg-slate-200"
+                : "bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
+            }`}
+            title={content.visible === false ? "Bật hiển thị khối FAQ trên trang chủ" : "Tắt hiển thị khối FAQ trên trang chủ"}
+          >
+            <span className={`w-2 h-2 rounded-full ${content.visible === false ? "bg-slate-400" : "bg-emerald-500"}`} />
+            <span>{content.visible === false ? "Đang ẩn" : "Đang hiện"}</span>
+          </button>
+
           <button
             type="button"
             onClick={handleResetDefaults}

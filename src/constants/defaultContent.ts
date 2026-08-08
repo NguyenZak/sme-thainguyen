@@ -297,7 +297,10 @@ export interface FooterContent {
   brandName?: string;
   brandSub?: string;
   contactAddress: string;
+  /** @deprecated Use contactHotlines instead */
   contactHotline: string;
+  /** Danh sách nhiều số điện thoại hotline */
+  contactHotlines?: string[];
   contactEmail: string;
   workingHours: string;
   mapEmbedUrl?: string;
@@ -1057,6 +1060,7 @@ export const DEFAULT_FOOTER: FooterContent = {
   brandSub: "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên",
   contactAddress: "May Plaza Hotel Thai Nguyen, 668 Phan Đình Phùng, TP. Thái Nguyên",
   contactHotline: "0988.123.456",
+  contactHotlines: ["0988.123.456"],
   contactEmail: "contact@smevietnam2026.vn",
   workingHours: "Thứ 2 - Thứ 7: 08:00 - 17:30",
   mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3710.158586383637!2d105.8361730761214!3d21.579727980208154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31352723c3cf6d0d%3A0x6a0fcfb2bcf1b1a7!2sMay%20Plaza%20Hotel!5e0!3m2!1svi!2svn!4v1700000000000!5m2!1svi!2svn",
@@ -1129,6 +1133,7 @@ export const DEFAULT_FAQS: FaqItem[] = [
 ];
 
 export interface FaqContent {
+  visible?: boolean;
   badgeText?: string;
   title?: string;
   subtitle?: string;
@@ -1136,6 +1141,7 @@ export interface FaqContent {
 }
 
 export const DEFAULT_FAQ_CONTENT: FaqContent = {
+  visible: true,
   badgeText: "GIẢI ĐÁP THẮC MẮC THƯỜNG GẶP",
   title: "Câu Hỏi Thường Gặp (FAQ) Về Diễn Đàn",
   subtitle: "Tổng hợp thông tin quan trọng nhất giúp Quý doanh nghiệp, Đại biểu và Nhà tài trợ dễ dàng chuẩn bị và tham dự sự kiện hiệu quả.",
