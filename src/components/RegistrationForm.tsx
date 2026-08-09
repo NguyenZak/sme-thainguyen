@@ -616,17 +616,17 @@ export default function RegistrationForm({
               }
 
               return (
-                <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 border border-slate-200 my-8">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-2xl relative space-y-6 border border-slate-200 my-8">
                   <button
                     onClick={() => setSuccessModal({ open: false })}
-                    className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+                    className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors z-10"
                   >
                     <X className="w-5 h-5" />
                   </button>
 
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                      <CheckCircle2 className="w-10 h-10" />
+                    <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                      <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h3
                       className="text-xl sm:text-2xl font-black text-slate-900"
@@ -639,103 +639,116 @@ export default function RegistrationForm({
                     </p>
                   </div>
 
-                  {/* Electronic Ticket Card with Full Details */}
-                  <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg`}>
-                    <div className="flex items-center justify-between border-b border-white/20 pb-3">
-                      <div>
-                        <span className={`text-[10px] font-bold uppercase tracking-wider block ${accentText}`}>
-                          {cardTagline}
-                        </span>
-                        <span className="text-xs font-mono font-bold text-white">
-                          MÃ ĐĂNG KÝ: {successModal.registrationId}
-                        </span>
-                      </div>
-                      <Ticket className="w-6 h-6 text-[#F59E0B] shrink-0" />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">Họ và tên</span>
-                        <span className="font-bold text-white block">{successModal.data?.fullName || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">Số điện thoại</span>
-                        <span className="font-bold font-mono text-white block">{successModal.data?.phone || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">Email</span>
-                        <span className="font-bold text-white block truncate">{successModal.data?.email || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">Đơn vị / Công ty</span>
-                        <span className="font-bold text-white block truncate">{successModal.data?.company || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">Chức vụ</span>
-                        <span className="font-bold text-white block truncate">{successModal.data?.position || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-white/70 block text-[10px] uppercase">{detailLabel}</span>
-                        <span className="font-bold text-amber-300 block font-mono">{detailVal}</span>
-                      </div>
-                    </div>
-
-                    {/* Networking Needs / Notes if entered */}
-                    {(successModal.data?.networkingNeeds || successModal.data?.notes) && (
-                      <div className="pt-2.5 border-t border-white/20 text-xs">
-                        <span className="text-white/70 block text-[10px] uppercase mb-0.5">Nhu cầu / Ghi chú</span>
-                        <p className="text-white/90 text-[11px] italic bg-black/20 p-2 rounded-lg leading-relaxed">
-                          {successModal.data?.networkingNeeds || successModal.data?.notes}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* SePay VietQR Payment QR Code (Only for Delegate Ticket Sales) or Event Check-in QR */}
-                    {config?.sepayEnabled && config?.sepayAccountNumber && tab === "delegate" ? (
-                      <div className="pt-3 border-t border-white/20 space-y-3 bg-black/30 p-3.5 rounded-xl border border-white/10">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase text-amber-300 tracking-wider">
-                            💳 Thanh Toán Tự Động Quét Mã VietQR (SePay)
-                          </span>
-                          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">
-                            Khuyên dùng
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-3 bg-white text-slate-900 p-2.5 rounded-lg">
-                          <img
-                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`}
-                            alt="VietQR SePay Payment"
-                            className="w-24 h-24 object-contain rounded border border-slate-200 shrink-0"
-                          />
-                          <div className="text-[11px] space-y-1 text-slate-800">
-                            <div><span className="text-slate-500">Ngân hàng:</span> <b>{config.sepayBankCode || "MBBank"}</b></div>
-                            <div><span className="text-slate-500">Số tài khoản:</span> <b className="font-mono text-emerald-800 text-xs">{config.sepayAccountNumber}</b></div>
-                            <div><span className="text-slate-500">Chủ tài khoản:</span> <b className="uppercase text-slate-900">{config.sepayAccountName}</b></div>
-                            <div><span className="text-slate-500">Nội dung CK:</span> <b className="font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">{successModal.registrationId}</b></div>
+                  {/* 2-Column Layout: Left = Ticket Details, Right = QR Code Payment / Check-in */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+                    {/* Left Column: Electronic Ticket Card */}
+                    <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg flex flex-col justify-between`}>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                          <div>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider block ${accentText}`}>
+                              {cardTagline}
+                            </span>
+                            <span className="text-xs font-mono font-bold text-white">
+                              MÃ ĐĂNG KÝ: {successModal.registrationId}
+                            </span>
                           </div>
+                          <Ticket className="w-6 h-6 text-[#F59E0B] shrink-0" />
                         </div>
-                        <p className="text-[10px] text-white/80 italic text-center">
-                          ⚡ Hệ thống SePay sẽ tự động khớp lệnh & cập nhật trạng thái đơn hàng ngay khi tiền vào TK!
-                        </p>
-                      </div>
-                    ) : (
-                      /* Standard Event Check-in QR */
-                      <div className="pt-3 border-t border-white/20 flex items-center justify-between bg-black/20 p-3 rounded-xl">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-white p-1 rounded-lg flex items-center justify-center shrink-0">
-                            <QrCode className="w-10 h-10 text-slate-900" />
+
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                          <div>
+                            <span className="text-white/70 block text-[10px] uppercase">Họ và tên</span>
+                            <span className="font-bold text-white block">{successModal.data?.fullName || "N/A"}</span>
                           </div>
                           <div>
-                            <span className="text-[10px] font-semibold text-white/80 block">QR Code Check-in Sự kiện</span>
-                            <span className="text-[11px] font-bold text-emerald-400 block">Trạng thái: Đã ghi nhận</span>
+                            <span className="text-white/70 block text-[10px] uppercase">Số điện thoại</span>
+                            <span className="font-bold font-mono text-white block">{successModal.data?.phone || "N/A"}</span>
+                          </div>
+                          <div>
+                            <span className="text-white/70 block text-[10px] uppercase">Email</span>
+                            <span className="font-bold text-white block truncate">{successModal.data?.email || "N/A"}</span>
+                          </div>
+                          <div>
+                            <span className="text-white/70 block text-[10px] uppercase">Đơn vị / Công ty</span>
+                            <span className="font-bold text-white block truncate">{successModal.data?.company || "N/A"}</span>
+                          </div>
+                          <div>
+                            <span className="text-white/70 block text-[10px] uppercase">Chức vụ</span>
+                            <span className="font-bold text-white block truncate">{successModal.data?.position || "N/A"}</span>
+                          </div>
+                          <div>
+                            <span className="text-white/70 block text-[10px] uppercase">{detailLabel}</span>
+                            <span className="font-bold text-amber-300 block font-mono">{detailVal}</span>
                           </div>
                         </div>
                       </div>
-                    )}
+
+                      {/* Networking Needs / Notes if entered */}
+                      {(successModal.data?.networkingNeeds || successModal.data?.notes) && (
+                        <div className="pt-2 border-t border-white/20 text-xs mt-auto">
+                          <span className="text-white/70 block text-[10px] uppercase mb-0.5">Nhu cầu / Ghi chú</span>
+                          <p className="text-white/90 text-[11px] italic bg-black/20 p-2 rounded-lg leading-relaxed">
+                            {successModal.data?.networkingNeeds || successModal.data?.notes}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Right Column: QR Code Payment / Check-in Card */}
+                    <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
+                      {config?.sepayEnabled && config?.sepayAccountNumber && tab === "delegate" ? (
+                        <div className="space-y-3.5 flex flex-col items-center text-center h-full justify-between">
+                          <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
+                            <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                              💳 Thanh Toán VietQR SePay
+                            </span>
+                            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">
+                              Tự động 24/7
+                            </span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
+                            <img
+                              src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`}
+                              alt="VietQR SePay Payment"
+                              className="w-36 h-36 object-contain mx-auto"
+                            />
+                          </div>
+
+                          <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
+                            <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{(Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)).toLocaleString("vi-VN")} VNĐ</b></div>
+                            <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
+                          </div>
+
+                          <p className="text-[10px] text-slate-400 italic">
+                            ⚡ Hệ thống SePay sẽ tự động khớp lệnh & xác nhận ngay khi tiền vào tài khoản!
+                          </p>
+                        </div>
+                      ) : (
+                        /* Standard Event Check-in QR Right Column */
+                        <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
+                          <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
+                            <QrCode className="w-20 h-20 text-slate-900" />
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-xs font-bold text-white uppercase tracking-wider block">QR Code Check-in Sự kiện</span>
+                            <span className="text-xs font-bold text-emerald-400 block bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
+                              Trạng thái: Đã ghi nhận
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-400 italic max-w-xs">
+                            Vui lòng lưu thông tin hoặc xuất thẻ điện tử để xuất trình khi tham gia sự kiện.
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 pt-2">
                     <button
                       onClick={() => window.print()}
                       className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5 transition-colors"
