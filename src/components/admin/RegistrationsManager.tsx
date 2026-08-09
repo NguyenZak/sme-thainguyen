@@ -374,13 +374,13 @@ export default function RegistrationsManager() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-semibold shadow-sm"
+          className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-bold shadow-sm"
         >
-          <option value="all">Tất cả trạng thái</option>
-          <option value="pending">🟡 Chờ xử lý (Pending)</option>
-          <option value="confirmed">🔵 Đã xác nhận (Confirmed)</option>
-          <option value="completed">✅ Đã xử lý xong (Completed)</option>
-          <option value="cancelled">🔴 Đã hủy vé (Cancelled)</option>
+          <option value="all">🔍 Tất cả trạng thái</option>
+          <option value="pending">⏳ Giao dịch TREO (Chờ thanh toán)</option>
+          <option value="completed">🟢 Thanh toán THÀNH CÔNG (SePay / Đã duyệt)</option>
+          <option value="confirmed">🔵 Đã xác nhận (Gian hàng / Tài trợ)</option>
+          <option value="cancelled">🔴 Đã hủy / Thất bại</option>
         </select>
       </div>
 
@@ -406,7 +406,7 @@ export default function RegistrationsManager() {
                   <th className="px-4 py-3.5">Liên Hệ</th>
                   <th className="px-4 py-3.5">Chi Tiết Gói / Gian Hàng</th>
                   <th className="px-4 py-3.5">Ngày Đăng Ký</th>
-                  <th className="px-4 py-3.5 text-center">Trạng Thái</th>
+                  <th className="px-4 py-3.5 text-center">Trạng Thái Thanh Toán</th>
                   <th className="px-4 py-3.5 text-right">Thao Tác Fast</th>
                 </tr>
               </thead>
@@ -477,20 +477,20 @@ export default function RegistrationsManager() {
                         <select
                           value={r.status}
                           onChange={(e) => updateStatus(r.id, e.target.value as any)}
-                          className={`text-[11px] font-bold rounded-lg px-2.5 py-1 border focus:outline-none cursor-pointer ${
+                          className={`text-[11px] font-extrabold rounded-lg px-2.5 py-1 border focus:outline-none cursor-pointer transition-all ${
                             r.status === "completed"
-                              ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                              ? "bg-emerald-100 text-emerald-900 border-emerald-400"
                               : r.status === "confirmed"
-                              ? "bg-blue-50 text-blue-800 border-blue-300"
+                              ? "bg-blue-100 text-blue-900 border-blue-300"
                               : r.status === "cancelled"
-                              ? "bg-red-50 text-red-800 border-red-300"
-                              : "bg-amber-50 text-amber-800 border-amber-300"
+                              ? "bg-red-100 text-red-900 border-red-300"
+                              : "bg-amber-100 text-amber-900 border-amber-400"
                           }`}
                         >
-                          <option value="pending">🟡 Chờ xử lý</option>
+                          <option value="pending">⏳ TREO - Chờ thanh toán</option>
+                          <option value="completed">🟢 ĐÃ THANH TOÁN (Thành công)</option>
                           <option value="confirmed">🔵 Đã xác nhận</option>
-                          <option value="completed">✅ Đã xử lý xong</option>
-                          <option value="cancelled">🔴 Đã hủy vé</option>
+                          <option value="cancelled">🔴 Đã hủy / Thất bại</option>
                         </select>
                       </td>
 

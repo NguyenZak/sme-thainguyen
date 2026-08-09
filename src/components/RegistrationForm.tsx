@@ -76,6 +76,7 @@ export default function RegistrationForm({
     open: boolean;
     registrationId?: string;
     data?: FormValues;
+    status?: "pending" | "completed" | "confirmed";
   }>({ open: false });
 
   const {
@@ -237,6 +238,7 @@ export default function RegistrationForm({
         open: true,
         registrationId: regId,
         data: values,
+        status: values.intentTab === "delegate" && config.sepayEnabled ? "pending" : "completed",
       });
 
       reset();
@@ -592,7 +594,15 @@ export default function RegistrationForm({
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
             {(() => {
               const tab = successModal.data?.intentTab || "delegate";
-              let modalTitle = "Ghi nhận Đăng ký Thành Công!";
+              const isDelegateSepay = tab === "delegate" && config?.sepayEnabled && config?.sepayAccountNumber;
+              const isCompleted = successModal.status === "completed";
+
+              let modalTitle = isDelegateSepay
+                ? isCompleted
+                  ? "Thanh Toán Thành Công & Đã Xác Nhận!"
+                  : "Đơn Đăng Ký Đã Lưu — Chờ Thanh Toán"
+                : "Ghi nhận Đăng ký Thành Công!";
+
               let cardTagline = "THẺ ĐẠI BIỂU DỰ HỘI NGHỊ & B2B MATCHING";
               let cardBg = "bg-[#0D3B2E] border-emerald-800 text-white";
               let accentText = "text-emerald-300";
@@ -625,8 +635,8 @@ export default function RegistrationForm({
                   </button>
 
                   <div className="text-center space-y-2">
-                    <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                      <CheckCircle2 className="w-8 h-8" />
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto shadow-inner ${isDelegateSepay && !isCompleted ? "bg-amber-100 text-amber-600" : "bg-emerald-100 text-emerald-600"}`}>
+                      {isDelegateSepay && !isCompleted ? <Loader2 className="w-8 h-8 animate-spin" /> : <CheckCircle2 className="w-8 h-8" />}
                     </div>
                     <h3
                       className="text-xl sm:text-2xl font-black text-slate-900"
@@ -634,12 +644,22 @@ export default function RegistrationForm({
                     >
                       {modalTitle}
                     </h3>
-                    <p className="text-xs text-slate-500">
-                      Cảm ơn bạn đã gửi thông tin. Ban tổ chức Diễn đàn SME 2026 đã ghi nhận dữ liệu!
-                    </p>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${
+                        isDelegateSepay && !isCompleted
+                          ? "bg-amber-100 text-amber-900 border-amber-300"
+                          : "bg-emerald-100 text-emerald-900 border-emerald-300"
+                      }`}>
+                        {isDelegateSepay
+                          ? isCompleted
+                            ? "🟢 TRẠNG THÁI: ĐÃ THANH TOÁN (SEPAY VERIFIED)"
+                            : "⏳ TRẠNG THÁI: GIAO DỊCH TREO (CHỜ THANH TOÁN)"
+                          : "✅ TRẠNG THÁI: ĐÃ GHI NHẬN THÔNG TIN"}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* 2-Column Layout: Left = Ticket Details, Right = QR Code Payment / Check-in */}
+                  {/* 2-Column Layout: Left = Ticket Details, Right = Dedicated QR Code Payment / Check-in */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
                     {/* Left Column: Electronic Ticket Card */}
                     <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg flex flex-col justify-between`}>
@@ -697,14 +717,14 @@ export default function RegistrationForm({
 
                     {/* Right Column: QR Code Payment / Check-in Card */}
                     <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
-                      {config?.sepayEnabled && config?.sepayAccountNumber && tab === "delegate" ? (
-                        <div className="space-y-3.5 flex flex-col items-center text-center h-full justify-between">
+                      {isDelegateSepay && !isCompleted ? (
+                        <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
                           <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
                             <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                              💳 Thanh Toán VietQR SePay
+                              💳 Cổng Thanh Toán VietQR SePay
                             </span>
-                            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">
-                              Tự động 24/7
+                            <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
+                              ⏳ Chờ chuyển khoản
                             </span>
                           </div>
 
@@ -725,11 +745,11 @@ export default function RegistrationForm({
                           </div>
 
                           <p className="text-[10px] text-slate-400 italic">
-                            ⚡ Hệ thống SePay sẽ tự động khớp lệnh & xác nhận ngay khi tiền vào tài khoản!
+                            ⚡ Đơn hàng đang ở trạng thái treo. Khi chuyển khoản xong, SePay sẽ tự động duyệt ngay 24/7!
                           </p>
                         </div>
                       ) : (
-                        /* Standard Event Check-in QR Right Column */
+                        /* Verified Check-in QR Right Column */
                         <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
                           <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
                             <QrCode className="w-20 h-20 text-slate-900" />
@@ -737,11 +757,11 @@ export default function RegistrationForm({
                           <div className="space-y-1">
                             <span className="text-xs font-bold text-white uppercase tracking-wider block">QR Code Check-in Sự kiện</span>
                             <span className="text-xs font-bold text-emerald-400 block bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
-                              Trạng thái: Đã ghi nhận
+                              Trạng thái: Đã Xác Nhận Chính Thức
                             </span>
                           </div>
                           <p className="text-[11px] text-slate-400 italic max-w-xs">
-                            Vui lòng lưu thông tin hoặc xuất thẻ điện tử để xuất trình khi tham gia sự kiện.
+                            🎉 Giao dịch đã hoàn tất! Vui lòng lưu thông tin hoặc xuất thẻ điện tử để trình diện khi tham dự sự kiện.
                           </p>
                         </div>
                       )}
