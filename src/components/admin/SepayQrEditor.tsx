@@ -191,10 +191,10 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
                   }`}
                 >
                   <div className="text-xs font-extrabold flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-emerald-600" /> VietQR Ngân Hàng Tự Động
+                    <Sparkles className="w-4 h-4 text-emerald-600" /> VietQR Chuyển Khoản Trực Tiếp
                   </div>
                   <p className="text-[11px] font-normal text-slate-500 mt-1">
-                    Kích hoạt nhanh trong 30 phút. Khách quét mã VietQR chuyển khoản thẳng vào STK ngân hàng.
+                    Khách quét mã VietQR chuyển tiền thẳng vào STK ngân hàng. Webhook SePay tự động xác nhận đơn 24/7.
                   </p>
                 </button>
 
@@ -208,10 +208,10 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
                   }`}
                 >
                   <div className="text-xs font-extrabold flex items-center gap-1.5">
-                    <CreditCard className="w-4 h-4 text-emerald-600" /> Cổng SePay Gateway API (PG API)
+                    <CreditCard className="w-4 h-4 text-emerald-600" /> Cổng SePay Gateway (Visa/Mastercard/NAPAS)
                   </div>
                   <p className="text-[11px] font-normal text-slate-500 mt-1">
-                    Hỗ trợ đầy đủ VietQR, NAPAS QR và Thẻ quốc tế (Visa, Mastercard, JCB) qua Cổng PG API.
+                    Khách thanh toán qua Cổng SePay Checkout (`pay.sepay.vn`), hỗ trợ Thẻ quốc tế Visa/Master & NAPAS.
                   </p>
                 </button>
               </div>
