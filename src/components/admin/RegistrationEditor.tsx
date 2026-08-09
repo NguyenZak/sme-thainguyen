@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RegistrationContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import RichTextarea from "@/components/admin/RichTextarea";
@@ -9,10 +9,16 @@ import { toast } from "@/components/ui/Toast";
 
 interface RegistrationEditorProps {
   initialRegistration: RegistrationContent;
+  onSaveSuccess?: (updatedRegistration: RegistrationContent) => void;
 }
 
-export default function RegistrationEditor({ initialRegistration }: RegistrationEditorProps) {
+export default function RegistrationEditor({ initialRegistration, onSaveSuccess }: RegistrationEditorProps) {
   const [registration, setRegistration] = useState<RegistrationContent>(initialRegistration);
+
+  useEffect(() => {
+    setRegistration(initialRegistration);
+  }, [initialRegistration]);
+
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -59,6 +65,7 @@ export default function RegistrationEditor({ initialRegistration }: Registration
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(registration);
       setMsg({ type: "success", text: "Đã lưu cấu hình phần Đăng ký thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu thay đổi." });

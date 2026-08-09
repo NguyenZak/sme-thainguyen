@@ -90,6 +90,44 @@ export default function RegistrationsManager() {
 
   useEffect(() => {
     fetchRegistrations();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("registrations_realtime_manager")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations" },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const newRecord = payload.new as RegistrationRecord;
+            setRegistrations((prev) => {
+              if (prev.some((item) => item.id === newRecord.id)) return prev;
+              return [newRecord, ...prev];
+            });
+            toast.success(
+              "🎉 Đơn đăng ký mới!",
+              `${newRecord.full_name || "Khách hàng"} vừa gửi đơn đăng ký.`
+            );
+          } else if (payload.eventType === "UPDATE") {
+            const updatedRecord = payload.new as RegistrationRecord;
+            setRegistrations((prev) =>
+              prev.map((item) =>
+                item.id === updatedRecord.id ? { ...item, ...updatedRecord } : item
+              )
+            );
+          } else if (payload.eventType === "DELETE") {
+            const deletedId = (payload.old as any)?.id;
+            if (deletedId) {
+              setRegistrations((prev) => prev.filter((item) => item.id !== deletedId));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateStatus = async (

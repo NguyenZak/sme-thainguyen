@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  LayoutDashboard,
   Sliders,
   Menu,
   Flame,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 
 export type AdminTab =
+  | "dashboard"
   | "general"
   | "sepay_qr"
   | "navbar"
@@ -48,6 +50,7 @@ export default function AdminSidebar({
   registrationsCount = 0,
 }: AdminSidebarProps) {
   const menuItems: { id: AdminTab; label: string; icon: any; badge?: number }[] = [
+    { id: "dashboard", label: "Dashboard Tổng Quan", icon: LayoutDashboard },
     { id: "general", label: "Cấu hình chung, Logo & Favicon", icon: Sliders },
     { id: "sepay_qr", label: "Thanh Toán QR (SePay)", icon: QrCode },
     { id: "navbar", label: "Menu & Navbar", icon: Menu },

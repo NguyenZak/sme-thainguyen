@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpeakersContent, SpeakerItem } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
@@ -10,10 +10,16 @@ import Image from "next/image";
 
 interface SpeakersEditorProps {
   initialSpeakers: SpeakersContent;
+  onSaveSuccess?: (updatedSpeakers: SpeakersContent) => void;
 }
 
-export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps) {
+export default function SpeakersEditor({ initialSpeakers, onSaveSuccess }: SpeakersEditorProps) {
   const [speakersContent, setSpeakersContent] = useState<SpeakersContent>(initialSpeakers);
+
+  useEffect(() => {
+    setSpeakersContent(initialSpeakers);
+  }, [initialSpeakers]);
+
   const [saving, setSaving] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -68,6 +74,7 @@ export default function SpeakersEditor({ initialSpeakers }: SpeakersEditorProps)
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(speakersContent);
       setMsg({ type: "success", text: "Đã cập nhật danh sách Diễn giả thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Lỗi lưu dữ liệu." });

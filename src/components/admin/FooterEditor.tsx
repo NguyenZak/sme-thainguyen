@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FooterContent, DEFAULT_FOOTER } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import RichTextarea from "@/components/admin/RichTextarea";
@@ -29,7 +29,6 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
   const [footer, setFooter] = useState<FooterContent>({
     ...DEFAULT_FOOTER,
     ...(initialFooter || {}),
-    // Seed contactHotlines from legacy contactHotline if not yet migrated
     contactHotlines:
       initialFooter?.contactHotlines?.length
         ? initialFooter.contactHotlines.map((h) =>
@@ -43,6 +42,27 @@ export default function FooterEditor({ initialFooter, onSaveSuccess }: FooterEdi
       ...(initialFooter?.socialLinks || {}),
     },
   });
+
+  useEffect(() => {
+    if (initialFooter) {
+      setFooter({
+        ...DEFAULT_FOOTER,
+        ...initialFooter,
+        contactHotlines:
+          initialFooter.contactHotlines?.length
+            ? initialFooter.contactHotlines.map((h) =>
+                typeof h === "string" ? { title: "Hotline", phone: h } : h
+              )
+            : initialFooter.contactHotline
+            ? [{ title: "Hotline", phone: initialFooter.contactHotline }]
+            : DEFAULT_FOOTER.contactHotlines ?? [{ title: "Ban Thư ký", phone: "0988.123.456" }],
+        socialLinks: {
+          ...DEFAULT_FOOTER.socialLinks,
+          ...(initialFooter.socialLinks || {}),
+        },
+      });
+    }
+  }, [initialFooter]);
 
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);

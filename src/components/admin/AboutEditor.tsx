@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AboutContent, AttendeeTag, FeatureCard, DEFAULT_ABOUT } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
@@ -24,9 +24,10 @@ import Image from "next/image";
 
 interface AboutEditorProps {
   initialAbout: AboutContent;
+  onSaveSuccess?: (updatedAbout: AboutContent) => void;
 }
 
-export default function AboutEditor({ initialAbout }: AboutEditorProps) {
+export default function AboutEditor({ initialAbout, onSaveSuccess }: AboutEditorProps) {
   const [about, setAbout] = useState<AboutContent>({
     ...DEFAULT_ABOUT,
     ...(initialAbout || {}),
@@ -43,6 +44,27 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
         ? initialAbout.bullets
         : DEFAULT_ABOUT.bullets,
   });
+
+  useEffect(() => {
+    if (initialAbout) {
+      setAbout({
+        ...DEFAULT_ABOUT,
+        ...initialAbout,
+        featureCards:
+          initialAbout.featureCards && initialAbout.featureCards.length > 0
+            ? initialAbout.featureCards
+            : DEFAULT_ABOUT.featureCards,
+        attendeeTags:
+          initialAbout.attendeeTags && initialAbout.attendeeTags.length > 0
+            ? initialAbout.attendeeTags
+            : DEFAULT_ABOUT.attendeeTags,
+        bullets:
+          initialAbout.bullets && initialAbout.bullets.length > 0
+            ? initialAbout.bullets
+            : DEFAULT_ABOUT.bullets,
+      });
+    }
+  }, [initialAbout]);
 
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -179,6 +201,7 @@ export default function AboutEditor({ initialAbout }: AboutEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(about);
       setMsg({ type: "success", text: "Đã cập nhật toàn bộ nội dung Giới thiệu & Thành phần tham dự thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Lỗi lưu dữ liệu." });

@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatisticsContent, StatisticItem, DEFAULT_STATISTICS } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, MapPin, Building2, Handshake, Calendar, Banknote, Users, Globe2, Store } from "lucide-react";
 
 interface StatisticsEditorProps {
   initialStats: StatisticsContent;
+  onSaveSuccess?: (updatedStats: StatisticsContent) => void;
 }
 
-export default function StatisticsEditor({ initialStats }: StatisticsEditorProps) {
+export default function StatisticsEditor({ initialStats, onSaveSuccess }: StatisticsEditorProps) {
   const [stats, setStats] = useState<StatisticsContent>({
     items: initialStats?.items && initialStats.items.length > 0 ? initialStats.items : DEFAULT_STATISTICS.items,
   });
+
+  useEffect(() => {
+    if (initialStats) {
+      setStats({
+        items: initialStats.items && initialStats.items.length > 0 ? initialStats.items : DEFAULT_STATISTICS.items,
+      });
+    }
+  }, [initialStats]);
+
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -52,6 +62,7 @@ export default function StatisticsEditor({ initialStats }: StatisticsEditorProps
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(stats);
       setMsg({ type: "success", text: "Đã cập nhật các con số thống kê thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });

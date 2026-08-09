@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TimelineContent, TimelineSlot } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from "lucide-react";
 
 interface TimelineEditorProps {
   initialTimeline: TimelineContent;
+  onSaveSuccess?: (updatedTimeline: TimelineContent) => void;
 }
 
-export default function TimelineEditor({ initialTimeline }: TimelineEditorProps) {
+export default function TimelineEditor({ initialTimeline, onSaveSuccess }: TimelineEditorProps) {
   const [timeline, setTimeline] = useState<TimelineContent>(initialTimeline);
+
+  useEffect(() => {
+    setTimeline(initialTimeline);
+  }, [initialTimeline]);
+
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -46,6 +52,7 @@ export default function TimelineEditor({ initialTimeline }: TimelineEditorProps)
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(timeline);
       setMsg({ type: "success", text: "Đã cập nhật lịch trình sự kiện 3 ngày thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });

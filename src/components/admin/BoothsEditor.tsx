@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BoothsContent, BoothItem, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
@@ -30,9 +30,10 @@ import Image from "next/image";
 
 interface BoothsEditorProps {
   initialBooths: BoothsContent;
+  onSaveSuccess?: (updatedBooths: BoothsContent) => void;
 }
 
-export default function BoothsEditor({ initialBooths }: BoothsEditorProps) {
+export default function BoothsEditor({ initialBooths, onSaveSuccess }: BoothsEditorProps) {
   const [booths, setBooths] = useState<BoothsContent>({
     badge: initialBooths.badge || DEFAULT_BOOTHS.badge,
     title: initialBooths.title || DEFAULT_BOOTHS.title,
@@ -53,6 +54,31 @@ export default function BoothsEditor({ initialBooths }: BoothsEditorProps) {
     modalBottomNote: initialBooths.modalBottomNote || DEFAULT_BOOTHS.modalBottomNote || "Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza",
     items: initialBooths.items && initialBooths.items.length > 0 ? initialBooths.items : (DEFAULT_BOOTHS.items || []),
   });
+
+  useEffect(() => {
+    if (initialBooths) {
+      setBooths({
+        badge: initialBooths.badge || DEFAULT_BOOTHS.badge,
+        title: initialBooths.title || DEFAULT_BOOTHS.title,
+        subtitle: initialBooths.subtitle || DEFAULT_BOOTHS.subtitle,
+        mapImageUrl: initialBooths.mapImageUrl || DEFAULT_BOOTHS.mapImageUrl,
+        totalBooths: initialBooths.totalBooths ?? DEFAULT_BOOTHS.totalBooths ?? 100,
+        availableBooths: initialBooths.availableBooths ?? DEFAULT_BOOTHS.availableBooths ?? 35,
+        boothPackageBadge: initialBooths.boothPackageBadge || DEFAULT_BOOTHS.boothPackageBadge || "Gian hàng tiêu chuẩn",
+        boothPackageTitle: initialBooths.boothPackageTitle || DEFAULT_BOOTHS.boothPackageTitle || "Gian hàng Triển lãm 2m x 1,5m",
+        boothPackageNote: initialBooths.boothPackageNote ?? DEFAULT_BOOTHS.boothPackageNote ?? "Mỗi gian hàng BTC sẽ sắp sẵn 2 bàn + 2 ghế + 1 Standee",
+        priceVND: initialBooths.priceVND ?? DEFAULT_BOOTHS.priceVND ?? 8500000,
+        priceFormatted: initialBooths.priceFormatted || DEFAULT_BOOTHS.priceFormatted || "8.500.000",
+        priceUnit: initialBooths.priceUnit || DEFAULT_BOOTHS.priceUnit || "VNĐ / Gian",
+        inclusions: initialBooths.inclusions && initialBooths.inclusions.length > 0 ? initialBooths.inclusions : (DEFAULT_BOOTHS.inclusions || []),
+        ctaText: initialBooths.ctaText || DEFAULT_BOOTHS.ctaText || "Đăng ký gian hàng ngay",
+        modalTitle: initialBooths.modalTitle || DEFAULT_BOOTHS.modalTitle || "Sơ đồ Chi tiết Mặt bằng Triển lãm",
+        modalSubtitle: initialBooths.modalSubtitle || DEFAULT_BOOTHS.modalSubtitle || "Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.",
+        modalBottomNote: initialBooths.modalBottomNote || DEFAULT_BOOTHS.modalBottomNote || "Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza",
+        items: initialBooths.items && initialBooths.items.length > 0 ? initialBooths.items : (DEFAULT_BOOTHS.items || []),
+      });
+    }
+  }, [initialBooths]);
 
   const [saving, setSaving] = useState(false);
   const [uploadingMap, setUploadingMap] = useState(false);
@@ -158,6 +184,7 @@ export default function BoothsEditor({ initialBooths }: BoothsEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(booths);
       setMsg({ type: "success", text: "Đã cập nhật toàn bộ nội dung gian hàng triển lãm thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });

@@ -18,7 +18,8 @@ import BoothsEditor from "@/components/admin/BoothsEditor";
 import RegistrationEditor from "@/components/admin/RegistrationEditor";
 import FaqEditor from "@/components/admin/FaqEditor";
 import FooterEditor from "@/components/admin/FooterEditor";
-import RegistrationsManager from "@/components/admin/RegistrationsManager";
+import DashboardOverview from "@/components/admin/DashboardOverview";
+import RegistrationsManager, { RegistrationRecord } from "@/components/admin/RegistrationsManager";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import {
@@ -53,9 +54,11 @@ import {
 } from "@/constants/defaultContent";
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<AdminTab>("general");
+  const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [registrationsList, setRegistrationsList] = useState<RegistrationRecord[]>([]);
+
   type AdminData = {
     site_config: SiteConfig;
     navbar: NavbarContent;
@@ -126,7 +129,6 @@ export default function AdminPage() {
               ? {
                   ...DEFAULT_SPONSORS,
                   ...(loadedMap.sponsors as any),
-                  // Array.isArray check: mảng rỗng [] hợp lệ, không fallback về DEFAULT
                   items: Array.isArray((loadedMap.sponsors as any)?.items)
                     ? (loadedMap.sponsors as any).items
                     : DEFAULT_SPONSORS.items,
@@ -139,7 +141,14 @@ export default function AdminPage() {
           });
         }
 
-        const { count } = await supabase.from("registrations").select("*", { count: "exact", head: true });
+        const { data: regData, count } = await supabase
+          .from("registrations")
+          .select("*", { count: "exact" })
+          .order("created_at", { ascending: false });
+
+        if (regData) {
+          setRegistrationsList(regData);
+        }
         if (count !== null) {
           setRegistrationsCount(count);
         }
@@ -151,6 +160,55 @@ export default function AdminPage() {
     }
 
     loadAdminData();
+
+    // Supabase Realtime Subscriptions for CMS Site Sections & Registrations Count
+    const supabase = createClient();
+
+    const sectionsChannel = supabase
+      .channel("admin_realtime_sections")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "site_sections" },
+        (payload) => {
+          if (payload.new && (payload.new as any).id) {
+            const secId = (payload.new as any).id as keyof AdminData;
+            const newContent = (payload.new as any).content;
+            if (secId && newContent) {
+              setData((prev) => ({
+                ...prev,
+                [secId]: Array.isArray(newContent) ? newContent : { ...prev[secId], ...newContent },
+              }));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    const registrationsChannel = supabase
+      .channel("admin_realtime_registrations_count")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations" },
+        async (payload) => {
+          const { data: regData, count } = await supabase
+            .from("registrations")
+            .select("*", { count: "exact" })
+            .order("created_at", { ascending: false });
+
+          if (regData) {
+            setRegistrationsList(regData);
+          }
+          if (count !== null) {
+            setRegistrationsCount(count);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(sectionsChannel);
+      supabase.removeChannel(registrationsChannel);
+    };
   }, []);
 
   return (
@@ -172,6 +230,14 @@ export default function AdminPage() {
             </div>
           ) : (
             <>
+              {activeTab === "dashboard" && (
+                <DashboardOverview
+                  data={data}
+                  registrations={registrationsList}
+                  registrationsCount={registrationsCount}
+                  onNavigateTab={setActiveTab}
+                />
+              )}
               {activeTab === "general" && (
                 <GeneralEditor
                   initialConfig={data.site_config}
@@ -196,32 +262,78 @@ export default function AdminPage() {
                   }}
                 />
               )}
-              {activeTab === "navbar" && <NavbarEditor initialNavbar={data.navbar} />}
-              {activeTab === "hero" && <HeroEditor initialHero={data.hero} />}
-              {activeTab === "statistics" && (
-                <StatisticsEditor initialStats={data.statistics} />
+              {activeTab === "navbar" && (
+                <NavbarEditor
+                  initialNavbar={data.navbar}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, navbar: updated }))}
+                />
               )}
-              {activeTab === "about" && <AboutEditor initialAbout={data.about} />}
+              {activeTab === "hero" && (
+                <HeroEditor
+                  initialHero={data.hero}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, hero: updated }))}
+                />
+              )}
+              {activeTab === "statistics" && (
+                <StatisticsEditor
+                  initialStats={data.statistics}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, statistics: updated }))}
+                />
+              )}
+              {activeTab === "about" && (
+                <AboutEditor
+                  initialAbout={data.about}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, about: updated }))}
+                />
+              )}
               {activeTab === "speakers" && (
-                <SpeakersEditor initialSpeakers={data.speakers} />
+                <SpeakersEditor
+                  initialSpeakers={data.speakers}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, speakers: updated }))}
+                />
               )}
               {activeTab === "benefits" && (
-                <BenefitsEditor initialBenefits={data.benefits} />
+                <BenefitsEditor
+                  initialBenefits={data.benefits}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, benefits: updated }))}
+                />
               )}
               {activeTab === "timeline" && (
-                <TimelineEditor initialTimeline={data.timeline} />
+                <TimelineEditor
+                  initialTimeline={data.timeline}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, timeline: updated }))}
+                />
               )}
               {activeTab === "ticket_fee" && (
-                <TicketFeeEditor initialFee={data.ticket_fee} />
+                <TicketFeeEditor
+                  initialFee={data.ticket_fee}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, ticket_fee: updated }))}
+                />
               )}
               {activeTab === "registration" && (
-                <RegistrationEditor initialRegistration={data.registration} />
+                <RegistrationEditor
+                  initialRegistration={data.registration}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, registration: updated }))}
+                />
               )}
               {activeTab === "sponsors" && (
-                <SponsorsEditor initialSponsors={data.sponsors} />
+                <SponsorsEditor
+                  initialSponsors={data.sponsors}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, sponsors: updated }))}
+                />
               )}
-              {activeTab === "booths" && <BoothsEditor initialBooths={data.booths} />}
-              {activeTab === "faq" && <FaqEditor initialContent={data.faq} />}
+              {activeTab === "booths" && (
+                <BoothsEditor
+                  initialBooths={data.booths}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, booths: updated }))}
+                />
+              )}
+              {activeTab === "faq" && (
+                <FaqEditor
+                  initialContent={data.faq}
+                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, faq: updated }))}
+                />
+              )}
               {activeTab === "footer" && (
                 <FooterEditor
                   initialFooter={data.footer}
@@ -241,3 +353,4 @@ export default function AdminPage() {
     </div>
   );
 }
+

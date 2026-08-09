@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SponsorsContent,
   SponsorItem,
@@ -35,9 +35,10 @@ import Image from "next/image";
 
 interface SponsorsEditorProps {
   initialSponsors: SponsorsContent;
+  onSaveSuccess?: (updatedSponsors: SponsorsContent) => void;
 }
 
-export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps) {
+export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: SponsorsEditorProps) {
   const [sponsors, setSponsors] = useState<SponsorsContent>({
     ...DEFAULT_SPONSORS,
     ...(initialSponsors || {}),
@@ -50,11 +51,31 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
     milestones: Array.isArray(initialSponsors?.milestones)
       ? initialSponsors.milestones
       : DEFAULT_SPONSORS.milestones || [],
-    // Dùng Array.isArray thay vì length > 0 để tránh fallback khi mảng rỗng hợp lệ
     items: Array.isArray(initialSponsors?.items)
       ? initialSponsors.items
       : DEFAULT_SPONSORS.items || [],
   });
+
+  useEffect(() => {
+    if (initialSponsors) {
+      setSponsors({
+        ...DEFAULT_SPONSORS,
+        ...initialSponsors,
+        packages: Array.isArray(initialSponsors.packages)
+          ? initialSponsors.packages
+          : DEFAULT_SPONSORS.packages || [],
+        priorityCategories: Array.isArray(initialSponsors.priorityCategories)
+          ? initialSponsors.priorityCategories
+          : DEFAULT_SPONSORS.priorityCategories || [],
+        milestones: Array.isArray(initialSponsors.milestones)
+          ? initialSponsors.milestones
+          : DEFAULT_SPONSORS.milestones || [],
+        items: Array.isArray(initialSponsors.items)
+          ? initialSponsors.items
+          : DEFAULT_SPONSORS.items || [],
+      });
+    }
+  }, [initialSponsors]);
 
   const [saving, setSaving] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
@@ -264,6 +285,7 @@ export default function SponsorsEditor({ initialSponsors }: SponsorsEditorProps)
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(sponsors);
       setMsg({ type: "success", text: "Đã cập nhật toàn bộ Gói Quyền Lợi Tài Trợ & Danh Sách Logo thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Lỗi lưu dữ liệu." });

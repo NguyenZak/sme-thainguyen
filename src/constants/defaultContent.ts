@@ -45,6 +45,10 @@ export interface SiteConfig {
   sepayAccountName?: string;
   sepayApiKey?: string;
   customQrImage?: string;
+  sepayMode?: "vietqr" | "gateway";
+  sepayMerchantId?: string;
+  sepaySecretKey?: string;
+  sepaySandbox?: boolean;
   hiddenSections?: string[];
 }
 
@@ -356,6 +360,10 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   sepayAccountName: "HIEP HOI DNNVV THAI NGUYEN",
   sepayApiKey: "",
   customQrImage: "",
+  sepayMode: "vietqr",
+  sepayMerchantId: "",
+  sepaySecretKey: "",
+  sepaySandbox: false,
   hiddenSections: [],
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RichTextarea from "@/components/admin/RichTextarea";
 import {
   HelpCircle,
@@ -33,8 +33,20 @@ const CATEGORY_OPTIONS: { id: FaqItem["category"]; label: string; icon: any }[] 
   { id: "all", label: "Tất cả", icon: Sparkles },
 ];
 
-export default function FaqEditor({ initialContent }: { initialContent?: FaqContent }) {
+interface FaqEditorProps {
+  initialContent?: FaqContent;
+  onSaveSuccess?: (updatedContent: FaqContent) => void;
+}
+
+export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorProps) {
   const [content, setContent] = useState<FaqContent>(initialContent || DEFAULT_FAQ_CONTENT);
+
+  useEffect(() => {
+    if (initialContent) {
+      setContent(initialContent);
+    }
+  }, [initialContent]);
+
   const [saving, setSaving] = useState(false);
   const [editingItem, setEditingItem] = useState<FaqItem | null>(null);
   const [previewOpenId, setPreviewOpenId] = useState<string | null>("faq-1");
@@ -48,6 +60,7 @@ export default function FaqEditor({ initialContent }: { initialContent?: FaqCont
     try {
       const res = await updateSectionAction("faq", content);
       if (res.success) {
+        onSaveSuccess?.(content);
         toast.success("Lưu FAQ thành công! 🎉", "Đã cập nhật danh sách câu hỏi thường gặp lên trang chủ.");
       } else {
         toast.error("Lưu thất bại!", res.error || "Không thể lưu dữ liệu FAQ.");

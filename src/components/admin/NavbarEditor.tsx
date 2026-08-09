@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { NavbarContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
@@ -10,10 +10,16 @@ import { toast } from "@/components/ui/Toast";
 
 interface NavbarEditorProps {
   initialNavbar: NavbarContent;
+  onSaveSuccess?: (updatedNavbar: NavbarContent) => void;
 }
 
-export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
+export default function NavbarEditor({ initialNavbar, onSaveSuccess }: NavbarEditorProps) {
   const [navbar, setNavbar] = useState<NavbarContent>(initialNavbar);
+
+  useEffect(() => {
+    setNavbar(initialNavbar);
+  }, [initialNavbar]);
+
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -72,6 +78,7 @@ export default function NavbarEditor({ initialNavbar }: NavbarEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(navbar);
       toast.success("Lưu thành công! 🎉", "Cấu hình thanh điều hướng và logo đã được cập nhật.");
       setMsg({ type: "success", text: "Đã lưu cấu hình Navbar thành công!" });
     } else {

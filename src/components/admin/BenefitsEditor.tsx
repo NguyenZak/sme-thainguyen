@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BenefitsContent, BenefitItem } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import RichTextarea from "@/components/admin/RichTextarea";
@@ -16,6 +16,7 @@ import {
 
 interface BenefitsEditorProps {
   initialBenefits: BenefitsContent;
+  onSaveSuccess?: (updatedBenefits: BenefitsContent) => void;
 }
 
 const ICON_OPTIONS = [
@@ -49,8 +50,13 @@ function newItem(index: number): BenefitItem {
   };
 }
 
-export default function BenefitsEditor({ initialBenefits }: BenefitsEditorProps) {
+export default function BenefitsEditor({ initialBenefits, onSaveSuccess }: BenefitsEditorProps) {
   const [benefits, setBenefits] = useState<BenefitsContent>(initialBenefits);
+
+  useEffect(() => {
+    setBenefits(initialBenefits);
+  }, [initialBenefits]);
+
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -88,6 +94,7 @@ export default function BenefitsEditor({ initialBenefits }: BenefitsEditorProps)
     const res = await updateSectionAction("benefits", benefits);
     setSaving(false);
     if (res.success) {
+      onSaveSuccess?.(benefits);
       setMsg({ type: "success", text: "Đã cập nhật các giá trị & quyền lợi thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HeroContent, DEFAULT_HERO } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import RichTextarea from "@/components/admin/RichTextarea";
@@ -28,9 +28,10 @@ import {
 
 interface HeroEditorProps {
   initialHero: HeroContent;
+  onSaveSuccess?: (updatedHero: HeroContent) => void;
 }
 
-export default function HeroEditor({ initialHero }: HeroEditorProps) {
+export default function HeroEditor({ initialHero, onSaveSuccess }: HeroEditorProps) {
   const [hero, setHero] = useState<HeroContent>({
     ...DEFAULT_HERO,
     ...(initialHero || {}),
@@ -43,6 +44,23 @@ export default function HeroEditor({ initialHero }: HeroEditorProps) {
         ? initialHero.tickerMessages
         : DEFAULT_HERO.tickerMessages,
   });
+
+  useEffect(() => {
+    if (initialHero) {
+      setHero({
+        ...DEFAULT_HERO,
+        ...initialHero,
+        keywords:
+          initialHero.keywords && initialHero.keywords.length > 0
+            ? initialHero.keywords
+            : DEFAULT_HERO.keywords,
+        tickerMessages:
+          initialHero.tickerMessages && initialHero.tickerMessages.length > 0
+            ? initialHero.tickerMessages
+            : DEFAULT_HERO.tickerMessages,
+      });
+    }
+  }, [initialHero]);
 
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -125,6 +143,7 @@ export default function HeroEditor({ initialHero }: HeroEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(hero);
       setMsg({ type: "success", text: "Đã lưu cài đặt toàn bộ nội dung Hero Banner thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu thay đổi." });

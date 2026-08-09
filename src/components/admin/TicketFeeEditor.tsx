@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TicketFeeContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from "lucide-react";
 
 interface TicketFeeEditorProps {
   initialFee: TicketFeeContent;
+  onSaveSuccess?: (updatedFee: TicketFeeContent) => void;
 }
 
-export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
+export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFeeEditorProps) {
   const [fee, setFee] = useState<TicketFeeContent>(initialFee);
+
+  useEffect(() => {
+    setFee(initialFee);
+  }, [initialFee]);
+
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -38,6 +44,7 @@ export default function TicketFeeEditor({ initialFee }: TicketFeeEditorProps) {
     setSaving(false);
 
     if (res.success) {
+      onSaveSuccess?.(fee);
       setMsg({ type: "success", text: "Đã cập nhật giá vé & quyền lợi gói tham dự thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
