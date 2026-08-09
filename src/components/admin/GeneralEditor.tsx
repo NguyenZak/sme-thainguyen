@@ -1179,8 +1179,8 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
               💳
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CỔNG THANH TOÁN QUÉT MÃ VIETQR SEPAY (TỰ ĐỘNG BÁN VÉ)</h3>
-              <p className="text-[11px] text-slate-500">Bật/tắt tính năng quét mã QR ngân hàng tự động xác nhận chuyển khoản cho khách hàng.</p>
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">CỔNG THANH TOÁN QUÉT MÃ VIETQR SEPAY (BÁN VÉ ĐẠI BIỂU)</h3>
+              <p className="text-[11px] text-slate-500">Bật/tắt tính năng quét mã VietQR tự động khớp lệnh thanh toán cho hình thức bán vé đại biểu.</p>
             </div>
           </div>
 

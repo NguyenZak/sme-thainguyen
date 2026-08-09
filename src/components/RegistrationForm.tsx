@@ -679,8 +679,8 @@ export default function RegistrationForm({
                       </div>
                     )}
 
-                    {/* SePay VietQR Payment QR Code or Event Check-in QR */}
-                    {config?.sepayEnabled && config?.sepayAccountNumber ? (
+                    {/* SePay VietQR Payment QR Code (Only for Delegate Ticket Sales) or Event Check-in QR */}
+                    {config?.sepayEnabled && config?.sepayAccountNumber && tab === "delegate" ? (
                       <div className="pt-3 border-t border-white/20 space-y-3 bg-black/30 p-3.5 rounded-xl border border-white/10">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase text-amber-300 tracking-wider">
@@ -693,7 +693,7 @@ export default function RegistrationForm({
 
                         <div className="flex items-center gap-3 bg-white text-slate-900 p-2.5 rounded-lg">
                           <img
-                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${tab === "delegate" ? unitPrice : 0}&des=${successModal.registrationId}`}
+                            src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`}
                             alt="VietQR SePay Payment"
                             className="w-24 h-24 object-contain rounded border border-slate-200 shrink-0"
                           />
