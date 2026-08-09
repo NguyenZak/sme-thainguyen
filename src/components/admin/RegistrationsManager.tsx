@@ -396,18 +396,18 @@ export default function RegistrationsManager() {
             Chưa có lượt đăng ký nào phù hợp với bộ lọc.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-700">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full min-w-[1050px] text-left text-xs text-slate-700">
               <thead className="bg-slate-50 text-slate-700 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-3.5">Form Đăng Ký</th>
-                  <th className="px-4 py-3.5">Họ và Tên</th>
-                  <th className="px-4 py-3.5">Doanh Nghiệp & Chức Vụ</th>
-                  <th className="px-4 py-3.5">Liên Hệ</th>
-                  <th className="px-4 py-3.5">Chi Tiết Gói / Gian Hàng</th>
-                  <th className="px-4 py-3.5">Ngày Đăng Ký</th>
-                  <th className="px-4 py-3.5 text-center">Trạng Thái Thanh Toán</th>
-                  <th className="px-4 py-3.5 text-right">Thao Tác Fast</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Form Đăng Ký</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Họ và Tên</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Doanh Nghiệp & Chức Vụ</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Liên Hệ</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Chi Tiết Gói / Gian Hàng</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Ngày Đăng Ký</th>
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Trạng Thái Thanh Toán</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Thao Tác Fast</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -433,32 +433,32 @@ export default function RegistrationsManager() {
                       </td>
 
                       {/* Full Name & Notes */}
-                      <td className="px-4 py-3.5 font-bold text-slate-900">
+                      <td className="px-4 py-3.5 font-bold text-slate-900 whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           {isDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
                           <span>{r.full_name}</span>
                         </div>
                         {r.notes && (
-                          <div className="text-[11px] font-normal text-slate-500 mt-0.5 italic">
+                          <div className="text-[11px] font-normal text-slate-500 mt-0.5 italic max-w-xs truncate">
                             Ghi chú: {r.notes}
                           </div>
                         )}
                       </td>
 
                       {/* Company & Position */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-3.5 whitespace-nowrap">
                         <div className="font-semibold text-slate-900">{r.company_name}</div>
                         <div className="text-[11px] text-slate-500">{r.position}</div>
                       </td>
 
                       {/* Phone & Email */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-3.5 whitespace-nowrap">
                         <div className="font-mono text-slate-900 font-semibold">{r.phone}</div>
                         <div className="text-[11px] text-slate-500">{r.email}</div>
                       </td>
 
                       {/* Ticket / Booth / Sponsor detail */}
-                      <td className="px-4 py-3.5 font-semibold text-slate-700">
+                      <td className="px-4 py-3.5 font-semibold text-slate-700 whitespace-nowrap">
                         <span
                           className="px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 text-[11px] inline-block max-w-[200px] truncate"
                           title={r.ticket_type}
@@ -468,12 +468,12 @@ export default function RegistrationsManager() {
                       </td>
 
                       {/* Created At */}
-                      <td className="px-4 py-3.5 text-slate-500 font-mono text-[11px]">
+                      <td className="px-4 py-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">
                         {new Date(r.created_at).toLocaleDateString("vi-VN")}
                       </td>
 
                       {/* Status Selector */}
-                      <td className="px-4 py-3.5 text-center">
+                      <td className="px-4 py-3.5 text-center whitespace-nowrap">
                         <select
                           value={r.status}
                           onChange={(e) => updateStatus(r.id, e.target.value as any)}
@@ -495,7 +495,7 @@ export default function RegistrationsManager() {
                       </td>
 
                       {/* Fast Action Buttons */}
-                      <td className="px-4 py-3.5 text-right">
+                      <td className="px-4 py-3.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
                           {r.status !== "completed" ? (
                             <button
