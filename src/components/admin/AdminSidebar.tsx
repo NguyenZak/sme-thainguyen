@@ -15,10 +15,12 @@ import {
   MapPin,
   Users,
   HelpCircle,
+  QrCode,
 } from "lucide-react";
 
 export type AdminTab =
   | "general"
+  | "sepay_qr"
   | "navbar"
   | "hero"
   | "statistics"
@@ -47,6 +49,7 @@ export default function AdminSidebar({
 }: AdminSidebarProps) {
   const menuItems: { id: AdminTab; label: string; icon: any; badge?: number }[] = [
     { id: "general", label: "Cấu hình chung, Logo & Favicon", icon: Sliders },
+    { id: "sepay_qr", label: "Thanh Toán QR (SePay)", icon: QrCode },
     { id: "navbar", label: "Menu & Navbar", icon: Menu },
     { id: "hero", label: "Hero Banner & Countdown", icon: Flame },
     { id: "statistics", label: "Con số Thống kê", icon: BarChart3 },

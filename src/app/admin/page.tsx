@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar, { AdminTab } from "@/components/admin/AdminSidebar";
 import GeneralEditor from "@/components/admin/GeneralEditor";
+import SepayQrEditor from "@/components/admin/SepayQrEditor";
 import NavbarEditor from "@/components/admin/NavbarEditor";
 import HeroEditor from "@/components/admin/HeroEditor";
 import StatisticsEditor from "@/components/admin/StatisticsEditor";
@@ -180,6 +181,17 @@ export default function AdminPage() {
                       ...prev,
                       site_config: updatedConfig,
                       footer: updatedFooter,
+                    }));
+                  }}
+                />
+              )}
+              {activeTab === "sepay_qr" && (
+                <SepayQrEditor
+                  initialConfig={data.site_config}
+                  onSaveSuccess={(updatedConfig) => {
+                    setData((prev) => ({
+                      ...prev,
+                      site_config: updatedConfig,
                     }));
                   }}
                 />

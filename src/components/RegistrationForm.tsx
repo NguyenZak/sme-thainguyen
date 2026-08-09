@@ -28,24 +28,33 @@ import {
 } from "@/constants/defaultContent";
 import { toast } from "@/components/ui/Toast";
 
-// Form validation schema with Zod
-const formSchema = z.object({
-  intentTab: z.enum(["delegate", "sponsor", "booth"]),
-  fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
-  company: z.string().min(2, "Vui lòng nhập tên đơn vị / tổ chức"),
-  position: z.string().min(1, "Vui lòng nhập chức vụ"),
-  sector: z.string().min(1, "Vui lòng nhập lĩnh vực hoạt động"),
-  phone: z
-    .string()
-    .min(9, "Số điện thoại không hợp lệ")
-    .regex(/^[0-9+\s-]{9,15}$/, "Số điện thoại chứa ký tự không hợp lệ"),
-  email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
-  sponsorTier: z.string().optional(),
-  boothNumber: z.string().optional(),
-  attendeesCount: z.string().min(1, "Số người / số gian"),
-  networkingNeeds: z.string().optional(),
-  notes: z.string().optional(),
-});
+const formSchema = z
+  .object({
+    intentTab: z.enum(["delegate", "sponsor", "booth"]),
+    fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
+    company: z.string().min(2, "Vui lòng nhập tên đơn vị / tổ chức"),
+    position: z.string().min(1, "Vui lòng nhập chức vụ"),
+    sector: z.string().min(1, "Vui lòng nhập lĩnh vực hoạt động"),
+    phone: z
+      .string()
+      .min(9, "Số điện thoại không hợp lệ")
+      .regex(/^[0-9+\s-]{9,15}$/, "Số điện thoại chứa ký tự không hợp lệ"),
+    email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
+    sponsorTier: z.string().optional(),
+    boothNumber: z.string().optional(),
+    attendeesCount: z.string().optional(),
+    networkingNeeds: z.string().optional(),
+    notes: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.intentTab !== "sponsor" && (!data.attendeesCount || data.attendeesCount.trim() === "")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Số người / số gian không được để trống",
+        path: ["attendeesCount"],
+      });
+    }
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -500,39 +509,41 @@ export default function RegistrationForm({
             </div>
 
             {/* Attendees Count & B2B Networking Needs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Number of Attendees */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                  Số người đăng ký <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  max={50}
-                  {...register("attendeesCount")}
-                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
-                />
-                {errors.attendeesCount && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.attendeesCount.message}
-                  </p>
-                )}
-              </div>
+            {activeTab !== "sponsor" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Number of Attendees */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                    Số người đăng ký <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={50}
+                    {...register("attendeesCount")}
+                    className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
+                  />
+                  {errors.attendeesCount && (
+                    <p className="text-xs text-red-500 font-medium">
+                      {errors.attendeesCount.message}
+                    </p>
+                  )}
+                </div>
 
-              {/* B2B Networking Needs */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                  Nhu cầu kết nối B2B
-                </label>
-                <input
-                  type="text"
-                  placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
-                  {...register("networkingNeeds")}
-                  className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
-                />
+                {/* B2B Networking Needs */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                    Nhu cầu kết nối B2B
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
+                    {...register("networkingNeeds")}
+                    className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Notes */}
             <div className="space-y-2">
