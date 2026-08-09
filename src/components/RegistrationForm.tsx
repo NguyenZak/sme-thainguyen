@@ -718,23 +718,9 @@ export default function RegistrationForm({
                     {/* Right Column: QR Code Payment / Check-in Card */}
                     <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
                       {isDelegateSepay && !isCompleted ? (() => {
-                        const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`;
-
-                        const downloadQrImage = async () => {
-                          try {
-                            const res = await fetch(qrCodeUrl);
-                            const blob = await res.blob();
-                            const link = document.createElement("a");
-                            link.href = URL.createObjectURL(blob);
-                            link.download = `Ma_QR_Thanh_Toan_${successModal.registrationId}.png`;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            toast.success("Đã tải ảnh QR! 💾", "Mã QR thanh toán đã được lưu về thiết bị.");
-                          } catch {
-                            window.open(qrCodeUrl, "_blank");
-                          }
-                        };
+                        const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+                        const amountFormatted = amountVal.toLocaleString("vi-VN");
+                        const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
 
                         return (
                           <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
@@ -751,7 +737,7 @@ export default function RegistrationForm({
                               <img
                                 src={qrCodeUrl}
                                 alt="VietQR SePay Payment"
-                                className="w-36 h-36 object-contain mx-auto"
+                                className="w-48 h-auto object-contain mx-auto"
                               />
                             </div>
 
@@ -759,7 +745,7 @@ export default function RegistrationForm({
                               <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
                               <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
                               <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
-                              <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{(Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)).toLocaleString("vi-VN")} VNĐ</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
                               <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
                             </div>
 
@@ -792,7 +778,8 @@ export default function RegistrationForm({
                     {isDelegateSepay && !isCompleted && (
                       <button
                         onClick={async () => {
-                          const qrUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`;
+                          const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+                          const qrUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
                           try {
                             const res = await fetch(qrUrl);
                             const blob = await res.blob();
@@ -802,7 +789,7 @@ export default function RegistrationForm({
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
-                            toast.success("Đã tải ảnh QR! 💾", "Mã QR thanh toán đã được lưu về thiết bị.");
+                            toast.success("Đã tải ảnh QR! 💾", "Mã QR kèm đầy đủ thông tin chuyển khoản đã được lưu.");
                           } catch {
                             window.open(qrUrl, "_blank");
                           }

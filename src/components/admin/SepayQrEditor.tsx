@@ -343,9 +343,9 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
 
                   <div className="bg-white p-3 rounded-xl inline-block shadow-md border border-slate-200">
                     <img
-                      src={config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=500000&des=SME2026DEMO`}
+                      src={config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=500000&des=SME2026DEMO`}
                       alt="Demo VietQR SePay"
-                      className="w-36 h-36 object-contain mx-auto"
+                      className="w-44 h-auto object-contain mx-auto"
                     />
                   </div>
 
