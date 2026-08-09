@@ -44,6 +44,7 @@ export interface SiteConfig {
   sepayAccountNumber?: string;
   sepayAccountName?: string;
   sepayApiKey?: string;
+  customQrImage?: string;
   hiddenSections?: string[];
 }
 
@@ -354,6 +355,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   sepayAccountNumber: "0388925432",
   sepayAccountName: "HIEP HOI DNNVV THAI NGUYEN",
   sepayApiKey: "",
+  customQrImage: "",
   hiddenSections: [],
 };
 

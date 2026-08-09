@@ -717,38 +717,58 @@ export default function RegistrationForm({
 
                     {/* Right Column: QR Code Payment / Check-in Card */}
                     <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
-                      {isDelegateSepay && !isCompleted ? (
-                        <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
-                          <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
-                            <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                              💳 Cổng Thanh Toán VietQR SePay
-                            </span>
-                            <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
-                              ⏳ Chờ chuyển khoản
-                            </span>
-                          </div>
+                      {isDelegateSepay && !isCompleted ? (() => {
+                        const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`;
 
-                          <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
-                            <img
-                              src={`https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`}
-                              alt="VietQR SePay Payment"
-                              className="w-36 h-36 object-contain mx-auto"
-                            />
-                          </div>
+                        const downloadQrImage = async () => {
+                          try {
+                            const res = await fetch(qrCodeUrl);
+                            const blob = await res.blob();
+                            const link = document.createElement("a");
+                            link.href = URL.createObjectURL(blob);
+                            link.download = `Ma_QR_Thanh_Toan_${successModal.registrationId}.png`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            toast.success("Đã tải ảnh QR! 💾", "Mã QR thanh toán đã được lưu về thiết bị.");
+                          } catch {
+                            window.open(qrCodeUrl, "_blank");
+                          }
+                        };
 
-                          <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
-                            <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{(Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)).toLocaleString("vi-VN")} VNĐ</b></div>
-                            <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
-                          </div>
+                        return (
+                          <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
+                            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
+                              <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                                💳 Cổng Thanh Toán VietQR SePay
+                              </span>
+                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
+                                ⏳ Chờ chuyển khoản
+                              </span>
+                            </div>
 
-                          <p className="text-[10px] text-slate-400 italic">
-                            ⚡ Đơn hàng đang ở trạng thái treo. Khi chuyển khoản xong, SePay sẽ tự động duyệt ngay 24/7!
-                          </p>
-                        </div>
-                      ) : (
+                            <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
+                              <img
+                                src={qrCodeUrl}
+                                alt="VietQR SePay Payment"
+                                className="w-36 h-36 object-contain mx-auto"
+                              />
+                            </div>
+
+                            <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
+                              <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{(Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)).toLocaleString("vi-VN")} VNĐ</b></div>
+                              <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
+                            </div>
+
+                            <p className="text-[10px] text-slate-400 italic">
+                              ⚡ Đơn hàng đang ở trạng thái treo. Khi chuyển khoản xong, SePay sẽ tự động duyệt ngay 24/7!
+                            </p>
+                          </div>
+                        );
+                      })() : (
                         /* Verified Check-in QR Right Column */
                         <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
                           <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
@@ -768,16 +788,39 @@ export default function RegistrationForm({
                     </div>
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex flex-wrap sm:flex-nowrap gap-3 pt-2">
+                    {isDelegateSepay && !isCompleted && (
+                      <button
+                        onClick={async () => {
+                          const qrUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact&amount=${Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0)}&des=${successModal.registrationId}`;
+                          try {
+                            const res = await fetch(qrUrl);
+                            const blob = await res.blob();
+                            const link = document.createElement("a");
+                            link.href = URL.createObjectURL(blob);
+                            link.download = `Ma_QR_Thanh_Toan_${successModal.registrationId}.png`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            toast.success("Đã tải ảnh QR! 💾", "Mã QR thanh toán đã được lưu về thiết bị.");
+                          } catch {
+                            window.open(qrUrl, "_blank");
+                          }
+                        }}
+                        className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-amber-500 hover:bg-amber-600 text-slate-950 flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                      >
+                        <Download className="w-4 h-4" /> Lưu Ảnh Mã QR
+                      </button>
+                    )}
                     <button
                       onClick={() => window.print()}
-                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5 transition-colors"
+                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5 transition-colors border border-slate-300 cursor-pointer"
                     >
                       <Download className="w-4 h-4" /> In Thẻ điện tử
                     </button>
                     <button
                       onClick={() => setSuccessModal({ open: false })}
-                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-900 hover:bg-black text-white transition-colors"
+                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-900 hover:bg-black text-white transition-colors cursor-pointer"
                     >
                       Hoàn tất
                     </button>
