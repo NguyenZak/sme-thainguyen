@@ -40,6 +40,8 @@ export async function POST(request: Request) {
 
     console.log("New Registration Received:", data);
 
+    const registrationId = data.registrationId || `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
@@ -66,7 +68,8 @@ export async function POST(request: Request) {
         const company = data.company || data.company_name || "N/A";
         const position = data.position || "N/A";
         const ticketType = data.registrationType || data.intentTab || "standard";
-        const notes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : null);
+        const userNotes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : "");
+        const notes = `[Mã ĐK: ${registrationId}] ${userNotes}`.trim();
 
         await supabase.from("registrations").insert({
           full_name: fullName,
@@ -206,7 +209,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message: "Đăng ký thành công! Ban tổ chức sẽ liên hệ với bạn trong 24h.",
-        registrationId: `SME2026-${Math.floor(100000 + Math.random() * 900000)}`,
+        registrationId,
         data,
       },
       { status: 200 }

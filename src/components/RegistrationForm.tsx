@@ -198,8 +198,11 @@ export default function RegistrationForm({
           ? registration.sponsorPosterUrl
           : registration.boothPosterUrl;
 
+      const clientRegId = `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
+
       const payload = {
         ...values,
+        registrationId: clientRegId,
         registrationType: typeLabel,
         emailSubject,
         emailBody,
@@ -225,9 +228,7 @@ export default function RegistrationForm({
         origin: { y: 0.6 },
       });
 
-      const regId =
-        responseData.registrationId ||
-        `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
+      const regId = responseData.registrationId || clientRegId;
 
       toast.success(
         "Đăng ký thành công!",
