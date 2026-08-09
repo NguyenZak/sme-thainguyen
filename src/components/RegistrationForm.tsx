@@ -17,6 +17,7 @@ import {
   Award,
   Store,
   Sparkles,
+  CreditCard,
 } from "lucide-react";
 import {
   RegistrationContent,
@@ -78,6 +79,51 @@ export default function RegistrationForm({
     data?: FormValues;
     status?: "pending" | "completed" | "confirmed";
   }>({ open: false });
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const handleGatewayCheckout = async () => {
+    if (!successModal.registrationId) return;
+    setCheckoutLoading(true);
+    try {
+      const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+      const res = await fetch("/api/sepay/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registrationId: successModal.registrationId,
+          amount: amountVal,
+          description: `Thanh toan ve dai bieu ${successModal.registrationId}`,
+          returnUrl: window.location.href,
+        }),
+      });
+
+      const resData = await res.json();
+      if (resData.success && resData.checkoutUrl && resData.fields) {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = resData.checkoutUrl;
+
+        Object.entries(resData.fields).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = String(value);
+            form.appendChild(input);
+          }
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        toast.error("Lỗi cổng thanh toán!", resData.message || "Không thể khởi tạo Cổng SePay.");
+      }
+    } catch (err: any) {
+      toast.error("Lỗi kết nối!", err?.message || "Không thể kết nối Cổng SePay PG API");
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
 
   const {
     register,
@@ -774,6 +820,28 @@ export default function RegistrationForm({
                       )}
                     </div>
                   </div>
+
+                  {config.sepayMode === "gateway" && isDelegateSepay && !isCompleted && (
+                    <div className="pt-2 border-t border-slate-100">
+                      <button
+                        onClick={handleGatewayCheckout}
+                        disabled={checkoutLoading}
+                        className="w-full py-3.5 px-4 rounded-2xl font-extrabold text-xs bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                      >
+                        {checkoutLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>Đang chuyển hướng tới Cổng SePay PG API...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="w-4 h-4" />
+                            <span>Thanh Toán Thẻ Quốc Tế (Visa/Mastercard/JCB) / NAPAS / SePay Checkout</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
 
                   <div className="flex flex-wrap sm:flex-nowrap gap-3 pt-2">
                     {isDelegateSepay && !isCompleted && (
