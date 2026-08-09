@@ -46,17 +46,17 @@ export function getCategoryBadge(category: "delegate" | "sponsor" | "booth") {
   switch (category) {
     case "delegate":
       return {
-        label: "🎟️ Đại biểu Tham dự",
+        label: "🎟️ Đại biểu",
         bg: "bg-blue-50 text-blue-700 border-blue-200",
       };
     case "sponsor":
       return {
-        label: "💎 Nhà Tài Trợ",
+        label: "💎 Tài trợ",
         bg: "bg-purple-50 text-purple-700 border-purple-200",
       };
     case "booth":
       return {
-        label: "🎪 Gian Hàng Triển Lãm",
+        label: "🎪 Gian hàng",
         bg: "bg-amber-50 text-amber-800 border-amber-200",
       };
   }
@@ -424,9 +424,9 @@ export default function RegistrationsManager() {
                       }`}
                     >
                       {/* Form Badge */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 py-3.5 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border ${badge.bg}`}
+                          className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border whitespace-nowrap ${badge.bg}`}
                         >
                           {badge.label}
                         </span>
