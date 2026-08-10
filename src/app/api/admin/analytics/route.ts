@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { isAdminAuthenticated } from "@/lib/requireAdmin";
 
 export async function GET(req: NextRequest) {
   try {
+    // Dữ liệu truy cập/analytics chỉ dành cho admin đã đăng nhập
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json(
+        { success: false, error: "Không có quyền truy cập." },
+        { status: 401 }
+      );
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 

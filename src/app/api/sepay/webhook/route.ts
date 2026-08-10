@@ -1,25 +1,42 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+/**
+ * Webhook SePay — TẠM THỜI TẮT (auto-confirm).
+ *
+ * Bảo mật: endpoint này từng không xác thực, cho phép giả lập thanh toán.
+ * Nay yêu cầu bắt buộc:
+ *   - Đặt biến môi trường SEPAY_WEBHOOK_API_KEY
+ *   - SePay gửi header "Authorization: Apikey <KEY>" trùng khớp
+ * Nếu chưa cấu hình env → webhook bị vô hiệu hóa (trả 403), không xử lý gì.
+ *
+ * Muốn bật lại tự động duyệt: đặt SEPAY_WEBHOOK_API_KEY (env hosting) và khai
+ * cùng API key đó trong dashboard SePay. Trong lúc tắt, duyệt đơn thủ công
+ * trong CMS (đã được bảo vệ đăng nhập).
+ */
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    console.log("SePay Webhook Payload Received:", body);
+    const expectedKey = process.env.SEPAY_WEBHOOK_API_KEY;
 
-    // SePay Webhook Payload structure:
-    // {
-    //   id: 123456,
-    //   gateway: "MBBank",
-    //   transactionDate: "2026-08-08 01:05:00",
-    //   accountNumber: "0388925432",
-    //   code: null,
-    //   content: "SME2026-992882 chuyen tien ve",
-    //   transferType: "in",
-    //   transferAmount: 1450000,
-    //   accumulated: 50000000,
-    //   subAccount: null,
-    //   referenceCode: "FT24080812345"
-    // }
+    // Vô hiệu hóa nếu chưa cấu hình khóa xác thực
+    if (!expectedKey) {
+      return NextResponse.json(
+        { success: false, message: "Webhook SePay đang tắt." },
+        { status: 403 }
+      );
+    }
+
+    // Xác thực API key: hỗ trợ "Apikey <KEY>", "Bearer <KEY>" hoặc raw
+    const authHeader = request.headers.get("authorization") || "";
+    const provided = authHeader.replace(/^(Apikey|Bearer)\s+/i, "").trim();
+    if (!provided || provided !== expectedKey) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
 
     const content =
       body.content ||
@@ -30,28 +47,31 @@ export async function POST(request: Request) {
       body.orderId ||
       body.referenceCode ||
       "";
-    // Match "SME2026-992882", "SME2026 992882", "SME2026992882", or 6 digits
-    const match = content.match(/SME2026[_\-\s]?(\d{6})/i) || content.match(/(\d{6})/);
+    // Chỉ khớp đúng mã đăng ký SME2026-xxxxxx (bỏ fallback 6 số mơ hồ)
+    const match = content.match(/SME2026[_\-\s]?(\d{6})/i);
 
     if (!match) {
       return NextResponse.json({
         success: true,
-        message: "Không tìm thấy mã đăng ký trong nội dung chuyển khoản",
+        message: "Không tìm thấy mã đăng ký hợp lệ trong nội dung chuyển khoản",
       });
     }
 
-    const digits = match[1] || match[0];
+    const digits = match[1];
     const registrationId = `SME2026-${digits}`;
     const amount = body.transferAmount || 0;
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    // Ưu tiên service role để cập nhật trạng thái bỏ qua RLS (nếu có)
+    const supabaseKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      // Cập nhật tất cả bản ghi khớp mã đăng ký hoặc dãy số 6 chữ số
-      let { data: records } = await supabase
+      // Chỉ cập nhật bản ghi khớp CHÍNH XÁC mã đăng ký (không auto-duyệt đơn khác)
+      const { data: records } = await supabase
         .from("registrations")
         .select("*")
         .or(`notes.ilike.%${registrationId}%,notes.ilike.%${digits}%`);
@@ -64,21 +84,11 @@ export async function POST(request: Request) {
             .eq("id", record.id);
         }
       } else {
-        // Fallback: Nếu không tìm thấy theo mã, tìm bản ghi pending mới nhất
-        const { data: latestPending } = await supabase
-          .from("registrations")
-          .select("*")
-          .eq("status", "pending")
-          .order("created_at", { ascending: false })
-          .limit(1);
-
-        if (latestPending && latestPending.length > 0) {
-          records = latestPending;
-          await supabase
-            .from("registrations")
-            .update({ status: "completed" })
-            .eq("id", latestPending[0].id);
-        }
+        // Không khớp mã → KHÔNG tự duyệt đơn nào, để BTC xử lý thủ công
+        return NextResponse.json({
+          success: true,
+          message: `Không có đơn khớp mã ${registrationId}. Cần duyệt thủ công.`,
+        });
       }
 
       // Gửi Email xác nhận tự động cho khách hàng qua Apps Script
@@ -105,13 +115,13 @@ export async function POST(request: Request) {
           const matchNote = (matchedUser.notes || "").match(/SME2026-[A-Z0-9]+/i);
           const regCode = matchNote ? matchNote[0].toUpperCase() : `SME2026-${matchedUser.id.slice(0, 6).toUpperCase()}`;
           const customSub = registrationContent.delegateEmailSubject;
-          const emailSubject = (customSub && customSub.includes("THANH TOÁN")) 
-            ? customSub 
+          const emailSubject = (customSub && customSub.includes("THANH TOÁN"))
+            ? customSub
             : `[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - ${regCode}`;
 
           const customText = registrationContent.delegateEmailBody;
-          const paymentBody = (customText && customText.includes("thanh toán")) 
-            ? customText 
+          const paymentBody = (customText && customText.includes("thanh toán"))
+            ? customText
             : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu ${matchedUser.full_name}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
           const posterUrl = registrationContent.delegatePosterUrl || "";
 
@@ -140,11 +150,11 @@ export async function POST(request: Request) {
             }),
           }).catch(() => {});
         }
-      } catch (mailErr) {
-        console.warn("Webhook Email dispatch error:", mailErr);
+      } catch {
+        console.warn("Webhook Email dispatch error");
       }
 
-      // Thông báo Telegram nếu được cấu hình
+      // Thông báo Telegram nếu được cấu hình (token chỉ lấy từ biến môi trường)
       try {
         const { data: configRow } = await supabase
           .from("site_sections")
@@ -153,7 +163,7 @@ export async function POST(request: Request) {
           .single();
 
         const cfg = configRow?.content || {};
-        const telegramToken = cfg.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+        const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
         const telegramChatId = cfg.telegramChatId || process.env.TELEGRAM_CHAT_ID;
         const telegramEnabled = cfg.telegramEnabled !== false;
 
@@ -180,8 +190,8 @@ export async function POST(request: Request) {
             }),
           }).catch(() => {});
         }
-      } catch (tgErr) {
-        console.warn("Webhook Telegram alert error:", tgErr);
+      } catch {
+        console.warn("Webhook Telegram alert error");
       }
     }
 
@@ -191,8 +201,8 @@ export async function POST(request: Request) {
       registrationId,
       amount,
     });
-  } catch (err: any) {
-    console.error("SePay Webhook Error:", err);
-    return NextResponse.json({ success: false, message: err?.message }, { status: 500 });
+  } catch {
+    console.error("SePay Webhook Error");
+    return NextResponse.json({ success: false, message: "Internal error" }, { status: 500 });
   }
 }

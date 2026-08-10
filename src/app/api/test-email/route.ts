@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/requireAdmin";
 
 export async function POST(request: Request) {
   try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json(
+        { success: false, message: "Không có quyền truy cập." },
+        { status: 401 }
+      );
+    }
+
     const { scriptUrl, testEmail } = await request.json();
 
     if (!scriptUrl) {

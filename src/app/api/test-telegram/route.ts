@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/requireAdmin";
 
 export function normalizeTelegramChatId(input: string): string {
   if (!input) return "";
@@ -28,6 +29,13 @@ export function normalizeTelegramThreadId(input: any): number | undefined {
 
 export async function POST(request: Request) {
   try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json(
+        { success: false, message: "Không có quyền truy cập." },
+        { status: 401 }
+      );
+    }
+
     const { botToken, chatId, threadId } = await request.json();
 
     if (!botToken || !chatId) {

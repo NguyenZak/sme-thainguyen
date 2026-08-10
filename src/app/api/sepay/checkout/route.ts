@@ -1,34 +1,25 @@
 import { NextResponse } from "next/server";
 import { SePayPgClient } from "sepay-pg-node";
-import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
   try {
+    // Gateway SePay TẠM THỜI TẮT. Bật lại bằng cách đặt SEPAY_GATEWAY_ENABLED=true
+    // cùng SEPAY_MERCHANT_ID / SEPAY_SECRET_KEY trong biến môi trường (không lưu
+    // secret trong CMS/DB nữa). Trong lúc tắt, dùng QR chuyển khoản VietQR.
+    if (process.env.SEPAY_GATEWAY_ENABLED !== "true") {
+      return NextResponse.json(
+        { success: false, message: "Cổng thanh toán SePay đang tắt. Vui lòng chuyển khoản qua mã QR." },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { registrationId, amount, description, returnUrl } = body;
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-    let merchantId = process.env.SEPAY_MERCHANT_ID || "";
-    let secretKey = process.env.SEPAY_SECRET_KEY || "";
-    let isSandbox = process.env.SEPAY_SANDBOX === "true";
-
-    if (supabaseUrl && supabaseKey) {
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      const { data: configRow } = await supabase
-        .from("site_sections")
-        .select("content")
-        .eq("id", "site_config")
-        .single();
-
-      if (configRow?.content) {
-        const cfg = configRow.content;
-        if (cfg.sepayMerchantId) merchantId = cfg.sepayMerchantId;
-        if (cfg.sepaySecretKey) secretKey = cfg.sepaySecretKey;
-        if (cfg.sepaySandbox !== undefined) isSandbox = cfg.sepaySandbox;
-      }
-    }
+    // Secret chỉ lấy từ biến môi trường — KHÔNG đọc từ config public-read
+    const merchantId = process.env.SEPAY_MERCHANT_ID || "";
+    const secretKey = process.env.SEPAY_SECRET_KEY || "";
+    const isSandbox = process.env.SEPAY_SANDBOX === "true";
 
     if (!merchantId || !secretKey) {
       return NextResponse.json(

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit, getClientIp } from "@/lib/rateLimit";
 
 function getFormCategory(ticketType: string): "delegate" | "sponsor" | "booth" {
   const t = (ticketType || "").toLowerCase();
@@ -36,9 +37,17 @@ function normalizeTelegramThreadId(input: any): number | undefined {
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
+    // Chống spam: tối đa 5 lượt đăng ký / phút / IP
+    const ip = getClientIp(request);
+    const rl = rateLimit(`register:${ip}`, 5, 60_000);
+    if (!rl.ok) {
+      return NextResponse.json(
+        { success: false, message: "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfter) } }
+      );
+    }
 
-    console.log("New Registration Received:", data);
+    const data = await request.json();
 
     const registrationId = data.registrationId || `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
 
@@ -105,7 +114,7 @@ export async function POST(request: Request) {
 
         if (configRow?.content) {
           const cfg = configRow.content;
-          if (cfg.telegramBotToken) telegramToken = cfg.telegramBotToken;
+          // Bot token chỉ lấy từ biến môi trường (không lưu trong config public-read)
           if (cfg.telegramChatId) telegramChatId = cfg.telegramChatId;
           if (cfg.telegramEnabled !== undefined) telegramEnabled = cfg.telegramEnabled;
 

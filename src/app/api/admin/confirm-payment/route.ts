@@ -2,9 +2,18 @@ import { NextResponse } from "next/server";
 import { createClient as createServerSupabaseClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { isAdminAuthenticated } from "@/lib/requireAdmin";
 
 export async function POST(request: Request) {
   try {
+    // Chỉ admin đã đăng nhập mới được duyệt thanh toán (route dùng service role, bỏ qua RLS)
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json(
+        { success: false, message: "Không có quyền truy cập. Vui lòng đăng nhập CMS." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { id, record: clientRecord } = body;
 
@@ -85,7 +94,7 @@ export async function POST(request: Request) {
           const cfg = sec.content || {};
           if (cfg.googleSheetScriptUrl) googleSheetUrl = cfg.googleSheetScriptUrl;
           if (cfg.googleSheetEnabled !== undefined) googleSheetEnabled = cfg.googleSheetEnabled;
-          if (cfg.telegramBotToken) telegramToken = cfg.telegramBotToken;
+          // Bot token chỉ lấy từ biến môi trường (không lưu trong config public-read)
           if (cfg.telegramChatId) telegramChatId = cfg.telegramChatId;
           if (cfg.telegramEnabled !== undefined) telegramEnabled = cfg.telegramEnabled;
         } else if (sec.id === "registration") {
@@ -164,13 +173,6 @@ export async function POST(request: Request) {
     // 5. Send Confirmation Email via Google Apps Script
     if (email && email.includes("@") && googleSheetEnabled && googleSheetUrl && googleSheetUrl !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
       try {
-        console.log("Dispatching payment confirmation email to Apps Script:", {
-          url: googleSheetUrl,
-          email,
-          fullName,
-          subject: emailSubject,
-        });
-
         const gsRes = await fetch(googleSheetUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -198,7 +200,6 @@ export async function POST(request: Request) {
         });
 
         const gsData = await gsRes.json().catch(() => ({}));
-        console.log("Apps Script Response for payment confirmation:", gsData);
 
         if (gsData.status === "success" || gsData.emailSuccess || gsData.emailStatus?.includes("thành công") || gsRes.ok) {
           emailSent = true;

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit, getClientIp } from "@/lib/rateLimit";
 
 // Utility to parse device from user agent
 function parseDeviceType(userAgent: string): "mobile" | "tablet" | "desktop" {
@@ -29,6 +30,13 @@ function parseTrafficSource(referrer: string): "direct" | "google" | "facebook" 
 
 export async function POST(req: NextRequest) {
   try {
+    // Chống spam tracking: tối đa 120 lượt / phút / IP (đủ cho điều hướng thật)
+    const ip = getClientIp(req);
+    const rl = rateLimit(`track:${ip}`, 120, 60_000);
+    if (!rl.ok) {
+      return NextResponse.json({ success: false }, { status: 429 });
+    }
+
     const body = await req.json().catch(() => ({}));
     const userAgent = req.headers.get("user-agent") || body.userAgent || "";
     const referrer = req.headers.get("referer") || body.referrer || "";

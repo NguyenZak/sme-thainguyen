@@ -235,32 +235,16 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
                   </label>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="text-[11px] text-amber-900 bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1">
+                  <div className="font-bold">⚠️ Cổng SePay Gateway đang TẠM TẮT.</div>
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Merchant ID
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Nhập Merchant ID..."
-                      value={config.sepayMerchantId || ""}
-                      onChange={(e) => setConfig({ ...config, sepayMerchantId: e.target.value })}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
-                    />
+                    Vì lý do bảo mật, Merchant ID và Secret Key <b>không còn nhập trong CMS</b> (tránh lộ khóa
+                    qua dữ liệu công khai). Khi cần bật lại, đặt trong biến môi trường hosting:
+                    <code className="block mt-1 font-mono">SEPAY_GATEWAY_ENABLED=true</code>
+                    <code className="block font-mono">SEPAY_MERCHANT_ID=...</code>
+                    <code className="block font-mono">SEPAY_SECRET_KEY=...</code>
                   </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Secret Key
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="Nhập Secret Key..."
-                      value={config.sepaySecretKey || ""}
-                      onChange={(e) => setConfig({ ...config, sepaySecretKey: e.target.value })}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
+                  <div>Hiện tại vui lòng dùng chế độ <b>QR chuyển khoản VietQR</b> ở trên.</div>
                 </div>
 
                 <div className="text-[11px] text-slate-700 bg-white p-3 rounded-xl border border-slate-200 space-y-1 font-mono">
