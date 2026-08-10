@@ -10,6 +10,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/admin";
+  const expired = searchParams.get("expired") === "1";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +32,10 @@ function LoginForm() {
       if (error) {
         setErrorMsg(error.message || "Tài khoản hoặc mật khẩu không chính xác.");
       } else {
+        // Đặt lại mốc phiên 3 ngày cho lần đăng nhập này
+        try {
+          localStorage.setItem("cms_login_at", String(Date.now()));
+        } catch {}
         router.push(redirectTo);
         router.refresh();
       }
@@ -51,6 +56,13 @@ function LoginForm() {
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">SME VIỆT NAM 2026</h1>
         <p className="text-xs uppercase tracking-widest text-slate-500 font-semibold mt-1">Cổng Quản Trị Hệ Thống CMS</p>
       </div>
+
+      {expired && !errorMsg && (
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-amber-800 text-sm">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>Phiên đăng nhập đã hết hạn (quá 3 ngày). Vui lòng đăng nhập lại.</div>
+        </div>
+      )}
 
       {errorMsg && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-red-700 text-sm">

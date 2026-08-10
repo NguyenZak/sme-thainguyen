@@ -20,6 +20,7 @@ import FaqEditor from "@/components/admin/FaqEditor";
 import FooterEditor from "@/components/admin/FooterEditor";
 import DashboardOverview from "@/components/admin/DashboardOverview";
 import RegistrationsManager, { RegistrationRecord } from "@/components/admin/RegistrationsManager";
+import SessionTimeout from "@/components/admin/SessionTimeout";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import {
@@ -229,6 +230,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
+      <SessionTimeout />
       <AdminHeader
         userEmail={userEmail}
         isCollapsed={sidebarCollapsed}
