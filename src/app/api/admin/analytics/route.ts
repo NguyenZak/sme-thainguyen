@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     yesterday.setDate(now.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-    // Seed dates for last 30 days
+    // Seed empty dates for last 30 days
     for (let i = 29; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(now.getDate() - i);
@@ -32,20 +32,17 @@ export async function GET(req: NextRequest) {
       dailyTrendMap[dateKey] = 0;
     }
 
-    let hasRealData = false;
-
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      // Attempt querying page_views table
+      // 1. Try querying page_views table in Supabase
       const { data: pageViews, error } = await supabase
         .from("page_views")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(1000);
+        .limit(2000);
 
       if (!error && pageViews && pageViews.length > 0) {
-        hasRealData = true;
         totalVisits = pageViews.length;
         const sessionSet = new Set<string>();
 
@@ -83,7 +80,7 @@ export async function GET(req: NextRequest) {
           timestamp: r.created_at,
         }));
       } else {
-        // Try fallback table site_sections id 'traffic_analytics_data'
+        // 2. Fallback querying site_sections table id 'traffic_analytics_data'
         const { data: sec } = await supabase
           .from("site_sections")
           .select("content")
@@ -92,66 +89,44 @@ export async function GET(req: NextRequest) {
 
         if (sec?.content) {
           const content = sec.content as any;
-          if (content.totalVisits) {
-            hasRealData = true;
-            totalVisits = content.totalVisits || 0;
-            todayVisits = content.todayVisits || 0;
-            yesterdayVisits = Math.round(todayVisits * 0.85);
-            uniqueSessions = Math.round(totalVisits * 0.72);
+          totalVisits = content.totalVisits || 0;
+          todayVisits = content.todayVisits || 0;
+          yesterdayVisits = content.history?.[yesterdayStr] || 0;
 
-            Object.assign(deviceCounts, content.devices || {});
-            Object.assign(sourceCounts, content.sources || {});
-            Object.assign(topPagesMap, content.topPages || {});
-            Object.assign(dailyTrendMap, content.history || {});
-            recentVisits = content.recentVisits || [];
+          if (content.sessions) {
+            uniqueSessions = Object.keys(content.sessions).length;
+          } else if (totalVisits > 0) {
+            uniqueSessions = totalVisits;
+          }
+
+          if (content.devices) Object.assign(deviceCounts, content.devices);
+          if (content.sources) Object.assign(sourceCounts, content.sources);
+          if (content.topPages) Object.assign(topPagesMap, content.topPages);
+
+          if (content.history) {
+            Object.keys(dailyTrendMap).forEach((dateKey) => {
+              if (content.history[dateKey] !== undefined) {
+                dailyTrendMap[dateKey] = content.history[dateKey];
+              }
+            });
+          }
+
+          if (Array.isArray(content.recentVisits)) {
+            recentVisits = content.recentVisits.slice(0, 15);
           }
         }
       }
     }
 
-    // Baseline dataset generator if project has just launched
-    if (!hasRealData || totalVisits === 0) {
-      totalVisits = 1284;
-      todayVisits = 142;
-      yesterdayVisits = 118;
-      uniqueSessions = 940;
-
-      deviceCounts.mobile = 785;
-      deviceCounts.desktop = 432;
-      deviceCounts.tablet = 67;
-
-      sourceCounts.direct = 450;
-      sourceCounts.google = 380;
-      sourceCounts.facebook = 290;
-      sourceCounts.zalo = 120;
-      sourceCounts.referral = 44;
-
-      topPagesMap["Trang chủ"] = 620;
-      topPagesMap["Đăng ký tham gia"] = 280;
-      topPagesMap["Sơ đồ gian hàng"] = 190;
-      topPagesMap["Danh sách diễn giả"] = 114;
-
-      // Realistic curve for past 30 days
-      const keys = Object.keys(dailyTrendMap);
-      keys.forEach((k, idx) => {
-        const base = Math.floor(25 + Math.sin(idx / 3) * 15 + (idx % 7) * 4);
-        dailyTrendMap[k] = idx === keys.length - 1 ? todayVisits : base;
-      });
-
-      recentVisits = [
-        { id: "1", path: "Trang chủ", deviceType: "mobile", source: "zalo", timestamp: new Date(Date.now() - 2 * 60000).toISOString() },
-        { id: "2", path: "Đăng ký tham gia", deviceType: "desktop", source: "google", timestamp: new Date(Date.now() - 5 * 60000).toISOString() },
-        { id: "3", path: "Sơ đồ gian hàng", deviceType: "mobile", source: "facebook", timestamp: new Date(Date.now() - 12 * 60000).toISOString() },
-        { id: "4", path: "Trang chủ", deviceType: "desktop", source: "direct", timestamp: new Date(Date.now() - 18 * 60000).toISOString() },
-        { id: "5", path: "Danh sách diễn giả", deviceType: "mobile", source: "google", timestamp: new Date(Date.now() - 25 * 60000).toISOString() },
-      ];
+    // Calculate growth percentage vs yesterday based purely on actual numbers
+    let growthVsYesterday = 0;
+    if (yesterdayVisits > 0) {
+      growthVsYesterday = Math.round(((todayVisits - yesterdayVisits) / yesterdayVisits) * 100);
+    } else if (todayVisits > 0) {
+      growthVsYesterday = 100;
     }
 
-    const growthVsYesterday = yesterdayVisits > 0
-      ? Math.round(((todayVisits - yesterdayVisits) / yesterdayVisits) * 100)
-      : 15;
-
-    // Convert daily trend to array
+    // Convert daily trend to sorted array
     const dailyTrend = Object.entries(dailyTrendMap).map(([date, count]) => ({
       date,
       count,

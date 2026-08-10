@@ -98,20 +98,21 @@ export default function TrafficAnalyticsSection() {
   const maxVal = Math.max(...filteredTrend.map((d) => d.count), 10);
 
   // Total devices calc
-  const totalDeviceVisits = (devices.mobile || 0) + (devices.desktop || 0) + (devices.tablet || 0) || 1;
-  const mobilePercent = Math.round(((devices.mobile || 0) / totalDeviceVisits) * 100);
-  const desktopPercent = Math.round(((devices.desktop || 0) / totalDeviceVisits) * 100);
-  const tabletPercent = Math.round(((devices.tablet || 0) / totalDeviceVisits) * 100);
+  const totalDeviceVisits = (devices.mobile || 0) + (devices.desktop || 0) + (devices.tablet || 0);
+  const mobilePercent = totalDeviceVisits > 0 ? Math.round(((devices.mobile || 0) / totalDeviceVisits) * 100) : 0;
+  const desktopPercent = totalDeviceVisits > 0 ? Math.round(((devices.desktop || 0) / totalDeviceVisits) * 100) : 0;
+  const tabletPercent = totalDeviceVisits > 0 ? Math.round(((devices.tablet || 0) / totalDeviceVisits) * 100) : 0;
 
   // Total sources calc
   const totalSourceVisits =
     (sources.direct || 0) +
-      (sources.google || 0) +
-      (sources.facebook || 0) +
-      (sources.zalo || 0) +
-      (sources.referral || 0) || 1;
+    (sources.google || 0) +
+    (sources.facebook || 0) +
+    (sources.zalo || 0) +
+    (sources.referral || 0);
 
-  const getSourcePercent = (val: number) => Math.round((val / totalSourceVisits) * 100);
+  const getSourcePercent = (val: number) =>
+    totalSourceVisits > 0 ? Math.round((val / totalSourceVisits) * 100) : 0;
 
   // Format date helper
   const formatDateLabel = (dateStr: string) => {
@@ -445,19 +446,25 @@ export default function TrafficAnalyticsSection() {
           </h3>
 
           <div className="space-y-2">
-            {topPages.map((tp, i) => (
-              <div key={tp.page} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0 text-xs">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-[10px] shrink-0">
-                    {i + 1}
-                  </span>
-                  <span className="font-medium text-slate-800 truncate">{tp.page}</span>
-                </div>
-                <span className="font-semibold text-slate-900 bg-slate-100 px-2 py-0.5 rounded text-[11px]">
-                  {tp.count} lượt
-                </span>
+            {topPages.length === 0 ? (
+              <div className="py-6 text-center text-xs text-slate-400">
+                Chưa có dữ liệu lượt xem trang. Dữ liệu thực sẽ xuất hiện khi người dùng truy cập.
               </div>
-            ))}
+            ) : (
+              topPages.map((tp, i) => (
+                <div key={tp.page} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-[10px] shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="font-medium text-slate-800 truncate">{tp.page}</span>
+                  </div>
+                  <span className="font-semibold text-slate-900 bg-slate-100 px-2 py-0.5 rounded text-[11px]">
+                    {tp.count} lượt
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -473,29 +480,35 @@ export default function TrafficAnalyticsSection() {
           </div>
 
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-            {recentVisits.map((visit) => (
-              <div
-                key={visit.id || Math.random().toString()}
-                className="flex items-center justify-between py-2 px-2.5 bg-slate-50/60 rounded-lg text-xs hover:bg-slate-100/60 transition-colors"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  {visit.deviceType === "mobile" ? (
-                    <Smartphone className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                  ) : visit.deviceType === "tablet" ? (
-                    <Tablet className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                  ) : (
-                    <Monitor className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                  )}
-                  <span className="font-medium text-slate-800 truncate">{visit.path || "/"}</span>
-                  <span className="text-[10px] text-slate-400 capitalize px-1.5 py-0.2 bg-white rounded border border-slate-200 shrink-0">
-                    {visit.source || "direct"}
+            {recentVisits.length === 0 ? (
+              <div className="py-6 text-center text-xs text-slate-400">
+                Chưa có nhật ký truy cập thực tế.
+              </div>
+            ) : (
+              recentVisits.map((visit) => (
+                <div
+                  key={visit.id || Math.random().toString()}
+                  className="flex items-center justify-between py-2 px-2.5 bg-slate-50/60 rounded-lg text-xs hover:bg-slate-100/60 transition-colors"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    {visit.deviceType === "mobile" ? (
+                      <Smartphone className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                    ) : visit.deviceType === "tablet" ? (
+                      <Tablet className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                    ) : (
+                      <Monitor className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                    )}
+                    <span className="font-medium text-slate-800 truncate">{visit.path || "/"}</span>
+                    <span className="text-[10px] text-slate-400 capitalize px-1.5 py-0.2 bg-white rounded border border-slate-200 shrink-0">
+                      {visit.source || "direct"}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 shrink-0 font-normal">
+                    {formatTimeAgo(visit.timestamp)}
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-400 shrink-0 font-normal">
-                  {formatTimeAgo(visit.timestamp)}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

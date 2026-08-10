@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
           devices: { mobile: 0, desktop: 0, tablet: 0 },
           sources: { direct: 0, google: 0, facebook: 0, zalo: 0, referral: 0 },
           topPages: {},
+          sessions: {},
           recentVisits: [],
         };
 
@@ -88,11 +89,18 @@ export async function POST(req: NextRequest) {
         currentData.todayVisits = (currentData.todayVisits || 0) + 1;
         currentData.history[todayStr] = (currentData.history[todayStr] || 0) + 1;
 
+        if (!currentData.devices) currentData.devices = { mobile: 0, desktop: 0, tablet: 0 };
         currentData.devices[deviceType] = (currentData.devices[deviceType] || 0) + 1;
+
+        if (!currentData.sources) currentData.sources = { direct: 0, google: 0, facebook: 0, zalo: 0, referral: 0 };
         currentData.sources[source] = (currentData.sources[source] || 0) + 1;
 
+        if (!currentData.topPages) currentData.topPages = {};
         const pageKey = path === "/" ? "Trang chủ" : path;
         currentData.topPages[pageKey] = (currentData.topPages[pageKey] || 0) + 1;
+
+        if (!currentData.sessions) currentData.sessions = {};
+        currentData.sessions[sessionId] = true;
 
         const newVisitRecord = {
           id: Math.random().toString(36).substring(2, 9),
