@@ -706,10 +706,10 @@ export default function RegistrationForm({
                     </div>
                   </div>
 
-                  {/* 2-Column Layout: Left = Ticket Details, Right = Dedicated QR Code Payment / Check-in */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+                  {/* Conditional Layout: 2-Column for Delegate (VietQR/Ticket), Single Column for Sponsor & Booth */}
+                  <div className={`grid grid-cols-1 ${tab === "delegate" ? "md:grid-cols-2" : ""} gap-5 items-stretch`}>
                     {/* Left Column: Electronic Ticket Card */}
-                    <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg flex flex-col justify-between`}>
+                    <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg flex flex-col justify-between w-full`}>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between border-b border-white/20 pb-3">
                           <div>
@@ -751,74 +751,92 @@ export default function RegistrationForm({
                         </div>
                       </div>
 
-                      {/* Networking Needs / Notes if entered */}
-                      {(successModal.data?.networkingNeeds || successModal.data?.notes) && (
-                        <div className="pt-2 border-t border-white/20 text-xs mt-auto">
-                          <span className="text-white/70 block text-[10px] uppercase mb-0.5">Nhu cầu / Ghi chú</span>
-                          <p className="text-white/90 text-[11px] italic bg-black/20 p-2 rounded-lg leading-relaxed">
-                            {successModal.data?.networkingNeeds || successModal.data?.notes}
+                      {/* Info Notice for Sponsor & Booth */}
+                      {tab !== "delegate" ? (
+                        <div className="pt-3 border-t border-white/20 text-xs space-y-1.5 bg-black/20 p-3 rounded-xl mt-auto">
+                          <span className="text-amber-300 font-extrabold uppercase text-[11px] block flex items-center gap-1">
+                            ℹ️ THÔNG BÁO TỪ BAN TỔ CHỨC:
+                          </span>
+                          <p className="text-white/90 text-xs leading-relaxed">
+                            Cảm ơn Quý đơn vị đã đăng ký! Bộ phận Thư ký Ban Tổ Chức sẽ chủ động liên hệ trực tiếp qua số điện thoại <b>{successModal.data?.phone}</b> trong vòng 24 giờ làm việc để trao đổi thủ tục & hợp đồng chính thức.
                           </p>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Right Column: QR Code Payment / Check-in Card */}
-                    <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
-                      {isDelegateSepay && !isCompleted ? (() => {
-                        const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
-                        const amountFormatted = amountVal.toLocaleString("vi-VN");
-                        const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
-
-                        return (
-                          <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
-                            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
-                              <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                                💳 Cổng Thanh Toán VietQR SePay
-                              </span>
-                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
-                                ⏳ Chờ chuyển khoản
-                              </span>
-                            </div>
-
-                            <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
-                              <img
-                                src={qrCodeUrl}
-                                alt="VietQR SePay Payment"
-                                className="w-48 h-auto object-contain mx-auto"
-                              />
-                            </div>
-
-                            <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
-                              <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
-                              <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
-                              <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
-                              <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
-                              <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
-                            </div>
-
-                            <p className="text-[10px] text-slate-400 italic">
-                              ⚡ Đơn hàng đang ở trạng thái treo. Khi chuyển khoản xong, SePay sẽ tự động duyệt ngay 24/7!
+                      ) : (
+                        (successModal.data?.networkingNeeds || successModal.data?.notes) ? (
+                          <div className="pt-2 border-t border-white/20 text-xs mt-auto">
+                            <span className="text-white/70 block text-[10px] uppercase mb-0.5">Nhu cầu / Ghi chú</span>
+                            <p className="text-white/90 text-[11px] italic bg-black/20 p-2 rounded-lg leading-relaxed">
+                              {successModal.data?.networkingNeeds || successModal.data?.notes}
                             </p>
                           </div>
-                        );
-                      })() : (
-                        /* Verified Check-in QR Right Column */
-                        <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
-                          <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
-                            <QrCode className="w-20 h-20 text-slate-900" />
-                          </div>
-                          <div className="space-y-1">
-                            <span className="text-xs font-bold text-white uppercase tracking-wider block">QR Code Check-in Sự kiện</span>
-                            <span className="text-xs font-bold text-emerald-400 block bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
-                              Trạng thái: Đã Xác Nhận Chính Thức
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-400 italic max-w-xs">
-                            🎉 Giao dịch đã hoàn tất! Vui lòng lưu thông tin hoặc xuất thẻ điện tử để trình diện khi tham dự sự kiện.
-                          </p>
-                        </div>
+                        ) : null
                       )}
                     </div>
+
+                    {/* Right Column: Only rendered for Delegate Form */}
+                    {tab === "delegate" && (
+                      <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
+                        {isDelegateSepay && !isCompleted ? (() => {
+                          const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+                          const amountFormatted = amountVal.toLocaleString("vi-VN");
+                          const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
+
+                          return (
+                            <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
+                              <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
+                                <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                                  💳 Cổng Thanh Toán VietQR SePay
+                                </span>
+                                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
+                                  ⏳ Chờ chuyển khoản
+                                </span>
+                              </div>
+
+                              <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
+                                <img
+                                  src={qrCodeUrl}
+                                  alt="VietQR SePay Payment"
+                                  className="w-48 h-auto object-contain mx-auto"
+                                />
+                              </div>
+
+                              <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
+                                <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
+                                <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
+                              </div>
+
+                              <div className="w-full bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-xl text-[11px] text-emerald-300 font-medium text-center space-y-0.5 shadow-sm">
+                                <div className="font-bold flex items-center justify-center gap-1 text-emerald-300 text-xs">
+                                  <span>✉️ TỰ ĐỘNG GỬI EMAIL XÁC NHẬN</span>
+                                </div>
+                                <p className="text-[10px] text-emerald-200/90 leading-relaxed">
+                                  Sau khi thanh toán thành công, hệ thống sẽ tự động gửi Email xác nhận vé & mã QR check-in tới <b>{successModal.data?.email || "Email đăng ký"}</b>.
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })() : (
+                          /* Verified Check-in QR Right Column for Delegate */
+                          <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
+                            <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
+                              <QrCode className="w-20 h-20 text-slate-900" />
+                            </div>
+                            <div className="space-y-1">
+                              <span className="text-xs font-bold text-white uppercase tracking-wider block">QR Code Check-in Sự kiện</span>
+                              <span className="text-xs font-bold text-emerald-400 block bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
+                                Trạng thái: Đã Xác Nhận Chính Thức
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 italic max-w-xs">
+                              🎉 Giao dịch đã hoàn tất! Vui lòng lưu thông tin hoặc xuất thẻ điện tử để trình diện khi tham dự sự kiện.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {config.sepayMode === "gateway" && isDelegateSepay && !isCompleted && (

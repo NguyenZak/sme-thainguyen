@@ -58,6 +58,22 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string>("");
   const [registrationsList, setRegistrationsList] = useState<RegistrationRecord[]>([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("admin_sidebar_collapsed");
+    if (saved !== null) {
+      setSidebarCollapsed(saved === "true");
+    }
+  }, []);
+
+  const handleToggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("admin_sidebar_collapsed", String(next));
+      return next;
+    });
+  };
 
   type AdminData = {
     site_config: SiteConfig;
@@ -213,13 +229,19 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
-      <AdminHeader userEmail={userEmail} />
+      <AdminHeader
+        userEmail={userEmail}
+        isCollapsed={sidebarCollapsed}
+        onToggleSidebar={handleToggleSidebar}
+      />
 
       <div className="flex-1 flex flex-col md:flex-row min-w-0 relative">
         <AdminSidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           registrationsCount={registrationsCount}
+          isCollapsed={sidebarCollapsed}
+          onToggleSidebar={handleToggleSidebar}
         />
 
         <main className="flex-1 p-6 md:p-8 bg-slate-100 min-w-0">

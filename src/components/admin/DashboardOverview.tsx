@@ -121,7 +121,7 @@ export default function DashboardOverview({
   const recentRegistrations = registrations.slice(0, 5);
 
   return (
-    <div className="space-y-6 max-w-7xl pb-16 font-sans text-slate-900">
+    <div className="space-y-6 w-full pb-16 font-sans text-slate-900">
       {/* 1. Header (shadcn/ui Page Header style) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>

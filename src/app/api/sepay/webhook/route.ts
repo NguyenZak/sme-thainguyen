@@ -21,7 +21,15 @@ export async function POST(request: Request) {
     //   referenceCode: "FT24080812345"
     // }
 
-    const content = body.content || body.description || body.code || "";
+    const content =
+      body.content ||
+      body.description ||
+      body.code ||
+      body.order_invoice_number ||
+      body.order_id ||
+      body.orderId ||
+      body.referenceCode ||
+      "";
     // Match "SME2026-992882", "SME2026 992882", "SME2026992882", or 6 digits
     const match = content.match(/SME2026[_\-\s]?(\d{6})/i) || content.match(/(\d{6})/);
 
@@ -71,6 +79,69 @@ export async function POST(request: Request) {
             .update({ status: "completed" })
             .eq("id", latestPending[0].id);
         }
+      }
+
+      // Gửi Email xác nhận tự động cho khách hàng qua Apps Script
+      try {
+        const { data: sections } = await supabase.from("site_sections").select("id, content");
+        let googleSheetUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || process.env.GOOGLE_SCRIPT_URL || "";
+        let googleSheetEnabled = true;
+        let registrationContent: any = {};
+
+        if (sections && sections.length > 0) {
+          sections.forEach((sec) => {
+            if (sec.id === "site_config") {
+              const cfg = sec.content || {};
+              if (cfg.googleSheetScriptUrl) googleSheetUrl = cfg.googleSheetScriptUrl;
+              if (cfg.googleSheetEnabled !== undefined) googleSheetEnabled = cfg.googleSheetEnabled;
+            } else if (sec.id === "registration") {
+              registrationContent = sec.content || {};
+            }
+          });
+        }
+
+        const matchedUser = records?.[0];
+        if (matchedUser && matchedUser.email && matchedUser.email.includes("@") && googleSheetEnabled && googleSheetUrl) {
+          const matchNote = (matchedUser.notes || "").match(/SME2026-[A-Z0-9]+/i);
+          const regCode = matchNote ? matchNote[0].toUpperCase() : `SME2026-${matchedUser.id.slice(0, 6).toUpperCase()}`;
+          const customSub = registrationContent.delegateEmailSubject;
+          const emailSubject = (customSub && customSub.includes("THANH TOÁN")) 
+            ? customSub 
+            : `[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - ${regCode}`;
+
+          const customText = registrationContent.delegateEmailBody;
+          const paymentBody = (customText && customText.includes("thanh toán")) 
+            ? customText 
+            : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu ${matchedUser.full_name}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
+          const posterUrl = registrationContent.delegatePosterUrl || "";
+
+          await fetch(googleSheetUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fullName: matchedUser.full_name,
+              full_name: matchedUser.full_name,
+              email: matchedUser.email,
+              phone: matchedUser.phone,
+              company: matchedUser.company_name,
+              company_name: matchedUser.company_name,
+              position: matchedUser.position,
+              ticketType: matchedUser.ticket_type,
+              registrationType: matchedUser.ticket_type,
+              registrationId: regCode,
+              paymentStatus: "SUCCESS_PAID",
+              customSubject: emailSubject,
+              emailSubject: emailSubject,
+              customBody: paymentBody,
+              emailBody: paymentBody,
+              posterUrl,
+              emailPosterUrl: posterUrl,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch(() => {});
+        }
+      } catch (mailErr) {
+        console.warn("Webhook Email dispatch error:", mailErr);
       }
 
       // Thông báo Telegram nếu được cấu hình

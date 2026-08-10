@@ -68,10 +68,11 @@ export async function POST(request: Request) {
         const company = data.company || data.company_name || "N/A";
         const position = data.position || "N/A";
         const ticketType = data.registrationType || data.intentTab || "standard";
+        const initialStatus = "pending";
         const userNotes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : "");
         const notes = `[Mã ĐK: ${registrationId}] ${userNotes}`.trim();
 
-        await supabase.from("registrations").insert({
+        const { error: insertError } = await supabase.from("registrations").insert({
           full_name: fullName,
           phone,
           email,
@@ -79,8 +80,21 @@ export async function POST(request: Request) {
           position,
           ticket_type: ticketType,
           notes,
-          status: "pending",
+          status: initialStatus,
         });
+
+        if (insertError) {
+          console.error("Supabase insert error with status field, retrying without status:", insertError);
+          await supabase.from("registrations").insert({
+            full_name: fullName,
+            phone,
+            email,
+            company_name: company,
+            position,
+            ticket_type: ticketType,
+            notes,
+          });
+        }
 
         // Get CMS site_config settings if available
         const { data: configRow } = await supabase

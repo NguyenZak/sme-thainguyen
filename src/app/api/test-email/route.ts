@@ -19,10 +19,14 @@ export async function POST(request: Request) {
       company: "TZ Media / SME Việt Nam",
       position: "Giám Đốc",
       intentTab: "delegate",
-      registrationType: "Vé Đại biểu (Test Email)",
+      registrationType: "Vé Đại biểu (Test Payment Mail)",
+      paymentStatus: "SUCCESS_PAID",
       notes: "Email thử nghiệm hệ thống gửi tự động từ CMS Admin SME 2026",
-      emailSubject: "[TEST MAIL] KIỂM TRA HỆ THỐNG GỬI EMAIL TỰ ĐỘNG - SME 2026",
-      emailBody: "Chúc mừng! Hệ thống gửi Email xác nhận tự động qua Google Apps Script đã hoạt động hoàn hảo.",
+      subject: "[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - NGUYỄN ZAK",
+      emailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - NGUYỄN ZAK",
+      customSubject: "[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - NGUYỄN ZAK",
+      emailBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu Nguyễn Zak. Vé tham dự của Quý khách đã được kích hoạt thành công!",
+      customBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu Nguyễn Zak. Vé tham dự của Quý khách đã được kích hoạt thành công!",
       timestamp: new Date().toISOString(),
     };
 

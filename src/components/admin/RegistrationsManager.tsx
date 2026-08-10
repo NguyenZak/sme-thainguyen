@@ -13,6 +13,9 @@ import {
   Filter,
   CheckCircle2,
   Trash2,
+  CreditCard,
+  Send,
+  Mail,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
@@ -68,6 +71,7 @@ export default function RegistrationsManager() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<FormCategory>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -85,6 +89,50 @@ export default function RegistrationsManager() {
       console.error("Failed to fetch registrations", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const confirmPaymentManual = async (
+    id: string,
+    name: string,
+    category: "delegate" | "sponsor" | "booth" = "delegate",
+    skipConfirm = false
+  ) => {
+    const isDelegate = category === "delegate";
+    const promptMessage = isDelegate
+      ? `Xác nhận đã nhận tiền thanh toán về tài khoản công ty của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ THANH TOÁN và gửi Email xác nhận cho đại biểu.`
+      : `Xác nhận duyệt thông tin và gửi Email xác nhận cho đơn đăng ký của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ HOÀN TẤT và gửi Email phản hồi cho Quý đơn vị.`;
+
+    if (!skipConfirm && !confirm(promptMessage)) return;
+
+    const targetRecord = registrations.find((r) => r.id === id);
+
+    setProcessingId(id);
+    try {
+      const res = await fetch("/api/admin/confirm-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, record: targetRecord }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setRegistrations((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, status: "completed" } : item))
+        );
+        if (data.emailSent) {
+          toast.success(isDelegate ? "Thanh toán hoàn tất! 🟢" : "Đã duyệt đăng ký! 🟢", data.message);
+        } else {
+          toast.warning("Đã cập nhật trạng thái! ⚠️", data.message);
+        }
+      } else {
+        toast.error("Xác nhận thất bại!", data.message);
+      }
+    } catch (err) {
+      console.error("Failed to confirm payment", err);
+      toast.error("Lỗi hệ thống!", "Không thể gửi lệnh xác nhận.");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -132,8 +180,15 @@ export default function RegistrationsManager() {
 
   const updateStatus = async (
     id: string,
-    newStatus: "pending" | "confirmed" | "completed" | "cancelled"
+    newStatus: "pending" | "confirmed" | "completed" | "cancelled",
+    name?: string,
+    category: "delegate" | "sponsor" | "booth" = "delegate"
   ) => {
+    if (newStatus === "completed") {
+      await confirmPaymentManual(id, name || "khách hàng", category, true);
+      return;
+    }
+
     try {
       const supabase = createClient();
       const { error } = await supabase
@@ -147,10 +202,8 @@ export default function RegistrationsManager() {
         );
 
         const statusTitle =
-          newStatus === "completed"
-            ? "Đã đánh dấu xử lý xong! ✅"
-            : newStatus === "confirmed"
-            ? "Đã xác nhận lượt đăng ký! 🔵"
+          newStatus === "confirmed"
+            ? "Đã xác nhận / liên hệ lượt đăng ký! 🔵"
             : newStatus === "cancelled"
             ? "Đã chuyển sang trạng thái Hủy! 🔴"
             : "Đã chuyển sang trạng thái Chờ xử lý! 🟡";
@@ -272,7 +325,7 @@ export default function RegistrationsManager() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 w-full">
       {/* ── Top Bar ──────────────────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
@@ -444,8 +497,8 @@ export default function RegistrationsManager() {
                   <th className="px-4 py-3.5 whitespace-nowrap">Liên Hệ</th>
                   <th className="px-4 py-3.5 whitespace-nowrap">Chi Tiết Gói / Gian Hàng</th>
                   <th className="px-4 py-3.5 whitespace-nowrap">Ngày Đăng Ký</th>
-                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Trạng Thái Thanh Toán</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Thao Tác Fast</th>
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Trạng Thái Xử Lý</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Thao Tác Nhanh</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -498,7 +551,7 @@ export default function RegistrationsManager() {
                       {/* Ticket / Booth / Sponsor detail */}
                       <td className="px-4 py-3.5 font-semibold text-slate-700 whitespace-nowrap">
                         <span
-                          className="px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 text-[11px] inline-block max-w-[200px] truncate"
+                          className="px-2 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 text-[11px] inline-block max-w-[220px] truncate"
                           title={r.ticket_type}
                         >
                           {r.ticket_type === "standard" ? "Vé Tiêu Chuẩn" : r.ticket_type}
@@ -514,7 +567,7 @@ export default function RegistrationsManager() {
                       <td className="px-4 py-3.5 text-center whitespace-nowrap">
                         <select
                           value={r.status}
-                          onChange={(e) => updateStatus(r.id, e.target.value as any)}
+                          onChange={(e) => updateStatus(r.id, e.target.value as any, r.full_name, category)}
                           className={`text-[11px] font-extrabold rounded-lg px-2.5 py-1 border focus:outline-none cursor-pointer transition-all ${
                             r.status === "completed"
                               ? "bg-emerald-100 text-emerald-900 border-emerald-400"
@@ -525,10 +578,21 @@ export default function RegistrationsManager() {
                               : "bg-amber-100 text-amber-900 border-amber-400"
                           }`}
                         >
-                          <option value="pending">⏳ TREO - Chờ thanh toán</option>
-                          <option value="completed">🟢 ĐÃ THANH TOÁN (Thành công)</option>
-                          <option value="confirmed">🔵 Đã xác nhận</option>
-                          <option value="cancelled">🔴 Đã hủy / Thất bại</option>
+                          {category === "delegate" ? (
+                            <>
+                              <option value="pending">⏳ TREO - Chờ thanh toán</option>
+                              <option value="completed">🟢 ĐÃ THANH TOÁN (Thành công)</option>
+                              <option value="confirmed">🔵 Đã xác nhận</option>
+                              <option value="cancelled">🔴 Đã hủy / Thất bại</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="pending">⏳ Chờ liên hệ tư vấn</option>
+                              <option value="confirmed">🔵 Đã liên hệ / Trao đổi</option>
+                              <option value="completed">🟢 Đã chốt hợp đồng / Hoàn tất</option>
+                              <option value="cancelled">🔴 Đã hủy / Từ chối</option>
+                            </>
+                          )}
                         </select>
                       </td>
 
@@ -538,22 +602,43 @@ export default function RegistrationsManager() {
                           {r.status !== "completed" ? (
                             <button
                               type="button"
-                              onClick={() => updateStatus(r.id, "completed")}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm"
-                              title="Đánh dấu đã liên hệ & xử lý xong dữ liệu"
+                              disabled={processingId === r.id}
+                              onClick={() => confirmPaymentManual(r.id, r.full_name, category)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+                              title={
+                                category === "delegate"
+                                  ? "Xác nhận đã nhận tiền về tài khoản công ty & Gửi Email xác nhận cho đại biểu"
+                                  : "Xác nhận duyệt thông tin & Gửi Email phản hồi cho Quý đơn vị"
+                              }
                             >
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              <span>Xong</span>
+                              {processingId === r.id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : category === "delegate" ? (
+                                <CreditCard className="w-3.5 h-3.5" />
+                              ) : (
+                                <Send className="w-3.5 h-3.5" />
+                              )}
+                              <span>
+                                {category === "delegate"
+                                  ? "Xác Nhận Tiền Về (Gửi Mail)"
+                                  : "Duyệt & Gửi Mail"}
+                              </span>
                             </button>
                           ) : (
-                            <button
-                              type="button"
-                              onClick={() => updateStatus(r.id, "pending")}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-lg text-[11px] font-semibold transition-all"
-                              title="Mở lại trạng thái chờ xử lý"
-                            >
-                              Mở lại
-                            </button>
+                            <div className="flex items-center gap-1">
+                              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2 py-1 rounded-lg">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />{" "}
+                                {category === "delegate" ? "Đã Thanh Toán" : "Đã Hoàn Tất"}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => updateStatus(r.id, "pending")}
+                                className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-lg text-[11px] font-semibold transition-all cursor-pointer"
+                                title="Mở lại trạng thái chờ xử lý"
+                              >
+                                Mở lại
+                              </button>
+                            </div>
                           )}
 
                           <button

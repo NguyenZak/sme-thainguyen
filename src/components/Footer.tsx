@@ -79,10 +79,13 @@ export default function Footer({ content }: { content?: FooterContent }) {
                         <a
                           key={i}
                           href={`tel:${h.phone.replace(/[\s.]/g, "")}`}
-                          className="flex items-center gap-1.5 group hover:text-[#22C55E] transition-colors"
+                          className="flex items-center gap-1.5 group hover:text-[#22C55E] transition-colors flex-wrap"
                         >
-                          <span className="text-emerald-400 text-[11px] font-semibold">{h.title}:</span>
+                          <span className="text-emerald-400 text-[11px] font-semibold">{h.title} :</span>
                           <span className="font-bold text-white group-hover:text-[#22C55E] transition-colors">{h.phone}</span>
+                          {h.contactName && (
+                            <span className="text-slate-300 text-xs font-semibold">({h.contactName})</span>
+                          )}
                         </a>
                       ))}
                     </div>

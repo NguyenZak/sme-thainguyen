@@ -112,12 +112,20 @@ export interface RegistrationContent {
   delegateEmailSubject?: string;
   delegateEmailBody?: string;
   delegatePosterUrl?: string;
+  delegateEmailTypeName?: string;
   sponsorEmailSubject?: string;
   sponsorEmailBody?: string;
   sponsorPosterUrl?: string;
+  sponsorEmailTypeName?: string;
   boothEmailSubject?: string;
   boothEmailBody?: string;
   boothPosterUrl?: string;
+  boothEmailTypeName?: string;
+  emailInfoTitle?: string;
+  emailEventTime?: string;
+  emailEventLocation?: string;
+  emailMapUrl?: string;
+  emailFooterNote?: string;
 }
 
 export interface StatisticItem {
@@ -304,8 +312,8 @@ export interface FooterContent {
   contactAddress: string;
   /** @deprecated Use contactHotlines instead */
   contactHotline: string;
-  /** Danh sách nhiều số điện thoại hotline, mỗi số có title riêng */
-  contactHotlines?: { title: string; phone: string }[];
+  /** Danh sách nhiều số điện thoại hotline, mỗi số có title và tên người phụ trách riêng */
+  contactHotlines?: { title: string; phone: string; contactName?: string }[];
   contactEmail: string;
   workingHours: string;
   mapEmbedUrl?: string;
@@ -447,14 +455,22 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
   mobileSponsorLabel: "Tài trợ",
   mobileBoothLabel: "Gian hàng",
   delegateEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ ĐẠI BIỂU THAM DỰ",
-  delegateEmailBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý đại biểu đã đăng ký tham dự chuỗi sự kiện trọng điểm xúc tiến thương mại 2026. Bộ phận Thư ký sẽ liên hệ hỗ trợ Quý đại biểu trong vòng 24 giờ làm việc.",
+  delegateEmailBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện.",
   delegatePosterUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
+  delegateEmailTypeName: "Đại biểu tham dự (1 vé)",
   sponsorEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỒNG HÀNH",
   sponsorEmailBody: "Trân trọng cảm ơn Quý Doanh nghiệp đã đăng ký đồng hành cùng Diễn đàn SME Việt Nam 2026. Ban Thư ký sẽ liên hệ trao đổi chi tiết về các quyền lợi tài trợ & hiện diện thương hiệu.",
   sponsorPosterUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
+  sponsorEmailTypeName: "Đăng ký Nhà tài trợ & Đối tác",
   boothEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM",
   boothEmailBody: "Cảm ơn Quý đơn vị đã đăng ký gian hàng triển lãm tại May Plaza Hotel Thái Nguyên. Bộ phận tư vấn sơ đồ gian hàng sẽ liên hệ xác nhận vị trí gian hàng của Quý đơn vị.",
   boothPosterUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
+  boothEmailTypeName: "Đăng ký Gian hàng Triển lãm",
+  emailInfoTitle: "📋 THÔNG TIN ĐĂNG KÝ CỦA QUÝ KHÁCH:",
+  emailEventTime: "18 - 20 tháng 09 năm 2026",
+  emailEventLocation: "May Plaza Hotel Thái Nguyên (Số 668 Phan Đình Phùng, TP. Thái Nguyên)",
+  emailMapUrl: "https://www.google.com/maps/place/May+Plaza+Hotel/@21.5782896,105.8327195,17z",
+  emailFooterNote: "Bộ phận Thư ký Ban Tổ Chức sẽ liên hệ với Quý khách trong vòng 24 giờ làm việc để hỗ trợ hoàn tất thủ tục.",
 };
 
 export const DEFAULT_STATISTICS: StatisticsContent = {
@@ -1071,7 +1087,9 @@ export const DEFAULT_FOOTER: FooterContent = {
   contactAddress: "May Plaza Hotel Thai Nguyen, 668 Phan Đình Phùng, TP. Thái Nguyên",
   contactHotline: "0988.123.456",
   contactHotlines: [
-    { title: "Ban Thư ký", phone: "0988.123.456" },
+    { title: "Hotline Tài trợ", phone: "0981.111.076", contactName: "Mrs. Trần Nữ Ngọc Anh" },
+    { title: "Hotline Gian hàng", phone: "0988.123.456 - 0981.762.866", contactName: "Mrs. Thùy Linh - Mrs. Mai Anh" },
+    { title: "Hotline Chương trình", phone: "038.906.1986", contactName: "Mrs. Nguyễn Bình" },
   ],
   contactEmail: "contact@smevietnam2026.vn",
   workingHours: "Thứ 2 - Thứ 7: 08:00 - 17:30",

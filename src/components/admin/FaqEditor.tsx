@@ -137,7 +137,7 @@ export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorPr
   );
 
   return (
-    <div className="space-y-6 max-w-6xl pb-24">
+    <div className="space-y-6 w-full pb-24">
       {/* Top Header Card */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">

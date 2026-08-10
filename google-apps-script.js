@@ -18,13 +18,23 @@
  * BƯỚC 6: Bấm "Triển khai" (Deploy) -> Cấp quyền gửi Mail nếu Google hỏi -> Copy Web App URL dán vào CMS Admin.
  */
 
+function doGet(e) {
+  return doPost(e);
+}
+
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var data = JSON.parse(e.postData.contents);
+    var contents = (e && e.postData && e.postData.contents) ? e.postData.contents : "{}";
+    var data = {};
+    try {
+      data = JSON.parse(contents);
+    } catch (parseErr) {
+      data = e.parameter || {};
+    }
 
     // Phân loại ghi vào đúng Tab (Sheet) theo 3 Tab trong file Google Sheet
-    var ticketType = (data.registrationType || data.intentTab || "").toLowerCase();
+    var ticketType = (data.registrationType || data.intentTab || data.ticketType || "").toLowerCase();
     var targetSheetName = "Đại biểu";
 
     if (ticketType.indexOf("booth") !== -1 || ticketType.indexOf("gian hàng") !== -1 || ticketType.indexOf("gian") !== -1) {
@@ -63,11 +73,11 @@ function doPost(e) {
     var email = data.email || "";
     var company = data.company || data.company_name || "N/A";
     var position = data.position || "N/A";
-    var detailInfo = data.registrationType || data.intentTab || "N/A";
+    var detailInfo = data.registrationType || data.intentTab || data.ticketType || "N/A";
     var notes = data.notes || data.networkingNeeds || "Không có";
-    var customSubject = data.emailSubject || "";
-    var customBody = data.emailBody || "";
-    var posterImgUrl = data.emailPosterUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80";
+    var customSubject = data.subject || data.emailSubject || data.customSubject || "";
+    var customBody = data.emailBody || data.customBody || "";
+    var posterImgUrl = data.posterUrl || data.emailPosterUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80";
 
     var emailStatusText = "⚠️ Khách không nhập Email";
     var emailSentSuccess = false;
@@ -75,8 +85,15 @@ function doPost(e) {
     // 1. Thử gửi Email Xác Nhận Tự Động tới Email Khách Hàng
     if (email && email.indexOf("@") !== -1) {
       try {
-        var regId = "SME2026-" + Math.floor(100000 + Math.random() * 900000);
-        var subject = customSubject || ("[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + fullName.toUpperCase());
+        var regId = data.registrationId || ("SME2026-" + Math.floor(100000 + Math.random() * 900000));
+        var isPaid = (data.paymentStatus === "SUCCESS_PAID") || (customSubject && customSubject.indexOf("THANH TOÁN") !== -1);
+        var defaultSubject = isPaid 
+          ? ("[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - " + fullName.toUpperCase())
+          : ("[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + fullName.toUpperCase());
+        
+        var subject = isPaid 
+          ? (customSubject && customSubject.indexOf("THANH TOÁN") !== -1 ? customSubject : defaultSubject)
+          : (customSubject || defaultSubject);
 
         if (customBody) {
           customBody = customBody.replace(/\{\{fullName\}\}/g, fullName)
@@ -86,7 +103,18 @@ function doPost(e) {
                                  .replace(/\{\{email\}\}/g, email);
         }
 
-        var introMessage = customBody || "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
+        var defaultIntro = isPaid
+          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu. Vé tham dự của Quý khách đã được kích hoạt thành công!"
+          : "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
+        var introMessage = customBody || defaultIntro;
+
+        var boxHeaderTitle = isPaid
+          ? ("🟢 XÁC NHẬN THANH TOÁN THÀNH CÔNG (MÃ VÉ: " + regId + ")")
+          : ("📋 THÔNG TIN XÁC NHẬN ĐĂNG KÝ (MÃ VÉ: " + regId + ")");
+
+        var statusBadgeHtml = isPaid
+          ? '<span style="color: #16a34a; font-weight: 800;">🟢 ĐÃ THANH TOÁN THÀNH CÔNG (ĐÃ KÍCH HOẠT VÉ)</span>'
+          : '<span style="color: #d97706; font-weight: 800;">⏳ CHỜ THANH TOÁN / XỬ LÝ</span>';
 
         var htmlTemplate = 
           '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">' +
@@ -103,9 +131,9 @@ function doPost(e) {
               '<p style="margin-top: 0; font-size: 15px;">Kính gửi Quý khách <b>' + fullName + '</b>,</p>' +
               '<div style="margin-bottom: 20px; line-height: 1.6;">' + introMessage + '</div>' +
 
-              '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #22c55e; border-radius: 12px; padding: 20px; margin: 20px 0;">' +
+              '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid ' + (isPaid ? '#22c55e' : '#eab308') + '; border-radius: 12px; padding: 20px; margin: 20px 0;">' +
                 '<div style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 14px;">' +
-                  '<h3 style="margin: 0; font-size: 14px; color: #0D3B2E; text-transform: uppercase; font-weight: 800;">📋 THÔNG TIN XÁC NHẬN ĐĂNG KÝ (MÃ VÉ: ' + regId + ')</h3>' +
+                  '<h3 style="margin: 0; font-size: 14px; color: #0D3B2E; text-transform: uppercase; font-weight: 800;">' + boxHeaderTitle + '</h3>' +
                 '</div>' +
 
                 '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
@@ -115,6 +143,7 @@ function doPost(e) {
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Doanh nghiệp / Đơn vị:</td><td style="padding: 6px 0; font-weight: 800; color: #0f172a;">' + company + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Chức vụ:</td><td style="padding: 6px 0; font-weight: 800; color: #0f172a;">' + position + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Nội dung đăng ký:</td><td style="padding: 6px 0; font-weight: 800; color: #d97706;">' + detailInfo + '</td></tr>' +
+                  '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Trạng thái:</td><td style="padding: 6px 0;">' + statusBadgeHtml + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Nhu cầu B2B / Ghi chú:</td><td style="padding: 6px 0; font-style: italic; color: #475569;">' + notes + '</td></tr>' +
                 '</table>' +
               '</div>' +

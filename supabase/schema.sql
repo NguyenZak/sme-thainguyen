@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS public.registrations (
   position TEXT NOT NULL,
   ticket_type TEXT NOT NULL DEFAULT 'standard',
   notes TEXT,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
