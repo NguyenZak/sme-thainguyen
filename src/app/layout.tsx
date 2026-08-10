@@ -110,6 +110,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { ToastContainer } from "@/components/ui/Toast";
 
+import AnalyticsTracker from "@/components/AnalyticsTracker";
+
 export default async function RootLayout({
   children,
 }: {
@@ -232,6 +234,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#F8FAFC] text-[#1A1A1A] antialiased selection:bg-[#0B5ED7] selection:text-white">
+        <AnalyticsTracker />
         {/* Google Analytics 4 */}
         {siteConfig.gaMeasurementId && (
           <>

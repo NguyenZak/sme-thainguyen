@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { AdminTab } from "./AdminSidebar";
 import { RegistrationRecord, getFormCategory } from "./RegistrationsManager";
+import TrafficAnalyticsSection from "./TrafficAnalyticsSection";
 import {
   SiteConfig,
   NavbarContent,
@@ -241,6 +242,9 @@ export default function DashboardOverview({
           </div>
         </div>
       </div>
+
+      {/* 2.5 Website Access Statistics (Thống kê lượt truy cập) */}
+      <TrafficAnalyticsSection />
 
       {/* 3. Section Overview & Analytics (shadcn/ui Layout) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
