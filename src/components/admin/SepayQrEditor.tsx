@@ -271,6 +271,28 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
               </div>
             )}
 
+            {/* Ticket Price Sync Field */}
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-2">
+              <label className="block text-xs font-extrabold text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
+                <Zap className="w-4 h-4 text-amber-600" /> Giá Vé Tự Động Áp Dụng Cho Mã VietQR (VNĐ)
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  placeholder="1450000"
+                  value={config.eventPriceVND || ""}
+                  onChange={(e) => setConfig({ ...config, eventPriceVND: Number(e.target.value) })}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-mono font-extrabold text-slate-900 focus:outline-none focus:border-amber-500"
+                />
+                <div className="shrink-0 text-xs font-bold text-amber-900 bg-amber-100 px-3 py-2 rounded-xl border border-amber-300">
+                  {(Number(config.eventPriceVND || 1450000)).toLocaleString("vi-VN")} VNĐ / vé
+                </div>
+              </div>
+              <p className="text-[11px] text-amber-800/90">
+                ⚡ Số tiền này được tự động nhúng thẳng vào mã QR ngân hàng để khi đại biểu quét QR, ứng dụng Banking tự điền đúng 100% số tiền này.
+              </p>
+            </div>
+
             {/* Bank Info Fields */}
             <div className="space-y-4">
               <div>

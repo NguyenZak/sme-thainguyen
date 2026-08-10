@@ -70,7 +70,7 @@ export default function RegistrationForm({
 }) {
   const registration = content || DEFAULT_REGISTRATION;
   const config = siteConfig || DEFAULT_SITE_CONFIG;
-  const unitPrice = ticketFee?.priceVND || config.eventPriceVND || DEFAULT_TICKET_FEE.priceVND;
+  const unitPrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor" | "booth">("delegate");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{

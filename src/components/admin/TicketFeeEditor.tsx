@@ -41,11 +41,15 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
     setMsg(null);
 
     const res = await updateSectionAction("ticket_fee", fee);
+    if (res.success && fee.priceVND) {
+      // Also sync eventPriceVND to site_config for global price consistency
+      await updateSectionAction("site_config", { eventPriceVND: fee.priceVND });
+    }
     setSaving(false);
 
     if (res.success) {
       onSaveSuccess?.(fee);
-      setMsg({ type: "success", text: "Đã cập nhật giá vé & quyền lợi gói tham dự thành công!" });
+      setMsg({ type: "success", text: "Đã cập nhật giá vé & đồng bộ số tiền chuyển khoản QR thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
     }
