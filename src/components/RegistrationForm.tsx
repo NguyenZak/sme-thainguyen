@@ -961,10 +961,10 @@ export default function RegistrationForm({
               }
 
               return (
-                <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-2xl relative space-y-6 border border-slate-200 my-8">
+                <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-3xl w-full shadow-2xl relative space-y-5 sm:space-y-6 border border-slate-200 my-auto max-h-[90vh] overflow-y-auto">
                   <button
                     onClick={() => setSuccessModal({ open: false })}
-                    className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors z-10"
+                    className="absolute top-3 right-3 p-2 rounded-full bg-slate-100/90 text-slate-500 hover:text-slate-800 transition-colors z-20"
                   >
                     <X className="w-5 h-5" />
                   </button>
