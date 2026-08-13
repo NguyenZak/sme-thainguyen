@@ -114,7 +114,10 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
       .replace(/\{\{fullName\}\}/g, testUser.fullName)
       .replace(/\{\{company\}\}/g, testUser.company)
       .replace(/\{\{phone\}\}/g, testUser.phone)
-      .replace(/\{\{email\}\}/g, testUser.email);
+      .replace(/\{\{email\}\}/g, testUser.email)
+      .replace(/\{\{registrationId\}\}/g, "SME2026-144380")
+      .replace(/\{\{registrationType\}\}/g, "1 gói chính (02 ĐB) + Ăn trưa 20/09")
+      .replace(/\{\{totalCalculatedAmount\}\}/g, "1.650.000 VNĐ");
     return content;
   };
 
@@ -448,7 +451,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
                         </div>
 
                         {/* Quick Tag Pills */}
-                        <div className="flex items-center gap-1 text-[10px]">
+                        <div className="flex flex-wrap items-center gap-1 text-[10px]">
                           <span className="text-amber-800 font-bold hidden sm:inline">Chèn biến:</span>
                           <button
                             type="button"
@@ -470,6 +473,27 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
                             className="px-1.5 py-0.5 bg-amber-200 hover:bg-amber-300 rounded text-amber-950 font-bold"
                           >
                             + SĐT
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertTagToBody(bodyField, "<b>{{registrationId}}</b>")}
+                            className="px-1.5 py-0.5 bg-emerald-200 hover:bg-emerald-300 rounded text-emerald-950 font-bold"
+                          >
+                            + Mã ĐK
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertTagToBody(bodyField, "<b>{{registrationType}}</b>")}
+                            className="px-1.5 py-0.5 bg-emerald-200 hover:bg-emerald-300 rounded text-emerald-950 font-bold"
+                          >
+                            + Chi tiết gói
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertTagToBody(bodyField, "<b>{{totalCalculatedAmount}}</b>")}
+                            className="px-1.5 py-0.5 bg-amber-300 hover:bg-amber-400 rounded text-amber-950 font-bold"
+                          >
+                            + Tổng tiền
                           </button>
                         </div>
                       </div>
