@@ -842,9 +842,7 @@ function doPost(e) {
 
     var ticketType = (data.registrationType || data.intentTab || data.ticketType || "").toLowerCase();
     var targetSheetName = "Đăng ký tham gia";
-    if (ticketType.indexOf("booth") !== -1 || ticketType.indexOf("gian hàng") !== -1 || ticketType.indexOf("gian") !== -1) {
-      targetSheetName = "Gian hàng";
-    } else if (ticketType.indexOf("sponsor") !== -1 || ticketType.indexOf("tài trợ") !== -1) {
+    if (ticketType.indexOf("sponsor") !== -1 || ticketType.indexOf("tài trợ") !== -1) {
       targetSheetName = "Tài trợ";
     }
 
@@ -852,63 +850,74 @@ function doPost(e) {
     if (!sheet) { sheet = ss.insertSheet(targetSheetName); }
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(["Thời Gian Đăng Ký", "Họ và Tên", "Số Điện Thoại", "Email", "Tên Doanh Nghiệp / Đơn Vị", "Chức Vụ", "Chi Tiết Đăng Ký", "Ghi Chú / Nhu Cầu", "Trạng Thái Gửi Email"]);
-      sheet.getRange("A1:I1").setFontWeight("bold").setBackground("#1e293b").setFontColor("#ffffff");
+      sheet.getRange("A1:I1").setFontWeight("bold").setBackground("#0D3B2E").setFontColor("#ffffff");
     }
 
     var timestamp = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-    var fullName = data.fullName || data.full_name || "Quý khách";
+    var fullName = data.fullName || data.full_name || "Quý đại biểu";
     var phone = data.phone || "N/A";
     var email = data.email || "";
     var company = data.company || data.company_name || "N/A";
     var position = data.position || "N/A";
-    var detailInfo = data.registrationType || data.intentTab || data.ticketType || "N/A";
+    var detailInfo = data.registrationType || data.intentTab || data.ticketType || "Đăng ký tham gia";
     var notes = data.notes || data.networkingNeeds || "Không có";
+    var regId = data.registrationId || ("SME2026-" + Math.floor(100000 + Math.random() * 900000));
     var customSubject = data.subject || data.emailSubject || data.customSubject || "";
     var customBody = data.emailBody || data.customBody || "";
     var posterImgUrl = data.posterUrl || data.emailPosterUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80";
+    var paymentStatus = data.paymentStatus || "";
 
-    var emailStatusText = "⚠️ Khách không nhập Email";
+    var emailStatusText = "⚠️ Khách không có Email";
     var emailSentSuccess = false;
 
     if (email && email.indexOf("@") !== -1) {
       try {
-        var regId = data.registrationId || ("SME2026-" + Math.floor(100000 + Math.random() * 900000));
-        var isPaid = (data.paymentStatus === "SUCCESS_PAID") || (customSubject && customSubject.indexOf("THANH TOÁN") !== -1);
-        var defaultSubject = isPaid 
-          ? ("[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - " + fullName.toUpperCase())
-          : ("[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + fullName.toUpperCase());
-        
-        var subject = isPaid 
-          ? (customSubject && customSubject.indexOf("THANH TOÁN") !== -1 ? customSubject : defaultSubject)
-          : (customSubject || defaultSubject);
+        var isPaid = (paymentStatus === "SUCCESS_PAID") || (customSubject && customSubject.indexOf("THANH TOÁN") !== -1);
+        var isReminder = (paymentStatus === "PENDING_REMINDER_3MIN") || (customSubject && customSubject.indexOf("SẮP ĐĂNG KÝ") !== -1);
+
+        var subject = customSubject;
+        if (!subject) {
+          if (isPaid) { subject = "[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - " + regId; }
+          else if (isReminder) { subject = "[SME VIỆT NAM 2026] SẮP ĐĂNG KÝ THÀNH CÔNG - HÓA ĐƠN THANH TOÁN & MÃ QR (" + regId + ")"; }
+          else { subject = "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THÀNH CÔNG - " + regId; }
+        }
 
         if (customBody) {
           customBody = customBody.replace(/\{\{fullName\}\}/g, fullName)
                                  .replace(/\{\{company\}\}/g, company)
                                  .replace(/\{\{phone\}\}/g, phone)
                                  .replace(/\{\{position\}\}/g, position)
-                                 .replace(/\{\{email\}\}/g, email);
+                                 .replace(/\{\{email\}\}/g, email)
+                                 .replace(/\{\{registrationId\}\}/g, regId)
+                                 .replace(/\{\{registrationType\}\}/g, detailInfo);
         }
 
-        var defaultIntro = isPaid
-          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký tham gia của Quý khách. Vé tham dự của Quý khách đã được kích hoạt thành công!"
-          : "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
-        var introMessage = customBody || defaultIntro;
-
         var boxHeaderTitle = isPaid
-          ? ("🟢 XÁC NHẬN THANH TOÁN THÀNH CÔNG (MÃ VÉ: " + regId + ")")
-          : ("📋 THÔNG TIN XÁC NHẬN ĐĂNG KÝ (MÃ VÉ: " + regId + ")");
+          ? ("🟢 XÁC NHẬN THANH TOÁN THÀNH CÔNG (MÃ ĐĂNG KÝ: " + regId + ")")
+          : (isReminder
+              ? ("⏳ HÓA ĐƠN CHỜ THANH TOÁN (MÃ ĐĂNG KÝ: " + regId + ")")
+              : ("📋 THÔNG TIN XÁC NHẬN ĐĂNG KÝ (MÃ ĐĂNG KÝ: " + regId + ")"));
 
         var statusBadgeHtml = isPaid
-          ? '<span style="color: #16a34a; font-weight: 800;">🟢 ĐÃ THANH TOÁN THÀNH CÔNG (ĐÃ KÍCH HOẠT VÉ)</span>'
-          : '<span style="color: #d97706; font-weight: 800;">⏳ CHỜ THANH TOÁN / XỬ LÝ</span>';
+          ? '<span style="color: #16a34a; font-weight: 800;">🟢 ĐÃ THANH TOÁN THÀNH CÔNG (VÉ ĐÃ KÍCH HOẠT)</span>'
+          : (isReminder
+              ? '<span style="color: #d97706; font-weight: 800;">⏳ SẮP HOÀN TẤT — CHỜ QUÉT MÃ VIETQR THANH TOÁN</span>'
+              : '<span style="color: #0284c7; font-weight: 800;">📋 ĐÃ GHI NHẬN THÔNG TIN ĐĂNG KÝ</span>');
+
+        var defaultIntro = isPaid
+          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu. Vé tham dự sự kiện của Quý khách đã được kích hoạt chính thức!"
+          : (isReminder
+              ? "Đơn đăng ký tham dự của Quý khách đã được ghi nhận 90%. Vui lòng quét mã VietQR bên dưới hoặc chuyển khoản theo hóa đơn để hoàn tất giữ suất chính thức."
+              : "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện.");
+
+        var introMessage = customBody || defaultIntro;
 
         var htmlTemplate = 
           '<div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">' +
-            '<div style="width: 100%; text-align: center; background-color: #0D3B2E;"><img src="' + posterImgUrl + '" alt="Poster" style="width: 100%; max-height: 260px; object-fit: cover; display: block;" /></div>' +
-            '<div style="background-color: #0D3B2E; color: #ffffff; padding: 20px 24px; text-align: center;"><h2 style="margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 800; color: #ffffff;">DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026</h2><p style="margin: 6px 0 0 0; font-size: 13px; color: #a7f3d0; font-weight: 600;">📍 May Plaza Hotel Thái Nguyên | 18 - 20/09/2026</p></div>' +
-            '<div style="padding: 28px; color: #334155; line-height: 1.6; font-size: 14px;"><p style="margin-top: 0; font-size: 15px;">Kính gửi Quý khách <b>' + fullName + '</b>,</p><div style="margin-bottom: 20px; line-height: 1.6;">' + introMessage + '</div>' +
-              '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid ' + (isPaid ? '#22c55e' : '#eab308') + '; border-radius: 12px; padding: 20px; margin: 20px 0;"><div style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 14px;"><h3 style="margin: 0; font-size: 14px; color: #0D3B2E; text-transform: uppercase; font-weight: 800;">' + boxHeaderTitle + '</h3></div>' +
+            '<div style="width: 100%; text-align: center; background-color: #0D3B2E;"><img src="' + posterImgUrl + '" alt="Poster" style="width: 100%; max-height: 280px; object-fit: cover; display: block;" /></div>' +
+            '<div style="background-color: #0D3B2E; color: #ffffff; padding: 20px 24px; text-align: center;"><h2 style="margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 800; color: #ffffff;">DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG SME VIỆT NAM 2026</h2><p style="margin: 6px 0 0 0; font-size: 13px; color: #86efac; font-weight: 600;">📍 May Plaza Hotel Thái Nguyên | 18 - 20/09/2026</p></div>' +
+            '<div style="padding: 28px; color: #334155; line-height: 1.6; font-size: 14px;"><p style="margin-top: 0; font-size: 15px;">Kính gửi Quý đại biểu <b>' + fullName + '</b>,</p><div style="margin-bottom: 20px; line-height: 1.6;">' + introMessage + '</div>' +
+              '<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid ' + (isPaid ? '#22c55e' : (isReminder ? '#f59e0b' : '#3b82f6')) + '; border-radius: 12px; padding: 20px; margin: 20px 0;"><div style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 14px;"><h3 style="margin: 0; font-size: 14px; color: #0D3B2E; text-transform: uppercase; font-weight: 800;">' + boxHeaderTitle + '</h3></div>' +
                 '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">' +
                   '<tr><td style="padding: 6px 0; color: #64748b; width: 160px; font-weight: 600;">Họ và Tên:</td><td style="padding: 6px 0; font-weight: 800; color: #0f172a;">' + fullName + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Số điện thoại:</td><td style="padding: 6px 0; font-weight: 800; color: #0f172a; font-family: monospace;">' + phone + '</td></tr>' +
@@ -917,7 +926,7 @@ function doPost(e) {
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Chức vụ:</td><td style="padding: 6px 0; font-weight: 800; color: #0f172a;">' + position + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Nội dung đăng ký:</td><td style="padding: 6px 0; font-weight: 800; color: #d97706;">' + detailInfo + '</td></tr>' +
                   '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Trạng thái:</td><td style="padding: 6px 0;">' + statusBadgeHtml + '</td></tr>' +
-                  '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Nhu cầu B2B / Ghi chú:</td><td style="padding: 6px 0; font-style: italic; color: #475569;">' + notes + '</td></tr>' +
+                  '<tr><td style="padding: 6px 0; color: #64748b; font-weight: 600;">Ghi chú / Nhu cầu:</td><td style="padding: 6px 0; font-style: italic; color: #475569;">' + notes + '</td></tr>' +
                 '</table>' +
               '</div>' +
               '<div style="background-color: #eff6ff; border-radius: 12px; padding: 16px; margin: 20px 0; font-size: 13px; color: #1e40af; border: 1px solid #bfdbfe;">• <b>Thời gian:</b> 18 - 20/09/2026<br>• <b>Địa điểm:</b> May Plaza Hotel Thái Nguyên</div>' +
@@ -933,7 +942,9 @@ function doPost(e) {
       }
     }
 
-    sheet.appendRow([timestamp, fullName, phone, email, company, position, detailInfo, notes, emailStatusText]);
+    if (paymentStatus !== "PENDING_REMINDER_3MIN" && paymentStatus !== "SUCCESS_PAID") {
+      sheet.appendRow([timestamp, fullName, phone, email, company, position, detailInfo, notes, emailStatusText]);
+    }
     return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Đã ghi dữ liệu vào tab " + targetSheetName, emailStatus: emailStatusText, emailSuccess: emailSentSuccess })).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() })).setMimeType(ContentService.MimeType.JSON);

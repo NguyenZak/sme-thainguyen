@@ -22,6 +22,7 @@ import {
   BedDouble,
   Utensils,
   Calendar,
+  Clock,
 } from "lucide-react";
 import {
   RegistrationContent,
@@ -1109,10 +1110,30 @@ export default function RegistrationForm({
                                   💳 Thanh Toán VietQR SePay
                                 </span>
                                 <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30 font-mono">
-                                  {reminderSent
-                                    ? "✉️ Đã gửi Email nhắc"
-                                    : `⏳ Nhắc Email: ${Math.floor(reminderSecondsLeft / 60).toString().padStart(2, "0")}:${(reminderSecondsLeft % 60).toString().padStart(2, "0")}`}
+                                  ⏳ Chờ chuyển khoản
                                 </span>
+                              </div>
+
+                              {/* Prominent Payment Countdown Timer Banner */}
+                              <div className="w-full bg-slate-950 border border-amber-500/40 p-3 rounded-2xl text-center space-y-1.5 shadow-inner">
+                                <div className="text-[11px] font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                  <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                                  <span>Thời gian giữ vé & tự động gửi Email:</span>
+                                </div>
+                                <div className="text-2xl font-black text-amber-300 font-mono tracking-widest flex items-center justify-center gap-1">
+                                  <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
+                                    {Math.floor(reminderSecondsLeft / 60).toString().padStart(2, "0")}
+                                  </span>
+                                  <span className="animate-pulse text-amber-400 font-sans">:</span>
+                                  <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
+                                    {(reminderSecondsLeft % 60).toString().padStart(2, "0")}
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-amber-200/90 leading-tight">
+                                  {reminderSent
+                                    ? "✉️ Đã tự động gửi Email hóa đơn & VietQR tới hộp thư của bạn."
+                                    : "Sau khi đếm ngược kết thúc, hệ thống sẽ tự động gửi Email đính kèm Hóa Đơn & Mã QR."}
+                                </p>
                               </div>
 
                               <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
