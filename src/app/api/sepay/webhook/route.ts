@@ -122,7 +122,7 @@ export async function POST(request: Request) {
           const customText = registrationContent.delegateEmailBody;
           const paymentBody = (customText && customText.includes("thanh toán"))
             ? customText
-            : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu ${matchedUser.full_name}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
+            : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký tham gia của Quý khách ${matchedUser.full_name}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
           const posterUrl = registrationContent.delegatePosterUrl || "";
 
           await fetch(googleSheetUrl, {

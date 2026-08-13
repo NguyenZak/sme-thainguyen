@@ -159,7 +159,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
       posterField = "delegatePosterUrl";
       bodyField = "delegateEmailBody";
       typeNameField = "delegateEmailTypeName";
-      defaultTypeName = "Đại biểu tham dự (1 vé)";
+      defaultTypeName = "Đăng ký tham gia (1 vé)";
     } else if (formType === "sponsor") {
       subjectField = "sponsorEmailSubject";
       posterField = "sponsorPosterUrl";
@@ -732,7 +732,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÊN 3 TAB ĐĂNG KÝ MẪU</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Tab 1: Đại biểu</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Tab 1: Đăng ký tham gia</label>
             <input
               type="text"
               value={registration.delegateTab}
@@ -766,7 +766,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG GIỚI THIỆU TỪNG TAB</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Đại biểu</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Đăng ký tham gia</label>
             <input
               type="text"
               value={registration.delegateIntro}
@@ -868,7 +868,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NHÃN CÁC PHÂN LOẠI TRÊN MOBILE</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Đại biểu Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Đăng ký tham gia Mobile</label>
             <input
               type="text"
               value={registration.mobileDelegateLabel}
@@ -909,11 +909,11 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
         </div>
 
         <div className="space-y-8">
-          {/* 1. Form Đại Biểu */}
+          {/* 1. Form Đăng ký Tham gia */}
           <div className="space-y-3 border border-slate-200 p-4 sm:p-5 rounded-2xl bg-slate-50/60">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wider flex items-center gap-1.5">
-                🎟️ 1. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ ĐẠI BIỂU
+                🎟️ 1. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ THAM GIA
               </h4>
               <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md font-bold">Form 1</span>
             </div>

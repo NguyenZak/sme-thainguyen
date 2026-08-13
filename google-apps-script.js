@@ -2,7 +2,7 @@
  * HƯỚNG DẪN TỰ ĐỘNG ĐẨY ĐĂNG KÝ VÀO 3 TAB SHEET, GỬI EMAIL KÈM POSTER VÀ GHI TRẠNG THÁI MAIL VÀO GOOGLE SHEET & TELEGRAM
  * 
  * Tính năng nổi bật:
- *  1. Phân loại ghi dữ liệu vào 3 Tab Google Sheet: "Đại biểu", "Tài trợ", "Gian hàng".
+ *  1. Phân loại ghi dữ liệu vào 3 Tab Google Sheet: "Đăng ký tham gia", "Tài trợ", "Gian hàng".
  *  2. Ghi cột thứ 9: "Trạng Thái Gửi Email" (✅ Đã gửi mail thành công / ⚠️ Không có email / ❌ Lỗi gửi).
  *  3. Gửi Email HTML chuyên nghiệp kèm Poster Banner & Bảng lặp thông tin khách hàng.
  *  4. Trả về trạng thái gửi Email cho Telegram hiển thị thông báo.
@@ -35,7 +35,7 @@ function doPost(e) {
 
     // Phân loại ghi vào đúng Tab (Sheet) theo 3 Tab trong file Google Sheet
     var ticketType = (data.registrationType || data.intentTab || data.ticketType || "").toLowerCase();
-    var targetSheetName = "Đại biểu";
+    var targetSheetName = "Đăng ký tham gia";
 
     if (ticketType.indexOf("booth") !== -1 || ticketType.indexOf("gian hàng") !== -1 || ticketType.indexOf("gian") !== -1) {
       targetSheetName = "Gian hàng";
@@ -104,7 +104,7 @@ function doPost(e) {
         }
 
         var defaultIntro = isPaid
-          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu. Vé tham dự của Quý khách đã được kích hoạt thành công!"
+          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký tham gia của Quý khách. Vé tham dự của Quý khách đã được kích hoạt thành công!"
           : "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
         var introMessage = customBody || defaultIntro;
 

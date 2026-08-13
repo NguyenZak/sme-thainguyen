@@ -658,7 +658,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                🎟️ Topic ID - Đăng ký Đại biểu
+                🎟️ Topic ID - Form Đăng ký Tham gia
               </label>
               <div className="flex items-center gap-1.5">
                 <input
@@ -672,7 +672,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
                   type="button"
                   onClick={() => handleTestTelegram(config.telegramThreadIdDelegate)}
                   disabled={testingTg}
-                  title="Gửi tin nhắn test tới Topic Đại Biểu"
+                  title="Gửi tin nhắn test tới Topic Đăng ký Tham gia"
                   className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 transition-colors text-xs shrink-0"
                 >
                   <Send className="w-3.5 h-3.5" />
@@ -841,7 +841,7 @@ function doPost(e) {
     try { data = JSON.parse(contents); } catch (parseErr) { data = e.parameter || {}; }
 
     var ticketType = (data.registrationType || data.intentTab || data.ticketType || "").toLowerCase();
-    var targetSheetName = "Đại biểu";
+    var targetSheetName = "Đăng ký tham gia";
     if (ticketType.indexOf("booth") !== -1 || ticketType.indexOf("gian hàng") !== -1 || ticketType.indexOf("gian") !== -1) {
       targetSheetName = "Gian hàng";
     } else if (ticketType.indexOf("sponsor") !== -1 || ticketType.indexOf("tài trợ") !== -1) {
@@ -891,7 +891,7 @@ function doPost(e) {
         }
 
         var defaultIntro = isPaid
-          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu. Vé tham dự của Quý khách đã được kích hoạt thành công!"
+          ? "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký tham gia của Quý khách. Vé tham dự của Quý khách đã được kích hoạt thành công!"
           : "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện. Dưới đây là thông tin chi tiết Ban Tổ Chức đã ghi nhận:";
         var introMessage = customBody || defaultIntro;
 

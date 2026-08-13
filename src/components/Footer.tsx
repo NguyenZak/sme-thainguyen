@@ -141,7 +141,7 @@ export default function Footer({ content }: { content?: FooterContent }) {
               </li>
               <li>
                 <a href="#register" className="hover:text-white hover:translate-x-1 transition-all inline-block">
-                  Cổng Đăng ký Đại biểu
+                  Cổng Đăng ký Tham gia
                 </a>
               </li>
             </ul>

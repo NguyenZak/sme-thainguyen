@@ -27,7 +27,7 @@ import { toast } from "@/components/ui/Toast";
 
 const CATEGORY_OPTIONS: { id: FaqItem["category"]; label: string; icon: any }[] = [
   { id: "general", label: "Chung & Địa điểm", icon: MapPin },
-  { id: "ticket", label: "Vé đại biểu", icon: Ticket },
+  { id: "ticket", label: "Vé tham gia", icon: Ticket },
   { id: "booth", label: "Gian hàng B2B", icon: Store },
   { id: "sponsor", label: "Gói tài trợ", icon: Handshake },
   { id: "all", label: "Tất cả", icon: Sparkles },

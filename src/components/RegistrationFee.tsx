@@ -10,7 +10,7 @@ const INCLUSIONS = [
   "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp",
   "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
   "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
-  "Thẻ Đại biểu trọn gói tham dự 100+ phiên B2B Matching",
+  "Thẻ Tham gia trọn gói tham dự 100+ phiên B2B Matching",
 ];
 
 import { TicketFeeContent, DEFAULT_TICKET_FEE } from "@/constants/defaultContent";
@@ -20,10 +20,14 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
   const title = content?.title || DEFAULT_TICKET_FEE.title;
   const subtitle = content?.subtitle || DEFAULT_TICKET_FEE.subtitle;
   const ticketBadgeText = content?.ticketBadgeText || DEFAULT_TICKET_FEE.ticketBadgeText;
+  const priceLabel = content?.priceLabel || DEFAULT_TICKET_FEE.priceLabel || "CHI PHÍ NIÊM YẾT";
   const priceVND = content?.priceVND ?? DEFAULT_TICKET_FEE.priceVND;
   const originalPriceVND = content?.originalPriceVND ?? DEFAULT_TICKET_FEE.originalPriceVND;
+  const priceUnitText = content?.priceUnitText || DEFAULT_TICKET_FEE.priceUnitText || "/ Vé";
+  const inclusionsTitle = content?.inclusionsTitle || DEFAULT_TICKET_FEE.inclusionsTitle || "Gói dịch vụ đã bao gồm:";
   const inclusions = content?.inclusions?.length ? content.inclusions : DEFAULT_TICKET_FEE.inclusions;
   const ctaText = content?.ctaText || DEFAULT_TICKET_FEE.ctaText;
+  const ctaLink = content?.ctaLink || DEFAULT_TICKET_FEE.ctaLink || "#register";
   const guaranteeText = content?.guaranteeText || DEFAULT_TICKET_FEE.guaranteeText;
   const earlyBirdLabel = content?.earlyBirdLabel || DEFAULT_TICKET_FEE.earlyBirdLabel || "Vé ưu đãi Đăng ký sớm";
   const remainingSlots = content?.remainingSlots ?? DEFAULT_TICKET_FEE.remainingSlots ?? 15;
@@ -81,7 +85,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
               </div>
               <div>
                 <p className="text-xs font-medium text-emerald-200 uppercase tracking-wider mb-1">
-                  Chi phí niêm yết
+                  {priceLabel}
                 </p>
 
                 {/* Strikethrough Price / Giá gạch */}
@@ -107,7 +111,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                     {priceVND.toLocaleString("vi-VN")}
                   </span>
                   <span className="text-lg sm:text-xl font-bold text-slate-200 shrink-0">VNĐ</span>
-                  <span className="text-xs sm:text-sm font-medium text-slate-300 whitespace-nowrap shrink-0">/ Đại biểu</span>
+                  <span className="text-xs sm:text-sm font-medium text-slate-300 whitespace-nowrap shrink-0">{priceUnitText}</span>
                 </div>
               </div>
 
@@ -127,7 +131,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
 
               <div className="space-y-3 pt-2">
                 <a
-                  href="#register"
+                  href={ctaLink}
                   onClick={() => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("selectRegistrationTab", { detail: { tab: "delegate" } }))}
                   className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-extrabold text-base bg-[#22C55E] hover:bg-[#16A34A] text-white shadow-lg transition-all transform hover:-translate-y-0.5"
                 >
@@ -146,7 +150,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                 className="text-lg font-bold text-emerald-100 uppercase tracking-wider flex items-center gap-2"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
-                <Ticket className="w-5 h-5 text-[#F59E0B]" /> Gói dịch vụ đã bao gồm:
+                <Ticket className="w-5 h-5 text-[#F59E0B]" /> {inclusionsTitle}
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-1 gap-3">
                 {inclusions.map((item, idx) => (

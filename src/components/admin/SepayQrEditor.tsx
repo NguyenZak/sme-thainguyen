@@ -125,11 +125,11 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-bold text-slate-900">Cấu Hình Thanh Toán QR (SePay VietQR)</h2>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-900 border border-emerald-200">
-                Vé Đại Biểu
+                Vé Tham Gia
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Quản lý tài khoản ngân hàng nhận tiền và tự động khớp lệnh quét mã VietQR dành riêng cho bán vé đại biểu.
+              Quản lý tài khoản ngân hàng nhận tiền và tự động khớp lệnh quét mã VietQR dành riêng cho đăng ký tham gia.
             </p>
           </div>
         </div>
@@ -161,7 +161,7 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="space-y-0.5">
                 <label className="text-sm font-bold text-slate-900 block">Kích hoạt Cổng VietQR SePay</label>
-                <p className="text-xs text-slate-500">Hiển thị mã QR ngân hàng tự động trên modal xác nhận bán vé đại biểu.</p>
+                <p className="text-xs text-slate-500">Hiển thị mã QR ngân hàng tự động trên modal xác nhận đăng ký tham gia.</p>
               </div>
 
               <label className="relative inline-flex items-center cursor-pointer">
@@ -273,7 +273,7 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
                 </div>
               </div>
               <p className="text-[11px] text-amber-800/90">
-                ⚡ Số tiền này được tự động nhúng thẳng vào mã QR ngân hàng để khi đại biểu quét QR, ứng dụng Banking tự điền đúng 100% số tiền này.
+                ⚡ Số tiền này được tự động nhúng thẳng vào mã QR ngân hàng để khi khách quét QR, ứng dụng Banking tự điền đúng 100% số tiền này.
               </p>
             </div>
 
@@ -462,7 +462,7 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
                 </div>
 
                 <p className="text-xs text-slate-500 italic">
-                  Mã QR sẽ tự động hiển thị số tiền tương ứng với số lượng vé đại biểu được đăng ký.
+                  Mã QR sẽ tự động hiển thị số tiền tương ứng với số lượng vé đăng ký tham gia.
                 </p>
               </div>
             ) : (

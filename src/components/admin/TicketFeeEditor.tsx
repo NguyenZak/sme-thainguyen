@@ -165,6 +165,28 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
           </div>
 
           <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Dòng Giá (Price Label)</label>
+            <input
+              type="text"
+              value={fee.priceLabel || ""}
+              placeholder="VD: CHI PHÍ NIÊM YẾT"
+              onChange={(e) => setFee({ ...fee, priceLabel: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Đơn Vị Tính Giá (Price Unit)</label>
+            <input
+              type="text"
+              value={fee.priceUnitText || ""}
+              placeholder="VD: / Vé"
+              onChange={(e) => setFee({ ...fee, priceUnitText: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu Vé (Ticket Badge)</label>
             <input
               type="text"
@@ -180,6 +202,17 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
               type="text"
               value={fee.ctaText || ""}
               onChange={(e) => setFee({ ...fee, ctaText: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold text-emerald-700"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Đường Dẫn Nút Đăng Ký (CTA Link)</label>
+            <input
+              type="text"
+              value={fee.ctaLink || ""}
+              placeholder="VD: #register"
+              onChange={(e) => setFee({ ...fee, ctaLink: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
@@ -208,12 +241,12 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Tiêu Đề Dòng Vé Ưu Đãi
+              Tiêu Đề Dòng Vé Ưu Đãi (Ví dụ: Đăng ký ngay)
             </label>
             <input
               type="text"
               value={fee.earlyBirdLabel || ""}
-              placeholder="VD: Vé ưu đãi Đăng ký sớm"
+              placeholder="VD: Đăng ký ngay"
               onChange={(e) => setFee({ ...fee, earlyBirdLabel: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -221,12 +254,12 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Số Suất Còn Lại (Suất) <span className="text-amber-600 font-bold">*(VD: 15)*</span>
+              Số Suất Còn Lại (Suất) <span className="text-amber-600 font-bold">*(VD: 45)*</span>
             </label>
             <input
               type="number"
               value={fee.remainingSlots !== undefined ? fee.remainingSlots : ""}
-              placeholder="VD: 15"
+              placeholder="VD: 45"
               onChange={(e) => {
                 const remaining = Number(e.target.value);
                 const total = fee.totalSlots || 100;
@@ -263,12 +296,12 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
 
           <div className="md:col-span-3">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Chữ Hiển Thị Số Suất Tùy Chọn <span className="text-slate-500">*(Mặc định tự sinh: &quot;Còn 15 / 100 suất&quot;)*</span>
+              Chữ Hiển Thị Số Suất Tùy Chọn <span className="text-slate-500">*(Mặc định tự sinh: &quot;Còn 45 / 100 suất&quot;)*</span>
             </label>
             <input
               type="text"
               value={fee.earlyBirdSlotText || ""}
-              placeholder="VD: Còn 15 / 100 suất"
+              placeholder="VD: Còn 45 / 100 suất"
               onChange={(e) => setFee({ ...fee, earlyBirdSlotText: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-medium"
             />
@@ -280,8 +313,8 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
           <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Xem Trước Hiển Thị Thực Tế:</label>
           <div className="bg-[#0B3026] p-4 rounded-2xl border border-emerald-800 space-y-2 text-xs text-emerald-200">
             <div className="flex items-center justify-between font-bold">
-              <span className="text-emerald-100">{fee.earlyBirdLabel || "Vé ưu đãi Đăng ký sớm"}</span>
-              <span className="text-amber-400 font-extrabold">{fee.earlyBirdSlotText || `Còn ${fee.remainingSlots || 15} / ${fee.totalSlots || 100} suất`}</span>
+              <span className="text-emerald-100">{fee.earlyBirdLabel || "Đăng ký ngay"}</span>
+              <span className="text-amber-400 font-extrabold">{fee.earlyBirdSlotText || `Còn ${fee.remainingSlots || 45} / ${fee.totalSlots || 100} suất`}</span>
             </div>
             <div className="w-full h-2.5 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800">
               <div
@@ -310,6 +343,17 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
           >
             <Plus className="w-3.5 h-3.5" /> Thêm Quyền Lợi
           </button>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Tiêu Đề Danh Sách Quyền Lợi</label>
+          <input
+            type="text"
+            value={fee.inclusionsTitle || ""}
+            placeholder="VD: Gói dịch vụ đã bao gồm:"
+            onChange={(e) => setFee({ ...fee, inclusionsTitle: e.target.value })}
+            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none mb-3"
+          />
         </div>
 
         <div className="space-y-2">

@@ -166,7 +166,7 @@ export async function POST(request: Request) {
     if (telegramEnabled && telegramToken && telegramChatId) {
       try {
         const category = getFormCategory(ticketType);
-        let categoryTitle = "🎟️ ĐĂNG KÝ ĐẠI BIỂU THAM DỰ";
+        let categoryTitle = "🎟️ ĐĂNG KÝ THAM GIA";
         let targetThreadIdStr = threadIdDelegate;
 
         if (category === "sponsor") {

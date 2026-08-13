@@ -218,7 +218,7 @@ export default function RegistrationForm({
     try {
       const typeLabel =
         values.intentTab === "delegate"
-          ? `Đại biểu tham dự (${values.attendeesCount} vé)`
+          ? `Đăng ký tham gia (${values.attendeesCount} vé)`
           : values.intentTab === "sponsor"
           ? `Nhà tài trợ: ${values.sponsorTier}`
           : `Gian hàng triển lãm: ${values.boothNumber} (${values.attendeesCount} gian)`;
@@ -650,7 +650,7 @@ export default function RegistrationForm({
                   : "Đơn Đăng Ký Đã Lưu — Chờ Thanh Toán"
                 : "Ghi nhận Đăng ký Thành Công!";
 
-              let cardTagline = "THẺ ĐẠI BIỂU DỰ HỘI NGHỊ & B2B MATCHING";
+              let cardTagline = "THẺ THAM GIA DỰ HỘI NGHỊ & B2B MATCHING";
               let cardBg = "bg-[#0D3B2E] border-emerald-800 text-white";
               let accentText = "text-emerald-300";
               let detailLabel = "Số lượng vé";

@@ -599,7 +599,7 @@ export default function HeroEditor({ initialHero, onSaveSuccess }: HeroEditorPro
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
                 <Ticket className="w-3.5 h-3.5 text-emerald-700" />
-                Nút 1 (Đại biểu)
+                Nút 1 (Đăng ký tham gia)
               </span>
               <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100/80 px-2 py-0.5 rounded-full">
                 Xanh Lá
@@ -610,7 +610,7 @@ export default function HeroEditor({ initialHero, onSaveSuccess }: HeroEditorPro
               <input
                 type="text"
                 value={hero.primaryCtaText || ""}
-                placeholder="VD: ĐĂNG KÝ ĐẠI BIỂU THAM GIA"
+                placeholder="VD: ĐĂNG KÝ THAM GIA"
                 onChange={(e) => setHero({ ...hero, primaryCtaText: e.target.value })}
                 className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none font-bold"
               />

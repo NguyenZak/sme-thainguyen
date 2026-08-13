@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       email: "test@sme2026.vn",
       company: "Công Ty Cổ Phần SME Việt Nam (Test)",
       position: "Giám Đốc Điều Hành",
-      registrationType: "🎟️ Đăng ký Đại biểu (Kiểm tra từ CMS)",
+      registrationType: "🎟️ Đăng ký Tham gia (Kiểm tra từ CMS)",
       notes: "Tin nhắn thử nghiệm tự động đẩy dữ liệu sang Google Sheet",
       timestamp: new Date().toISOString(),
     };

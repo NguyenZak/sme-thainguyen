@@ -49,7 +49,7 @@ export function getCategoryBadge(category: "delegate" | "sponsor" | "booth") {
   switch (category) {
     case "delegate":
       return {
-        label: "🎟️ Đại biểu",
+        label: "🎟️ Đăng ký tham gia",
         bg: "bg-blue-50 text-blue-700 border-blue-200",
       };
     case "sponsor":
@@ -100,7 +100,7 @@ export default function RegistrationsManager() {
   ) => {
     const isDelegate = category === "delegate";
     const promptMessage = isDelegate
-      ? `Xác nhận đã nhận tiền thanh toán về tài khoản công ty của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ THANH TOÁN và gửi Email xác nhận cho đại biểu.`
+      ? `Xác nhận đã nhận tiền thanh toán về tài khoản công ty của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ THANH TOÁN và gửi Email xác nhận cho khách đăng ký.`
       : `Xác nhận duyệt thông tin và gửi Email xác nhận cho đơn đăng ký của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ HOÀN TẤT và gửi Email phản hồi cho Quý đơn vị.`;
 
     if (!skipConfirm && !confirm(promptMessage)) return;
@@ -281,7 +281,7 @@ export default function RegistrationsManager() {
       const cat = getFormCategory(r.ticket_type);
       const catLabel =
         cat === "delegate"
-          ? "Đại biểu Tham dự"
+          ? "Đăng ký Tham gia"
           : cat === "sponsor"
           ? "Nhà Tài Trợ"
           : "Gian Hàng Triển Lãm";
@@ -333,7 +333,7 @@ export default function RegistrationsManager() {
             Quản Lý Danh Sách Đăng Ký Tham Dự
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Tổng hợp & Xử lý dữ liệu từ 3 Form Đăng ký trên Landing Page (<b>Đại Biểu</b>, <b>Nhà Tài Trợ</b>, <b>Gian Hàng</b>).
+            Tổng hợp & Xử lý dữ liệu từ 3 Form Đăng ký trên Landing Page (<b>Đăng ký tham gia</b>, <b>Nhà Tài Trợ</b>, <b>Gian Hàng</b>).
           </p>
         </div>
 
@@ -391,7 +391,7 @@ export default function RegistrationsManager() {
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-200">
-              🎟️ FORM 1: ĐẠI BIỂU
+              🎟️ FORM 1: ĐĂNG KÝ THAM GIA
             </span>
             <Users className="w-4 h-4 text-blue-500" />
           </div>
@@ -457,7 +457,7 @@ export default function RegistrationsManager() {
           className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-semibold shadow-sm"
         >
           <option value="all">📂 Tất cả 3 Form ({registrations.length})</option>
-          <option value="delegate">🎟️ Form 1: Đăng ký Đại Biểu ({delegateCount})</option>
+          <option value="delegate">🎟️ Form 1: Đăng ký Tham gia ({delegateCount})</option>
           <option value="sponsor">💎 Form 2: Đăng ký Nhà Tài Trợ ({sponsorCount})</option>
           <option value="booth">🎪 Form 3: Đăng ký Gian Hàng ({boothCount})</option>
         </select>
@@ -607,7 +607,7 @@ export default function RegistrationsManager() {
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
                               title={
                                 category === "delegate"
-                                  ? "Xác nhận đã nhận tiền về tài khoản công ty & Gửi Email xác nhận cho đại biểu"
+                                  ? "Xác nhận đã nhận tiền về tài khoản công ty & Gửi Email xác nhận cho khách đăng ký"
                                   : "Xác nhận duyệt thông tin & Gửi Email phản hồi cho Quý đơn vị"
                               }
                             >

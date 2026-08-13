@@ -73,7 +73,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
           <div className="flex flex-wrap items-center justify-center gap-2">
             {[
               { id: "all", label: "Tất cả câu hỏi", icon: Sparkles },
-              { id: "ticket", label: "Vé đại biểu", icon: Ticket },
+              { id: "ticket", label: "Vé tham gia", icon: Ticket },
               { id: "booth", label: "Gian hàng B2B", icon: Store },
               { id: "sponsor", label: "Gói tài trợ", icon: Handshake },
               { id: "general", label: "Chung & Địa điểm", icon: MapPin },

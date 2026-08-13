@@ -220,14 +220,19 @@ export interface TicketFeeContent {
   priceVND: number;
   originalPriceVND: number;
   ticketBadgeText: string;
+  priceLabel?: string;
+  priceUnitText?: string;
   earlyBirdLabel?: string;
   remainingSlots?: number;
   totalSlots?: number;
   earlyBirdSlotText?: string;
   inclusions: string[];
+  inclusionsTitle?: string;
   ctaText: string;
+  ctaLink?: string;
   guaranteeText: string;
 }
+
 
 export interface SponsorPackageTier {
   id: string;
@@ -391,10 +396,10 @@ export const DEFAULT_HERO: HeroContent = {
     "LIÊN KẾT CHUỖI CUNG ỨNG"
   ],
   tickerMessages: [
-    "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Đại biểu (2 phút trước)",
+    "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Tham gia (2 phút trước)",
     "⚡ Công ty Cổ phần Công nghệ ABC vừa đăng ký Gian hàng Triển lãm A-05",
     "⭐ Tập đoàn May Plaza công bố trở thành Nhà tài trợ Kim Cương chính thức",
-    "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói",
+    "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký Tham gia trọn gói",
   ],
   countdownLabel: "Đếm ngược sự kiện:",
   dateLabel: "Thời gian",
@@ -402,7 +407,7 @@ export const DEFAULT_HERO: HeroContent = {
   targetDateISO: "2026-09-18T08:00:00+07:00",
   venueLabel: "Địa điểm",
   venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
-  primaryCtaText: "ĐĂNG KÝ ĐẠI BIỂU THAM GIA",
+  primaryCtaText: "ĐĂNG KÝ THAM GIA",
   primaryCtaLink: "#register",
   secondaryCtaText: "ĐĂNG KÝ GIAN HÀNG",
   secondaryCtaLink: "#register",
@@ -431,10 +436,10 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
   sectionBadge: "06 · ĐĂNG KÝ THAM DỰ",
   sectionTitle: "Cổng Đăng ký Trực tuyến Sự kiện",
   sectionDescription: "Chọn mục đích đăng ký bên dưới. Ban tổ chức sẽ liên hệ và xác nhận trực tiếp trong 24h.",
-  delegateTab: "Vé Đại biểu",
+  delegateTab: "Đăng ký tham gia",
   sponsorTab: "Nhà Tài trợ",
   boothTab: "Gian hàng",
-  delegateIntro: "Đại biểu tham dự chương trình với quyền lợi trọn gói, kết nối B2B và Gala Dinner.",
+  delegateIntro: "Đăng ký tham gia chương trình với quyền lợi trọn gói, kết nối B2B và Gala Dinner.",
   sponsorIntro: "Quý Anh/chị, Đơn vị, Doanh nghiệp điền thông tin bên dưới, Ban tổ chức sẽ liên hệ lại trao đổi quyền lợi trực tiếp trong thời gian sớm nhất!",
   boothIntro: "Đăng ký gian hàng tiêu chuẩn 3m x 3m tại khu triển lãm trung tâm.",
   sponsorTiers: [
@@ -451,13 +456,13 @@ export const DEFAULT_REGISTRATION: RegistrationContent = {
     "Gian #19 (3m x 3m)",
   ],
   submitButtonText: "Gửi thông tin",
-  mobileDelegateLabel: "Đăng ký Đại biểu",
+  mobileDelegateLabel: "Đăng ký tham gia",
   mobileSponsorLabel: "Tài trợ",
   mobileBoothLabel: "Gian hàng",
-  delegateEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ ĐẠI BIỂU THAM DỰ",
+  delegateEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ THAM GIA",
   delegateEmailBody: "Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xin chân thành cảm ơn Quý khách đã đăng ký thông tin tham dự sự kiện.",
   delegatePosterUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
-  delegateEmailTypeName: "Đại biểu tham dự (1 vé)",
+  delegateEmailTypeName: "Đăng ký tham gia (1 vé)",
   sponsorEmailSubject: "[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỒNG HÀNH",
   sponsorEmailBody: "Trân trọng cảm ơn Quý Doanh nghiệp đã đăng ký đồng hành cùng Diễn đàn SME Việt Nam 2026. Ban Thư ký sẽ liên hệ trao đổi chi tiết về các quyền lợi tài trợ & hiện diện thương hiệu.",
   sponsorPosterUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
@@ -768,7 +773,9 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   subtitle: "Trọn gói quyền lợi tham dự chuỗi hoạt động 3 ngày tại Thái Nguyên.",
   priceVND: 1450000,
   originalPriceVND: 2500000,
-  ticketBadgeText: "Vé Đại biểu Chính thức",
+  ticketBadgeText: "Vé Tham gia Chính thức",
+  priceLabel: "CHI PHÍ NIÊM YẾT",
+  priceUnitText: "/ Vé",
   earlyBirdLabel: "Vé ưu đãi Đăng ký sớm",
   remainingSlots: 15,
   totalSlots: 100,
@@ -780,10 +787,12 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
     "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp",
     "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
     "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
-    "Thẻ Đại biểu trọn gói tham dự 100+ phiên B2B Matching"
+    "Thẻ Tham gia trọn gói tham dự 100+ phiên B2B Matching"
   ],
-  ctaText: "Đăng ký tham dự ngay",
-  guaranteeText: "Cam kết quyền lợi từ Ban tổ chức TASME"
+  inclusionsTitle: "Gói dịch vụ đã bao gồm:",
+  ctaText: "ĐĂNG KÝ NGAY",
+  ctaLink: "#register",
+  guaranteeText: "Hoàn tiền 100% nếu sự kiện hủy hoặc thay đổi lịch trình bất khả kháng"
 };
 
 export const DEFAULT_SPONSORS: SponsorsContent = {

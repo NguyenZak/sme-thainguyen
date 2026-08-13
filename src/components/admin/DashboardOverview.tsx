@@ -270,7 +270,7 @@ export default function DashboardOverview({
               {/* Delegates */}
               <div>
                 <div className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
-                  <span>🎟️ Đại biểu ({delegateRegs})</span>
+                  <span>🎟️ Đăng ký tham gia ({delegateRegs})</span>
                   <span className="font-semibold">{delegatePercent}%</span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -335,7 +335,7 @@ export default function DashboardOverview({
                       const category = getFormCategory(reg.ticket_type);
                       const label =
                         category === "delegate"
-                          ? "Đại biểu"
+                          ? "Đăng ký tham gia"
                           : category === "sponsor"
                           ? "Tài trợ"
                           : "Gian hàng";
