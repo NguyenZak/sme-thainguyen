@@ -165,6 +165,9 @@ export default function RegistrationForm({
         "✅ Đã xác nhận chuyển khoản!",
         "Ban tổ chức đã nhận thông báo đối soát và sẽ kích hoạt vé chính thức qua Email ngay khi khớp lệnh."
       );
+      setTimeout(() => {
+        setSuccessModal({ open: false });
+      }, 500);
     } catch (err) {
       console.warn("Failed to confirm paid:", err);
       toast.error("Không thể gửi xác nhận, vui lòng thử lại!");
@@ -1195,12 +1198,6 @@ export default function RegistrationForm({
                         <Download className="w-4 h-4" /> Lưu Ảnh Mã QR
                       </button>
                     )}
-                    <button
-                      onClick={() => window.print()}
-                      className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center gap-1.5 transition-colors border border-slate-300 cursor-pointer"
-                    >
-                      <Download className="w-4 h-4" /> In Thẻ điện tử
-                    </button>
                     <button
                       onClick={() => setSuccessModal({ open: false })}
                       className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-slate-900 hover:bg-black text-white transition-colors cursor-pointer"
