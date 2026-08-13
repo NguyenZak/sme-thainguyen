@@ -33,6 +33,33 @@ import {
 } from "@/constants/defaultContent";
 import { toast } from "@/components/ui/Toast";
 
+function cleanHtmlText(input?: string): string {
+  if (!input) return "";
+  let txt = input;
+
+  txt = txt
+    .replace(/&iacutec;/gi, "í")
+    .replace(/&iacute;/gi, "í")
+    .replace(/&yacute;/gi, "ý")
+    .replace(/&ecirc;/gi, "ê")
+    .replace(/&agrave;/gi, "à")
+    .replace(/&aacute;/gi, "á")
+    .replace(/&ocirc;/gi, "ô")
+    .replace(/&otilde;/gi, "õ")
+    .replace(/&ugrave;/gi, "ù")
+    .replace(/&uacute;/gi, "ú")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/<\/?strong>/gi, "")
+    .replace(/<\/?b>/gi, "")
+    .replace(/<\/?em>/gi, "")
+    .replace(/<\/?p>/gi, "");
+
+  return txt.trim();
+}
+
 const formSchema = z.object({
   intentTab: z.enum(["delegate", "sponsor", "booth"]),
   fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
@@ -442,16 +469,16 @@ export default function RegistrationForm({
           className="space-y-3 text-center max-w-5xl mx-auto"
         >
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            {registration.sectionBadge}
+            {cleanHtmlText(registration.sectionBadge)}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            {registration.sectionTitle}
+            {cleanHtmlText(registration.sectionTitle)}
           </h2>
           <p className="text-slate-600 text-xs sm:text-sm max-w-xl mx-auto">
-            {registration.sectionDescription}
+            {cleanHtmlText(registration.sectionDescription)}
           </p>
         </motion.div>
 
@@ -468,7 +495,7 @@ export default function RegistrationForm({
               }`}
             >
               <Ticket className="w-4 h-4 shrink-0" />
-              <span className="truncate">{registration.delegateTab}</span>
+              <span className="truncate">{cleanHtmlText(registration.delegateTab)}</span>
             </button>
 
             <button
@@ -481,7 +508,7 @@ export default function RegistrationForm({
               }`}
             >
               <Award className="w-4 h-4 shrink-0" />
-              <span className="truncate">{registration.sponsorTab}</span>
+              <span className="truncate">{cleanHtmlText(registration.sponsorTab)}</span>
             </button>
           </div>
 
@@ -517,16 +544,16 @@ export default function RegistrationForm({
             <div>
               <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">
                 {activeTab === "delegate"
-                  ? registration.delegateTab
-                  : registration.sponsorTab}
+                  ? cleanHtmlText(registration.delegateTab)
+                  : cleanHtmlText(registration.sponsorTab)}
               </span>
               <h3
                 className="text-xl font-bold text-[#0D3B2E] mt-0.5"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
                 {activeTab === "delegate"
-                  ? registration.delegateIntro
-                  : registration.sponsorIntro}
+                  ? cleanHtmlText(registration.delegateIntro)
+                  : cleanHtmlText(registration.sponsorIntro)}
               </h3>
             </div>
 
