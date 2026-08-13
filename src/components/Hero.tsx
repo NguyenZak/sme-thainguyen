@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import FormattedText from "@/components/ui/FormattedText";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Calendar, MapPin, Ticket, Award, Store, ArrowRight, Clock } from "lucide-react";
+import { Calendar, MapPin, Ticket, Award, ArrowRight, Clock } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
 import AddToCalendar from "./AddToCalendar";
 
@@ -284,24 +284,6 @@ export default function Hero({ content }: { content?: HeroContent }) {
             </a>
           )}
 
-          {/* 2nd Order Secondary CTA: Booth Exhibition Registration */}
-          {data.secondaryCtaText && (
-            <a
-              id="cta-2"
-              href={data.secondaryCtaLink || "#register"}
-              onClick={(e) => {
-                if (typeof window !== "undefined") {
-                  window.dispatchEvent(
-                    new CustomEvent("selectRegistrationTab", { detail: { tab: "booth" } })
-                  );
-                }
-              }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-extrabold text-sm bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-lg shadow-amber-950/40 transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
-            >
-              <Store className="w-4 h-4 text-slate-950" />
-              <span>{data.secondaryCtaText}</span>
-            </a>
-          )}
 
           {/* 3rd Order Tertiary CTA: Sponsor Packages Prospectus */}
           {data.tertiaryCtaText && (

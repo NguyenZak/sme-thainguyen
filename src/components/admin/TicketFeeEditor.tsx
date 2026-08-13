@@ -1,21 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TicketFeeContent } from "@/constants/defaultContent";
+import { TicketFeeContent, RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from "lucide-react";
 
 interface TicketFeeEditorProps {
   initialFee: TicketFeeContent;
-  onSaveSuccess?: (updatedFee: TicketFeeContent) => void;
+  initialRegistration?: RegistrationContent;
+  onSaveSuccess?: (updatedFee: TicketFeeContent, updatedRegistration?: RegistrationContent) => void;
 }
 
-export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFeeEditorProps) {
+export default function TicketFeeEditor({ initialFee, initialRegistration, onSaveSuccess }: TicketFeeEditorProps) {
   const [fee, setFee] = useState<TicketFeeContent>(initialFee);
+  const [reg, setReg] = useState<RegistrationContent>(initialRegistration || DEFAULT_REGISTRATION);
 
   useEffect(() => {
     setFee(initialFee);
   }, [initialFee]);
+
+  useEffect(() => {
+    if (initialRegistration) {
+      setReg(initialRegistration);
+    }
+  }, [initialRegistration]);
 
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -45,11 +53,15 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
       // Also sync eventPriceVND to site_config for global price consistency
       await updateSectionAction("site_config", { eventPriceVND: fee.priceVND });
     }
+    // Also save registration tab titles if registration was provided
+    if (res.success) {
+      await updateSectionAction("registration", reg);
+    }
     setSaving(false);
 
     if (res.success) {
-      onSaveSuccess?.(fee);
-      setMsg({ type: "success", text: "Đã cập nhật giá vé & đồng bộ số tiền chuyển khoản QR thành công!" });
+      onSaveSuccess?.(fee, reg);
+      setMsg({ type: "success", text: "Đã cập nhật giá vé, tên Form & đồng bộ chuyển khoản QR thành công!" });
     } else {
       setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
     }
@@ -60,7 +72,7 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Chi Phí Tham Dự & Gói Vé</h2>
-          <p className="text-xs text-slate-500 mt-1">Thay đổi giá vé tham dự, giá gốc trước giảm, danh sách quyền lợi và chính sách hoàn tiền.</p>
+          <p className="text-xs text-slate-500 mt-1">Thay đổi giá vé tham dự, giá gốc trước giảm, danh sách quyền lợi, chính sách hoàn tiền và tên Form Đăng Ký.</p>
         </div>
         <button
           type="submit"
@@ -84,6 +96,67 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
           {msg.text}
         </div>
       )}
+
+      {/* Tùy Chỉnh Tên Form & Tab Đăng Ký */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+          <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs">CMS FORM</span>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÊN VÀ NHÃN CÁC TAB FORM ĐĂNG KÝ</h3>
+            <p className="text-xs text-slate-500">Tùy chỉnh hiển thị tên Nút / Tab chọn Form (Vé Đại Biểu, Nhà Tài Trợ...) trên Website và Mobile.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              🎟️ Tab 1: Form Đăng Ký Vé / Tham Gia <span className="text-emerald-600 font-bold">*(VD: Vé Đại biểu)*</span>
+            </label>
+            <input
+              type="text"
+              value={reg.delegateTab || ""}
+              onChange={(e) => setReg({ ...reg, delegateTab: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              💎 Tab 2: Form Đăng Ký Nhà Tài Trợ <span className="text-amber-600 font-bold">*(VD: Nhà Tài trợ)*</span>
+            </label>
+            <input
+              type="text"
+              value={reg.sponsorTab || ""}
+              onChange={(e) => setReg({ ...reg, sponsorTab: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              📱 Nhãn Form 1 Trên Thanh Sticky Mobile
+            </label>
+            <input
+              type="text"
+              value={reg.mobileDelegateLabel || ""}
+              onChange={(e) => setReg({ ...reg, mobileDelegateLabel: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              📱 Nhãn Form 2 Trên Thanh Sticky Mobile
+            </label>
+            <input
+              type="text"
+              value={reg.mobileSponsorLabel || ""}
+              onChange={(e) => setReg({ ...reg, mobileSponsorLabel: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Tiêu Đề Section */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -186,6 +259,19 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
             />
           </div>
 
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Chú Thích Thành Phần Gói Mặc Định <span className="text-emerald-700 font-bold">*(VD: Đã bao gồm 02 Đại biểu chính thức & 01 Gian hàng Triển lãm)*</span>
+            </label>
+            <input
+              type="text"
+              value={fee.packageIncludesNote || ""}
+              placeholder="VD: Đã bao gồm 02 Đại biểu chính thức & 01 Gian hàng Triển lãm"
+              onChange={(e) => setFee({ ...fee, packageIncludesNote: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Huy Hiệu Vé (Ticket Badge)</label>
             <input
@@ -223,6 +309,95 @@ export default function TicketFeeEditor({ initialFee, onSaveSuccess }: TicketFee
               type="text"
               value={fee.guaranteeText || ""}
               onChange={(e) => setFee({ ...fee, guaranteeText: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Cấu Hình Đơn Giá Đại Biểu Phát Sinh */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+          🏨 CẤU HÌNH ĐƠN GIÁ ĐẠI BIỂU PHÁT SINH (KHI ĐĂNG KÝ &gt; 2 ĐẠI BIỂU)
+        </h3>
+        <p className="text-xs text-slate-500">Tùy chỉnh đơn giá phòng ở và ăn uống tính thêm khi khách hàng thêm đại biểu tham gia trong Form.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Phòng Khách Sạn 4* Ở Ghép (2 người/phòng) <span className="text-amber-600 font-bold">*(VNĐ / đêm / người)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.extraDelegateSharedRoomPriceVND !== undefined ? fee.extraDelegateSharedRoomPriceVND : 350000}
+              placeholder="350000"
+              onChange={(e) => setFee({ ...fee, extraDelegateSharedRoomPriceVND: Number(e.target.value) })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Hiển thị: <strong className="text-emerald-700">{(fee.extraDelegateSharedRoomPriceVND || 350000).toLocaleString("vi-VN")} VNĐ</strong> / đêm / người
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Phòng Khách Sạn 4* Ở 1 Người (Phòng Đơn / Riêng) <span className="text-amber-600 font-bold">*(VNĐ / đêm / người)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.extraDelegateSingleRoomPriceVND !== undefined ? fee.extraDelegateSingleRoomPriceVND : 700000}
+              placeholder="700000"
+              onChange={(e) => setFee({ ...fee, extraDelegateSingleRoomPriceVND: Number(e.target.value) })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Hiển thị: <strong className="text-emerald-700">{(fee.extraDelegateSingleRoomPriceVND || 700000).toLocaleString("vi-VN")} VNĐ</strong> / đêm / người
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Chi Phí Ăn Trưa Ngày 18 & 19/9 <span className="text-amber-600 font-bold">*(VNĐ / 2 bữa / người)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.extraDelegateLunchPriceVND !== undefined ? fee.extraDelegateLunchPriceVND : 200000}
+              placeholder="200000"
+              onChange={(e) => setFee({ ...fee, extraDelegateLunchPriceVND: Number(e.target.value) })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Hiển thị: <strong className="text-emerald-700">{(fee.extraDelegateLunchPriceVND || 200000).toLocaleString("vi-VN")} VNĐ</strong> / 2 bữa
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Số Đại Biểu Mặc Định Trong Gói Chính</label>
+            <input
+              type="number"
+              value={fee.defaultPackageDelegatesCount !== undefined ? fee.defaultPackageDelegatesCount : 2}
+              placeholder="2"
+              onChange={(e) => setFee({ ...fee, defaultPackageDelegatesCount: Number(e.target.value) })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-medium"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Ghi Chú Bữa Sáng (Miễn phí theo tiêu chuẩn)</label>
+            <input
+              type="text"
+              value={fee.extraDelegateBreakfastNote || "Bữa sáng miễn phí theo phòng"}
+              onChange={(e) => setFee({ ...fee, extraDelegateBreakfastNote: e.target.value })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Ghi Chú Bữa Tối (Miễn phí Gala Dinner)</label>
+            <input
+              type="text"
+              value={fee.extraDelegateDinnerNote || "Bữa tối miễn phí theo Chương trình"}
+              onChange={(e) => setFee({ ...fee, extraDelegateDinnerNote: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>

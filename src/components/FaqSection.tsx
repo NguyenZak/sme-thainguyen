@@ -176,7 +176,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
                                   window.dispatchEvent(
                                     new CustomEvent("selectRegistrationTab", {
                                       detail: {
-                                        tab: faq.category === "booth" ? "booth" : faq.category === "sponsor" ? "sponsor" : "delegate",
+                                        tab: faq.category === "sponsor" || faq.category === "booth" ? "sponsor" : "delegate",
                                       },
                                     })
                                   );

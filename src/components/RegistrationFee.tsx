@@ -23,14 +23,19 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
   const priceLabel = content?.priceLabel || DEFAULT_TICKET_FEE.priceLabel || "CHI PHÍ NIÊM YẾT";
   const priceVND = content?.priceVND ?? DEFAULT_TICKET_FEE.priceVND;
   const originalPriceVND = content?.originalPriceVND ?? DEFAULT_TICKET_FEE.originalPriceVND;
-  const priceUnitText = content?.priceUnitText || DEFAULT_TICKET_FEE.priceUnitText || "/ Vé";
+  const priceUnitText = content?.priceUnitText || DEFAULT_TICKET_FEE.priceUnitText || "/ Gói (2 Đại biểu + 1 Gian hàng)";
+  const packageIncludesNote = content?.packageIncludesNote || DEFAULT_TICKET_FEE.packageIncludesNote || "Đã bao gồm 02 Đại biểu chính thức & 01 Gian hàng Triển lãm tiêu chuẩn";
+  const sharedRoomPrice = content?.extraDelegateSharedRoomPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
+  const singleRoomPrice = content?.extraDelegateSingleRoomPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
+  const lunchPrice = content?.extraDelegateLunchPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 200000;
+
   const inclusionsTitle = content?.inclusionsTitle || DEFAULT_TICKET_FEE.inclusionsTitle || "Gói dịch vụ đã bao gồm:";
   const inclusions = content?.inclusions?.length ? content.inclusions : DEFAULT_TICKET_FEE.inclusions;
   const ctaText = content?.ctaText || DEFAULT_TICKET_FEE.ctaText;
   const ctaLink = content?.ctaLink || DEFAULT_TICKET_FEE.ctaLink || "#register";
   const guaranteeText = content?.guaranteeText || DEFAULT_TICKET_FEE.guaranteeText;
-  const earlyBirdLabel = content?.earlyBirdLabel || DEFAULT_TICKET_FEE.earlyBirdLabel || "Vé ưu đãi Đăng ký sớm";
-  const remainingSlots = content?.remainingSlots ?? DEFAULT_TICKET_FEE.remainingSlots ?? 15;
+  const earlyBirdLabel = content?.earlyBirdLabel || DEFAULT_TICKET_FEE.earlyBirdLabel || "Đăng ký ngay";
+  const remainingSlots = content?.remainingSlots ?? DEFAULT_TICKET_FEE.remainingSlots ?? 45;
   const totalSlots = content?.totalSlots ?? DEFAULT_TICKET_FEE.totalSlots ?? 100;
   const earlyBirdSlotText = content?.earlyBirdSlotText || `Còn ${remainingSlots} / ${totalSlots} suất`;
   const progressPercent = totalSlots > 0 ? Math.min(100, Math.max(5, Math.round(((totalSlots - remainingSlots) / totalSlots) * 100))) : 85;
@@ -77,7 +82,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
           <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#F59E0B]/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#22C55E]/20 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             {/* Left side: Fee summary */}
             <div className="lg:col-span-5 space-y-6 text-center lg:text-left border-b lg:border-b-0 lg:border-r border-emerald-800/80 pb-8 lg:pb-0 lg:pr-8">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-[#F59E0B] text-xs font-bold border border-amber-500/30">
@@ -113,6 +118,11 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   <span className="text-lg sm:text-xl font-bold text-slate-200 shrink-0">VNĐ</span>
                   <span className="text-xs sm:text-sm font-medium text-slate-300 whitespace-nowrap shrink-0">{priceUnitText}</span>
                 </div>
+
+                <div className="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11.5px] font-bold flex items-center gap-1.5 justify-center lg:justify-start">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>{packageIncludesNote}</span>
+                </div>
               </div>
 
               {/* Early Bird Progress Bar */}
@@ -144,22 +154,22 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
               </div>
             </div>
 
-            {/* Right side: Included services */}
-            <div className="lg:col-span-7 space-y-4">
+            {/* Right side: Included services & Extra Delegate Rates */}
+            <div className="lg:col-span-7 space-y-5">
               <h3
                 className="text-lg font-bold text-emerald-100 uppercase tracking-wider flex items-center gap-2"
                 style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
               >
                 <Ticket className="w-5 h-5 text-[#F59E0B]" /> {inclusionsTitle}
               </h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-1 gap-3">
+              <ul className="grid grid-cols-1 sm:grid-cols-1 gap-2.5">
                 {inclusions.map((item, idx) => (
                   <motion.li
                     key={idx}
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                    transition={{ duration: 0.4, delay: idx * 0.04 }}
                     className="flex items-start gap-3 bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/10 transition-colors"
                   >
                     <CheckCircle2 className="w-5 h-5 text-[#22C55E] shrink-0 mt-0.5" />
@@ -169,6 +179,25 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   </motion.li>
                 ))}
               </ul>
+
+              {/* Extra Delegate Cost Policy Note Box */}
+              <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-700/60 text-xs text-emerald-100 space-y-2">
+                <p className="font-extrabold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                  📌 Chi phí Đại biểu cá nhân / Đại biểu phát sinh thêm:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11.5px] font-medium text-slate-200 pt-0.5">
+                  <div className="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                    <span className="text-emerald-300 font-bold block mb-0.5">🏨 Phòng nghỉ Khách sạn 4* May Plaza:</span>
+                    • Ở ghép (2 người/phòng): <strong className="text-amber-300">{sharedRoomPrice.toLocaleString("vi-VN")}đ</strong>/đêm/người<br />
+                    • Phòng 1 người: <strong className="text-amber-300">{singleRoomPrice.toLocaleString("vi-VN")}đ</strong>/đêm/người
+                  </div>
+                  <div className="bg-white/5 p-2.5 rounded-xl border border-white/10">
+                    <span className="text-emerald-300 font-bold block mb-0.5">🍽️ Ăn uống theo chương trình:</span>
+                    • Ăn trưa ngày 18 & 19/9: <strong className="text-amber-300">{lunchPrice.toLocaleString("vi-VN")}đ</strong> / 2 bữa<br />
+                    • Bữa sáng & Bữa tối: <strong className="text-emerald-400">Miễn phí theo chương trình</strong>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>

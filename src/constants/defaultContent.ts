@@ -222,6 +222,13 @@ export interface TicketFeeContent {
   ticketBadgeText: string;
   priceLabel?: string;
   priceUnitText?: string;
+  packageIncludesNote?: string;
+  defaultPackageDelegatesCount?: number;
+  extraDelegateSharedRoomPriceVND?: number;
+  extraDelegateSingleRoomPriceVND?: number;
+  extraDelegateLunchPriceVND?: number;
+  extraDelegateBreakfastNote?: string;
+  extraDelegateDinnerNote?: string;
   earlyBirdLabel?: string;
   remainingSlots?: number;
   totalSlots?: number;
@@ -409,7 +416,7 @@ export const DEFAULT_HERO: HeroContent = {
   venueText: "Khách sạn May Plaza, Tỉnh Thái Nguyên",
   primaryCtaText: "ĐĂNG KÝ THAM GIA",
   primaryCtaLink: "#register",
-  secondaryCtaText: "ĐĂNG KÝ GIAN HÀNG",
+  secondaryCtaText: "",
   secondaryCtaLink: "#register",
   tertiaryCtaText: "THAM KHẢO GÓI TÀI TRỢ",
   tertiaryCtaLink: "#sponsors",
@@ -770,20 +777,29 @@ export const DEFAULT_TIMELINE: TimelineContent = {
 export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   badge: "CHI PHÍ THAM DỰ",
   title: "Đăng Ký Vé Tham Dự Diễn Đàn",
-  subtitle: "Trọn gói quyền lợi tham dự chuỗi hoạt động 3 ngày tại Thái Nguyên.",
-  priceVND: 1450000,
-  originalPriceVND: 2500000,
-  ticketBadgeText: "Vé Tham gia Chính thức",
+  subtitle: "Trọn gói quyền lợi tham dự chuỗi hoạt động 3 ngày tại Thái Nguyên (Đã bao gồm 02 Đại biểu & 01 Gian hàng).",
+  priceVND: 3000000,
+  originalPriceVND: 4000000,
+  ticketBadgeText: "Gói Vé Tham Gia Chính Thức",
   priceLabel: "CHI PHÍ NIÊM YẾT",
-  priceUnitText: "/ Vé",
-  earlyBirdLabel: "Vé ưu đãi Đăng ký sớm",
-  remainingSlots: 15,
+  priceUnitText: "/ Gói (2 Đại biểu + 1 Gian hàng)",
+  packageIncludesNote: "Đã bao gồm 02 Đại biểu chính thức & 01 Gian hàng Triển lãm tiêu chuẩn",
+  defaultPackageDelegatesCount: 2,
+  extraDelegateSharedRoomPriceVND: 350000,
+  extraDelegateSingleRoomPriceVND: 700000,
+  extraDelegateLunchPriceVND: 200000,
+  extraDelegateBreakfastNote: "Bữa sáng miễn phí theo phòng",
+  extraDelegateDinnerNote: "Bữa tối miễn phí theo Chương trình",
+  earlyBirdLabel: "Đăng ký ngay",
+  remainingSlots: 45,
   totalSlots: 100,
-  earlyBirdSlotText: "Còn 15 / 100 suất",
+  earlyBirdSlotText: "Còn 45 / 100 suất",
   inclusions: [
-    "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel",
+    "01 Gian hàng Triển lãm tiêu chuẩn (2m x 1,5m tại sảnh May Plaza)",
+    "02 Thẻ Đại biểu chính thức tham dự trọn gói chuỗi sự kiện 3 ngày",
+    "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel (ở ghép 2 người/phòng)",
     "Bữa sáng Buffet cao cấp hàng ngày",
-    "Các bữa ăn trưa chính theo chương trình",
+    "Các bữa ăn trưa chính theo chương trình ngày 18 & 19/09",
     "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp",
     "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
     "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",

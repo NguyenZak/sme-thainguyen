@@ -343,7 +343,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                   if (typeof window !== "undefined") {
                     window.dispatchEvent(
                       new CustomEvent("selectRegistrationTab", {
-                        detail: { tab: "booth" },
+                        detail: { tab: "sponsor" },
                       })
                     );
                   }
@@ -523,7 +523,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                           }
                           window.dispatchEvent(
                             new CustomEvent("selectRegistrationTab", {
-                              detail: { tab: "booth" },
+                              detail: { tab: "sponsor" },
                             })
                           );
                         }, 100);

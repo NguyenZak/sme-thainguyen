@@ -727,35 +727,39 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
         </div>
       </div>
 
-      {/* Tabs Title */}
+      {/* Tabs Title & Labels */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÊN 3 TAB ĐĂNG KÝ MẪU</h3>
+        <div className="border-b border-slate-100 pb-3">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÊN VÀ NHÃN CÁC TAB FORM ĐĂNG KÝ (WEBSITE & MOBILE)</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Thay đổi tên các Nút / Tab lựa chọn Form Đăng Ký (Vé đại biểu, Nhà tài trợ, Gian hàng...).</p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Tab 1: Đăng ký tham gia</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Form 1: Đăng ký Vé / Tham Gia (VD: Vé Đại biểu)</label>
             <input
               type="text"
-              value={registration.delegateTab}
+              value={registration.delegateTab || ""}
               onChange={(e) => setRegistration({ ...registration, delegateTab: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">💎 Tab 2: Nhà tài trợ</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">💎 Form 2: Đăng ký Nhà Tài Trợ (VD: Nhà Tài trợ)</label>
             <input
               type="text"
-              value={registration.sponsorTab}
+              value={registration.sponsorTab || ""}
               onChange={(e) => setRegistration({ ...registration, sponsorTab: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">🎪 Tab 3: Gian hàng</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">🎪 Form 3: Đăng ký Gian Hàng (VD: Gian hàng)</label>
             <input
               type="text"
-              value={registration.boothTab}
+              value={registration.boothTab || ""}
               onChange={(e) => setRegistration({ ...registration, boothTab: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
           </div>
         </div>
@@ -769,7 +773,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
             <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Đăng ký tham gia</label>
             <input
               type="text"
-              value={registration.delegateIntro}
+              value={registration.delegateIntro || ""}
               onChange={(e) => setRegistration({ ...registration, delegateIntro: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -778,7 +782,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
             <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Nhà tài trợ</label>
             <input
               type="text"
-              value={registration.sponsorIntro}
+              value={registration.sponsorIntro || ""}
               onChange={(e) => setRegistration({ ...registration, sponsorIntro: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -787,7 +791,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
             <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Gian hàng</label>
             <input
               type="text"
-              value={registration.boothIntro}
+              value={registration.boothIntro || ""}
               onChange={(e) => setRegistration({ ...registration, boothIntro: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
@@ -866,7 +870,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
       {/* Mobile Labels */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NHÃN CÁC PHÂN LOẠI TRÊN MOBILE</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Đăng ký tham gia Mobile</label>
             <input
@@ -882,15 +886,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
               type="text"
               value={registration.mobileSponsorLabel}
               onChange={(e) => setRegistration({ ...registration, mobileSponsorLabel: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Nhãn Gian hàng Mobile</label>
-            <input
-              type="text"
-              value={registration.mobileBoothLabel}
-              onChange={(e) => setRegistration({ ...registration, mobileBoothLabel: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
@@ -929,17 +924,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
               <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-bold">Form 2</span>
             </div>
             {renderVisualEmailCanvas("sponsor")}
-          </div>
-
-          {/* 3. Form Gian Hàng */}
-          <div className="space-y-3 border border-slate-200 p-4 sm:p-5 rounded-2xl bg-slate-50/60">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <h4 className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
-                🎪 3. MẪU EMAIL XÁC NHẬN - ĐĂNG KÝ GIAN HÀNG TRIỂN LÃM
-              </h4>
-              <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-bold">Form 3</span>
-            </div>
-            {renderVisualEmailCanvas("booth")}
           </div>
         </div>
       </div>

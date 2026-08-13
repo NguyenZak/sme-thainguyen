@@ -331,7 +331,14 @@ export default function AdminPage() {
               {activeTab === "ticket_fee" && (
                 <TicketFeeEditor
                   initialFee={data.ticket_fee}
-                  onSaveSuccess={(updated) => setData((prev) => ({ ...prev, ticket_fee: updated }))}
+                  initialRegistration={data.registration}
+                  onSaveSuccess={(updatedFee, updatedReg) =>
+                    setData((prev) => ({
+                      ...prev,
+                      ticket_fee: updatedFee,
+                      ...(updatedReg ? { registration: updatedReg } : {}),
+                    }))
+                  }
                 />
               )}
               {activeTab === "registration" && (

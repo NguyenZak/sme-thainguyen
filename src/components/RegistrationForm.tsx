@@ -18,6 +18,10 @@ import {
   Store,
   Sparkles,
   CreditCard,
+  Users,
+  BedDouble,
+  Utensils,
+  Calendar,
 } from "lucide-react";
 import {
   RegistrationContent,
@@ -44,6 +48,9 @@ const formSchema = z
     sponsorTier: z.string().optional(),
     boothNumber: z.string().optional(),
     attendeesCount: z.string().optional(),
+    extraRoomType: z.enum(["shared", "single"]).optional(),
+    extraNights: z.number().optional(),
+    totalCalculatedAmount: z.number().optional(),
     networkingNeeds: z.string().optional(),
     notes: z.string().optional(),
   })
@@ -51,7 +58,7 @@ const formSchema = z
     if (data.intentTab !== "sponsor" && (!data.attendeesCount || data.attendeesCount.trim() === "")) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Số người / số gian không được để trống",
+        message: "Số người không được để trống",
         path: ["attendeesCount"],
       });
     }
@@ -71,7 +78,8 @@ export default function RegistrationForm({
   const registration = content || DEFAULT_REGISTRATION;
   const config = siteConfig || DEFAULT_SITE_CONFIG;
   const unitPrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
-  const [activeTab, setActiveTab] = useState<"delegate" | "sponsor" | "booth">("delegate");
+
+  const [activeTab, setActiveTab] = useState<"delegate" | "sponsor">("delegate");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
     open: boolean;
@@ -81,11 +89,57 @@ export default function RegistrationForm({
   }>({ open: false });
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
+  // Extra Delegate calculation states
+  const [extraRoomType, setExtraRoomType] = useState<"shared" | "single">("shared");
+  const [extraNights, setExtraNights] = useState<number>(2);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      intentTab: "delegate",
+      fullName: "",
+      company: "",
+      position: "",
+      sector: "",
+      phone: "",
+      email: "",
+      sponsorTier: registration.sponsorTiers[0] || "",
+      boothNumber: registration.boothOptions[0] || "",
+      attendeesCount: "2",
+      extraRoomType: "shared",
+      extraNights: 2,
+      networkingNeeds: "",
+      notes: "",
+    },
+  });
+
+  const watchAttendeesCountStr = watch("attendeesCount") || "2";
+  const watchCount = Math.max(1, parseInt(watchAttendeesCountStr, 10) || 2);
+  const defaultPackageDelegates = Number(ticketFee?.defaultPackageDelegatesCount) || 2;
+  const extraDelegatesCount = Math.max(0, watchCount - defaultPackageDelegates);
+
+  const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
+  const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
+  const lunchRate = Number(ticketFee?.extraDelegateLunchPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 200000;
+
+  const roomRatePerNight = extraRoomType === "single" ? singleRoomRate : sharedRoomRate;
+  const extraFeePerDelegate = (roomRatePerNight * extraNights) + lunchRate;
+  const totalExtraFees = extraDelegatesCount * extraFeePerDelegate;
+  const basePackagePrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
+  const totalCalculatedAmount = basePackagePrice + totalExtraFees;
+
   const handleGatewayCheckout = async () => {
     if (!successModal.registrationId) return;
     setCheckoutLoading(true);
     try {
-      const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+      const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
       const res = await fetch("/api/sepay/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -125,34 +179,7 @@ export default function RegistrationForm({
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      intentTab: "delegate",
-      fullName: "",
-      company: "",
-      position: "",
-      sector: "",
-      phone: "",
-      email: "",
-      sponsorTier: registration.sponsorTiers[0] || "",
-      boothNumber: registration.boothOptions[0] || "",
-      attendeesCount: "1",
-      networkingNeeds: "",
-      notes: "",
-    },
-  });
-
-  const watchCount = parseInt(watch("attendeesCount") || "1", 10);
-
-  const handleTabChange = (tab: "delegate" | "sponsor" | "booth") => {
+  const handleTabChange = (tab: "delegate" | "sponsor") => {
     setActiveTab(tab);
     setValue("intentTab", tab);
   };
@@ -163,11 +190,10 @@ export default function RegistrationForm({
       detail?: { sponsorTier?: string; boothNumber?: string }
     ) => {
       const hash = typeof window !== "undefined" ? window.location.hash : "";
-      let targetTab: "delegate" | "sponsor" | "booth" | null = tabParam || null;
+      let targetTab: "delegate" | "sponsor" | null = tabParam === "booth" ? "sponsor" : tabParam === "delegate" || tabParam === "sponsor" ? tabParam : null;
 
       if (!targetTab && hash) {
-        if (hash.includes("sponsor")) targetTab = "sponsor";
-        else if (hash.includes("booth")) targetTab = "booth";
+        if (hash.includes("sponsor") || hash.includes("booth")) targetTab = "sponsor";
         else if (hash.includes("delegate")) targetTab = "delegate";
       }
 
@@ -183,13 +209,6 @@ export default function RegistrationForm({
         if (found) {
           setValue("sponsorTier", found);
         }
-      }
-
-      if (detail?.boothNumber) {
-        const foundBooth = registration.boothOptions.find((option) =>
-          option.toLowerCase().includes(detail.boothNumber!.toLowerCase())
-        );
-        setValue("boothNumber", foundBooth || detail.boothNumber);
       }
     };
 
@@ -211,43 +230,45 @@ export default function RegistrationForm({
       window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("selectRegistrationTab", handleCustomEvent);
     };
-  }, [registration.boothOptions, registration.sponsorTiers, setValue]);
+  }, [registration.sponsorTiers, setValue]);
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
-      const typeLabel =
-        values.intentTab === "delegate"
-          ? `Đăng ký tham gia (${values.attendeesCount} vé)`
-          : values.intentTab === "sponsor"
-          ? `Nhà tài trợ: ${values.sponsorTier}`
-          : `Gian hàng triển lãm: ${values.boothNumber} (${values.attendeesCount} gian)`;
+      let typeLabel = "";
+      if (values.intentTab === "delegate") {
+        if (extraDelegatesCount > 0) {
+          typeLabel = `Đăng ký tham gia: Gói 2 đại biểu (${basePackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} đại biểu phát sinh (phòng ${extraRoomType === "single" ? "đơn" : "ở ghép"} ${extraNights} đêm + ăn trưa = +${totalExtraFees.toLocaleString("vi-VN")}đ) -> Tổng: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
+        } else {
+          typeLabel = `Đăng ký tham gia: Gói trọn gói 2 đại biểu (${basePackagePrice.toLocaleString("vi-VN")} VNĐ)`;
+        }
+      } else {
+        typeLabel = `Nhà tài trợ: ${values.sponsorTier}`;
+      }
 
       const emailSubject =
         values.intentTab === "delegate"
           ? registration.delegateEmailSubject
-          : values.intentTab === "sponsor"
-          ? registration.sponsorEmailSubject
-          : registration.boothEmailSubject;
+          : registration.sponsorEmailSubject;
 
       const emailBody =
         values.intentTab === "delegate"
           ? registration.delegateEmailBody
-          : values.intentTab === "sponsor"
-          ? registration.sponsorEmailBody
-          : registration.boothEmailBody;
+          : registration.sponsorEmailBody;
 
       const emailPosterUrl =
         values.intentTab === "delegate"
           ? registration.delegatePosterUrl
-          : values.intentTab === "sponsor"
-          ? registration.sponsorPosterUrl
-          : registration.boothPosterUrl;
+          : registration.sponsorPosterUrl;
 
       const clientRegId = `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
 
       const payload = {
         ...values,
+        extraRoomType,
+        extraNights,
+        extraDelegatesCount,
+        totalCalculatedAmount: values.intentTab === "delegate" ? totalCalculatedAmount : 0,
         registrationId: clientRegId,
         registrationType: typeLabel,
         emailSubject,
@@ -325,9 +346,9 @@ export default function RegistrationForm({
           </p>
         </motion.div>
 
-        {/* Smart 3-Tab Intent Selector */}
+        {/* Smart 2-Tab Intent Selector */}
         <div className="space-y-4">
-          <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-2xl mx-auto gap-1 sm:gap-2">
+          <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-md mx-auto gap-1 sm:gap-2">
             <button
               type="button"
               onClick={() => handleTabChange("delegate")}
@@ -344,7 +365,7 @@ export default function RegistrationForm({
             <button
               type="button"
               onClick={() => handleTabChange("sponsor")}
-              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+              className={`flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
                 activeTab === "sponsor"
                   ? "bg-[#F59E0B] text-slate-950 shadow-md"
                   : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
@@ -352,19 +373,6 @@ export default function RegistrationForm({
             >
               <Award className="w-4 h-4 shrink-0" />
               <span className="truncate">{registration.sponsorTab}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange("booth")}
-              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-                activeTab === "booth"
-                  ? "bg-[#0D3B2E] text-white shadow-md"
-                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-              }`}
-            >
-              <Store className="w-4 h-4 shrink-0" />
-              <span className="truncate">{registration.boothTab}</span>
             </button>
           </div>
 
@@ -398,12 +406,10 @@ export default function RegistrationForm({
           {/* Dynamic Form Header Badge */}
           <div className="pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">
+              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block">
                 {activeTab === "delegate"
                   ? registration.delegateTab
-                  : activeTab === "sponsor"
-                  ? registration.sponsorTab
-                  : registration.boothTab}
+                  : registration.sponsorTab}
               </span>
               <h3
                 className="text-xl font-bold text-[#0D3B2E] mt-0.5"
@@ -411,16 +417,14 @@ export default function RegistrationForm({
               >
                 {activeTab === "delegate"
                   ? registration.delegateIntro
-                  : activeTab === "sponsor"
-                  ? registration.sponsorIntro
-                  : registration.boothIntro}
+                  : registration.sponsorIntro}
               </h3>
             </div>
 
             {activeTab === "delegate" && (
               <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0D3B2E] flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-                <span>Tổng chi phí: {(watchCount * unitPrice).toLocaleString("vi-VN")} VNĐ</span>
+                <span>Tổng chi phí: {totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
               </div>
             )}
           </div>
@@ -444,8 +448,6 @@ export default function RegistrationForm({
                 </select>
               </div>
             )}
-
-
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Full Name */}
@@ -557,39 +559,156 @@ export default function RegistrationForm({
               </div>
             </div>
 
-            {/* Attendees Count & B2B Networking Needs */}
-            {activeTab !== "sponsor" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Number of Attendees */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                    Số người đăng ký <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={50}
-                    {...register("attendeesCount")}
-                    className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-bold transition-all"
-                  />
-                  {errors.attendeesCount && (
-                    <p className="text-xs text-red-500 font-medium">
-                      {errors.attendeesCount.message}
-                    </p>
-                  )}
+            {/* Attendees Count & Extra Delegate Configuration */}
+            {activeTab === "delegate" && (
+              <div className="space-y-5 pt-2 border-t border-slate-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Number of Attendees */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider flex items-center justify-between">
+                      <span>Số lượng Đại biểu tham gia <span className="text-red-500">*</span></span>
+                      <span className="text-[11px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
+                        Gói đã gồm {defaultPackageDelegates} đại biểu
+                      </span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <select
+                        {...register("attendeesCount")}
+                        className="input-focus-ring flex-1 px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-extrabold transition-all"
+                      >
+                        <option value="2">02 Đại biểu (Trong gói trọn gói)</option>
+                        <option value="3">03 Đại biểu (+1 đại biểu phát sinh)</option>
+                        <option value="4">04 Đại biểu (+2 đại biểu phát sinh)</option>
+                        <option value="5">05 Đại biểu (+3 đại biểu phát sinh)</option>
+                        <option value="6">06 Đại biểu (+4 đại biểu phát sinh)</option>
+                        <option value="7">07 Đại biểu (+5 đại biểu phát sinh)</option>
+                        <option value="8">08 Đại biểu (+6 đại biểu phát sinh)</option>
+                        <option value="9">09 Đại biểu (+7 đại biểu phát sinh)</option>
+                        <option value="10">10 Đại biểu (+8 đại biểu phát sinh)</option>
+                      </select>
+                    </div>
+                    {errors.attendeesCount && (
+                      <p className="text-xs text-red-500 font-medium">
+                        {errors.attendeesCount.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* B2B Networking Needs */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                      Nhu cầu kết nối B2B
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
+                      {...register("networkingNeeds")}
+                      className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
+                    />
+                  </div>
                 </div>
 
-                {/* B2B Networking Needs */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                    Nhu cầu kết nối B2B
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
-                    {...register("networkingNeeds")}
-                    className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
-                  />
+                {/* Extra Delegate Sub-card Configuration */}
+                {extraDelegatesCount > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
+                    className="p-5 rounded-2xl bg-amber-50/90 border border-amber-300/80 space-y-4 text-xs shadow-sm"
+                  >
+                    <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
+                      <span className="text-xs font-extrabold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-amber-600" /> Cấu hình cho {extraDelegatesCount} đại biểu phát sinh
+                      </span>
+                      <span className="px-2.5 py-1 rounded-full bg-amber-200 text-amber-900 text-xs font-black">
+                        +{extraDelegatesCount} Đại biểu thêm
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Room Choice */}
+                      <div className="space-y-2">
+                        <label className="block font-bold text-slate-800 flex items-center gap-1">
+                          <BedDouble className="w-4 h-4 text-emerald-700" /> Loại phòng Khách sạn 4* May Plaza:
+                        </label>
+                        <div className="space-y-2">
+                          <label className={`flex items-start gap-2.5 p-3 rounded-xl border transition-all cursor-pointer ${extraRoomType === "shared" ? "bg-white border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm" : "bg-white/70 border-slate-200 hover:bg-white"}`}>
+                            <input
+                              type="radio"
+                              name="extraRoomType"
+                              checked={extraRoomType === "shared"}
+                              onChange={() => setExtraRoomType("shared")}
+                              className="mt-0.5 text-emerald-600 focus:ring-emerald-500"
+                            />
+                            <div>
+                              <span className="font-bold text-slate-900 block">Ở ghép (2 người / phòng)</span>
+                              <span className="text-amber-700 font-extrabold">{sharedRoomRate.toLocaleString("vi-VN")}đ</span> / đêm / người
+                            </div>
+                          </label>
+
+                          <label className={`flex items-start gap-2.5 p-3 rounded-xl border transition-all cursor-pointer ${extraRoomType === "single" ? "bg-white border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm" : "bg-white/70 border-slate-200 hover:bg-white"}`}>
+                            <input
+                              type="radio"
+                              name="extraRoomType"
+                              checked={extraRoomType === "single"}
+                              onChange={() => setExtraRoomType("single")}
+                              className="mt-0.5 text-emerald-600 focus:ring-emerald-500"
+                            />
+                            <div>
+                              <span className="font-bold text-slate-900 block">Phòng đơn / riêng (1 người / phòng)</span>
+                              <span className="text-amber-700 font-extrabold">{singleRoomRate.toLocaleString("vi-VN")}đ</span> / đêm / người
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Nights & Meal Info */}
+                      <div className="space-y-3 flex flex-col justify-between">
+                        <div>
+                          <label className="block font-bold text-slate-800 mb-1.5 flex items-center gap-1">
+                            <Calendar className="w-4 h-4 text-emerald-700" /> Số đêm lưu trú:
+                          </label>
+                          <select
+                            value={extraNights}
+                            onChange={(e) => setExtraNights(Number(e.target.value))}
+                            className="w-full p-3 rounded-xl border border-slate-300 bg-white font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                          >
+                            <option value={2}>2 Đêm (18 & 19/09)</option>
+                            <option value={1}>1 Đêm</option>
+                            <option value={3}>3 Đêm</option>
+                          </select>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-white/90 border border-amber-200/80 space-y-1 text-[11.5px] mt-auto">
+                          <p className="font-bold text-slate-900 flex items-center gap-1">
+                            <Utensils className="w-3.5 h-3.5 text-emerald-700" /> Quyền lợi ăn uống đi kèm:
+                          </p>
+                          <p className="text-slate-700">• Ăn trưa 18 & 19/9: <strong className="text-amber-700">{lunchRate.toLocaleString("vi-VN")}đ</strong> / 2 bữa</p>
+                          <p className="text-emerald-700 font-bold">• Bữa sáng & Bữa tối: Miễn phí theo chương trình</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Live Real-time Price Calculation Summary Box */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#0D3B2E] text-white space-y-3 shadow-md border border-emerald-800">
+                  <div className="flex items-center justify-between text-xs border-b border-emerald-800/80 pb-2.5">
+                    <span className="text-slate-300 font-medium">Gói trọn gói chính (02 Đại biểu + 01 Gian hàng):</span>
+                    <span className="font-bold text-white text-sm">{basePackagePrice.toLocaleString("vi-VN")} VNĐ</span>
+                  </div>
+
+                  {extraDelegatesCount > 0 && (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-amber-300 border-b border-emerald-800/80 pb-2.5">
+                      <span>Phí phát sinh {extraDelegatesCount} Đại biểu ({extraNights} đêm {extraRoomType === "single" ? "phòng đơn" : "ở ghép"} + ăn trưa):</span>
+                      <span className="font-extrabold text-sm text-amber-400">+{totalExtraFees.toLocaleString("vi-VN")} VNĐ</span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between text-sm sm:text-base font-extrabold text-emerald-400 pt-0.5">
+                    <span className="uppercase tracking-wide text-xs sm:text-sm">Tổng Chi Phí Thanh Toán:</span>
+                    <span className="text-amber-400 text-xl sm:text-2xl font-black">{totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -612,12 +731,10 @@ export default function RegistrationForm({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-4 px-8 rounded-2xl font-extrabold text-base text-white shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-70 cursor-pointer ${
+                className={`w-full py-4 px-8 rounded-2xl font-extrabold text-base shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-70 cursor-pointer ${
                   activeTab === "sponsor"
                     ? "bg-[#F59E0B] hover:bg-[#D97706] text-slate-950"
-                    : activeTab === "booth"
-                    ? "bg-[#0D3B2E] hover:bg-[#071F18]"
-                    : "bg-[#22C55E] hover:bg-[#16A34A]"
+                    : "bg-[#22C55E] hover:bg-[#16A34A] text-white"
                 }`}
               >
                 {isSubmitting ? (
@@ -777,7 +894,7 @@ export default function RegistrationForm({
                     {tab === "delegate" && (
                       <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
                         {isDelegateSepay && !isCompleted ? (() => {
-                          const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+                          const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
                           const amountFormatted = amountVal.toLocaleString("vi-VN");
                           const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
 
