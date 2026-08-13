@@ -46,6 +46,7 @@ const formSchema = z.object({
   email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
   sponsorTier: z.string().optional(),
   boothNumber: z.string().optional(),
+  packageCount: z.string().optional(),
   attendeesCount: z.string().optional(),
   extraDelegatesCount: z.string().optional(),
   extraRoomType: z.enum(["shared", "single"]).optional(),
@@ -103,6 +104,7 @@ export default function RegistrationForm({
       email: "",
       sponsorTier: registration.sponsorTiers[0] || "",
       boothNumber: registration.boothOptions[0] || "",
+      packageCount: "1",
       extraDelegatesCount: "0",
       extraRoomType: "shared",
       extraNights: 2,
@@ -112,9 +114,13 @@ export default function RegistrationForm({
   });
 
   const defaultPackageDelegates = Number(ticketFee?.defaultPackageDelegatesCount) || 2;
+  const watchPackageCountStr = watch("packageCount") || "1";
+  const watchPackageCount = Math.max(1, parseInt(watchPackageCountStr, 10) || 1);
+  const totalPackageDelegates = watchPackageCount * defaultPackageDelegates;
+
   const watchExtraDelegatesStr = watch("extraDelegatesCount") || "0";
   const extraDelegatesCount = Math.max(0, parseInt(watchExtraDelegatesStr, 10) || 0);
-  const totalDelegatesCount = defaultPackageDelegates + extraDelegatesCount;
+  const totalDelegatesCount = totalPackageDelegates + extraDelegatesCount;
 
   const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
@@ -124,7 +130,8 @@ export default function RegistrationForm({
   const extraFeePerDelegate = (roomRatePerNight * extraNights) + lunchRate;
   const totalExtraFees = extraDelegatesCount * extraFeePerDelegate;
   const basePackagePrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
-  const totalCalculatedAmount = basePackagePrice + totalExtraFees;
+  const totalPackagePrice = watchPackageCount * basePackagePrice;
+  const totalCalculatedAmount = totalPackagePrice + totalExtraFees;
 
   const handleGatewayCheckout = async () => {
     if (!successModal.registrationId) return;
@@ -229,9 +236,9 @@ export default function RegistrationForm({
       let typeLabel = "";
       if (values.intentTab === "delegate") {
         if (extraDelegatesCount > 0) {
-          typeLabel = `Đăng ký tham gia: Gói 2 đại biểu (${basePackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} đại biểu phát sinh (phòng ${extraRoomType === "single" ? "đơn" : "ở ghép"} ${extraNights} đêm + ăn trưa = +${totalExtraFees.toLocaleString("vi-VN")}đ) -> Tổng: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
+          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} đại biểu = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} đại biểu phát sinh (phòng ${extraRoomType === "single" ? "đơn" : "ở ghép"} ${extraNights} đêm = +${totalExtraFees.toLocaleString("vi-VN")}đ) -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
         } else {
-          typeLabel = `Đăng ký tham gia: Gói trọn gói 2 đại biểu (${basePackagePrice.toLocaleString("vi-VN")} VNĐ)`;
+          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} đại biểu trọn gói = ${totalPackagePrice.toLocaleString("vi-VN")} VNĐ)`;
         }
       } else {
         typeLabel = `Nhà tài trợ: ${values.sponsorTier}`;
@@ -256,12 +263,16 @@ export default function RegistrationForm({
 
       const payload = {
         ...values,
+        packageCount: watchPackageCount,
+        packageDelegatesCount: totalPackageDelegates,
+        extraDelegatesCount,
+        totalDelegatesCount,
         extraRoomType,
         extraNights,
-        extraDelegatesCount,
         totalCalculatedAmount: values.intentTab === "delegate" ? totalCalculatedAmount : 0,
         registrationId: clientRegId,
         registrationType: typeLabel,
+        attendeesCount: `${totalDelegatesCount} đại biểu (${watchPackageCount} gói [${totalPackageDelegates} ĐB] + ${extraDelegatesCount} phát sinh)`,
         emailSubject,
         emailBody,
         emailPosterUrl,
@@ -413,9 +424,14 @@ export default function RegistrationForm({
             </div>
 
             {activeTab === "delegate" && (
-              <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0D3B2E] flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-                <span>Tổng chi phí: {totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
+              <div className="bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold text-[#0D3B2E] flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-[#F59E0B]" />
+                  <span>Tổng chi phí: <strong className="text-emerald-700 font-extrabold text-sm">{totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</strong></span>
+                </div>
+                <span className="text-[11px] text-slate-500 font-medium">
+                  ({watchPackageCount} gói [{totalPackageDelegates} ĐB]{extraDelegatesCount > 0 ? ` + ${extraDelegatesCount} phát sinh` : ""})
+                </span>
               </div>
             )}
           </div>
@@ -554,21 +570,30 @@ export default function RegistrationForm({
             {activeTab === "delegate" && (
               <div className="space-y-5 pt-2 border-t border-slate-100">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Field 1: Đại biểu trong gói chính */}
+                  {/* Field 1: Số lượng Gói vé chính đăng ký */}
                   <div className="space-y-2">
                     <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider flex items-center justify-between">
-                      <span>Đại biểu trong gói chính</span>
+                      <span>Số lượng Gói vé chính</span>
                       <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">
-                        Gói cố định
+                        {totalPackageDelegates} ĐB / {watchPackageCount} Gói
                       </span>
                     </label>
-                    <div className="w-full px-4 py-3 rounded-xl border border-emerald-300 bg-emerald-50/70 text-emerald-950 text-sm sm:text-base font-extrabold flex items-center justify-between">
-                      <span>{defaultPackageDelegates < 10 ? `0${defaultPackageDelegates}` : defaultPackageDelegates} Đại biểu (Đã bao gồm trong gói)</span>
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-black">
-                        Mặc định
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-500">Số lượng đại biểu cố định được hưởng trọn gói quyền lợi sự kiện.</p>
+                    <select
+                      {...register("packageCount")}
+                      className="input-focus-ring w-full px-4 py-3 rounded-xl border border-emerald-300 bg-white text-slate-900 text-sm sm:text-base font-extrabold transition-all"
+                    >
+                      <option value="1">01 Gói ({defaultPackageDelegates * 1 < 10 ? `0${defaultPackageDelegates * 1}` : defaultPackageDelegates * 1} Đại biểu trọn gói) - {basePackagePrice.toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="2">02 Gói ({defaultPackageDelegates * 2 < 10 ? `0${defaultPackageDelegates * 2}` : defaultPackageDelegates * 2} Đại biểu trọn gói) - {(basePackagePrice * 2).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="3">03 Gói ({defaultPackageDelegates * 3 < 10 ? `0${defaultPackageDelegates * 3}` : defaultPackageDelegates * 3} Đại biểu trọn gói) - {(basePackagePrice * 3).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="4">04 Gói ({defaultPackageDelegates * 4 < 10 ? `0${defaultPackageDelegates * 4}` : defaultPackageDelegates * 4} Đại biểu trọn gói) - {(basePackagePrice * 4).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="5">05 Gói ({defaultPackageDelegates * 5 < 10 ? `0${defaultPackageDelegates * 5}` : defaultPackageDelegates * 5} Đại biểu trọn gói) - {(basePackagePrice * 5).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="6">06 Gói ({defaultPackageDelegates * 6 < 10 ? `0${defaultPackageDelegates * 6}` : defaultPackageDelegates * 6} Đại biểu trọn gói) - {(basePackagePrice * 6).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="7">07 Gói ({defaultPackageDelegates * 7 < 10 ? `0${defaultPackageDelegates * 7}` : defaultPackageDelegates * 7} Đại biểu trọn gói) - {(basePackagePrice * 7).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="8">08 Gói ({defaultPackageDelegates * 8 < 10 ? `0${defaultPackageDelegates * 8}` : defaultPackageDelegates * 8} Đại biểu trọn gói) - {(basePackagePrice * 8).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="9">09 Gói ({defaultPackageDelegates * 9 < 10 ? `0${defaultPackageDelegates * 9}` : defaultPackageDelegates * 9} Đại biểu trọn gói) - {(basePackagePrice * 9).toLocaleString("vi-VN")} VNĐ</option>
+                      <option value="10">10 Gói ({defaultPackageDelegates * 10 < 10 ? `0${defaultPackageDelegates * 10}` : defaultPackageDelegates * 10} Đại biểu trọn gói) - {(basePackagePrice * 10).toLocaleString("vi-VN")} VNĐ</option>
+                    </select>
+                    <p className="text-[11px] text-slate-500">Mỗi gói vé bao gồm {defaultPackageDelegates} suất tham dự trọn gói quyền lợi sự kiện.</p>
                   </div>
 
                   {/* Field 2: Số đại biểu phát sinh (Ngoài gói chính) */}
