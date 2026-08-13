@@ -180,17 +180,38 @@ export async function POST(request: Request) {
         const formattedChatId = normalizeTelegramChatId(telegramChatId);
         const formattedThreadId = normalizeTelegramThreadId(targetThreadIdStr);
 
+        const totalAmountStr = data.totalCalculatedAmount && data.totalCalculatedAmount > 0
+          ? `${data.totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`
+          : "Theo thỏa thuận / Miễn phí";
+
+        const packageDetailStr = data.packageCount
+          ? `\n📦 <b>Gói chính:</b> ${data.packageCount} Gói (${data.packageDelegatesCount || (data.packageCount * 2)} Đại biểu)`
+          : "";
+
+        const extraDetailStr = data.extraDelegatesCount && Number(data.extraDelegatesCount) > 0
+          ? `\n👥 <b>Đại biểu phát sinh:</b> ${data.extraDelegatesCount} ĐB (${data.extraNights || 2} đêm ${data.extraRoomType === "single" ? "phòng đơn" : "ở ghép"})`
+          : "";
+
+        const lunch20DetailStr = data.includeDay20Lunch
+          ? `\n🍱 <b>Bữa trưa 20/09:</b> Đã đăng ký (+${(data.day20LunchTotalFee || 0).toLocaleString("vi-VN")}đ)`
+          : "";
+
         const tgMsg =
           `🔔 <b>${categoryTitle}</b>\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
+          `🆔 <b>Mã đăng ký:</b> <code>${registrationId}</code>\n` +
           `👤 <b>Họ tên:</b> ${fullName}\n` +
           `🏢 <b>Công ty / Đơn vị:</b> ${company}\n` +
           `💼 <b>Chức vụ:</b> ${position}\n` +
           `📞 <b>Số điện thoại:</b> ${phone}\n` +
           `📧 <b>Email:</b> ${email}\n` +
-          `📨 <b>Trạng thái Mail:</b> ${emailStatusText}\n` +
-          `📋 <b>Chi tiết nhu cầu:</b> ${ticketType}\n` +
+          `💰 <b>Tổng chi phí:</b> <b>${totalAmountStr}</b>` +
+          (packageDetailStr ? `${packageDetailStr}` : "") +
+          (extraDetailStr ? `${extraDetailStr}` : "") +
+          (lunch20DetailStr ? `${lunch20DetailStr}` : "") +
+          `\n📋 <b>Chi tiết đăng ký:</b> ${ticketType}\n` +
           `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n` +
+          `📨 <b>Trạng thái Email:</b> ${emailStatusText}\n` +
           `⏰ <i>Thời gian: ${new Date().toLocaleString("vi-VN")}</i>`;
 
         const cleanPhone = phone.replace(/[^0-9]/g, "");
