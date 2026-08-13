@@ -77,7 +77,7 @@ export default function RegistrationForm({
   const [successModal, setSuccessModal] = useState<{
     open: boolean;
     registrationId?: string;
-    data?: FormValues;
+    data?: Record<string, any>;
     status?: "pending" | "completed" | "confirmed";
   }>({ open: false });
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -317,7 +317,7 @@ export default function RegistrationForm({
       setSuccessModal({
         open: true,
         registrationId: regId,
-        data: values,
+        data: payload,
         status: values.intentTab === "delegate" && config.sepayEnabled ? "pending" : "completed",
       });
 
@@ -1059,7 +1059,7 @@ export default function RegistrationForm({
                     {isDelegateSepay && !isCompleted && (
                       <button
                         onClick={async () => {
-                          const amountVal = Number(successModal.data?.attendeesCount || 1) * Number(unitPrice || 0);
+                          const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
                           const qrUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
                           try {
                             const res = await fetch(qrUrl);
