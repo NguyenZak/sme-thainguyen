@@ -124,8 +124,8 @@ export default function RegistrationForm({
 
   const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
-  const lunchPricePerMeal = Number(ticketFee?.extraDelegateLunchPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 100000;
-  const lunchRate = lunchPricePerMeal * 2; // 2 bữa trưa chính ngày 18 & 19/09
+  const lunchPricePerMeal = Number(ticketFee?.extraDelegateLunchPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 0;
+  const lunchRate = lunchPricePerMeal * 2; // 2 bữa trưa chính ngày 18 & 19/09 (Miễn phí 0đ)
 
   const roomRatePerNight = extraRoomType === "single" ? singleRoomRate : sharedRoomRate;
   const extraFeePerDelegate = (roomRatePerNight * extraNights) + lunchRate;
@@ -715,8 +715,8 @@ export default function RegistrationForm({
                           <p className="font-bold text-slate-900 flex items-center gap-1">
                             <Utensils className="w-3.5 h-3.5 text-emerald-700" /> Quyền lợi ăn uống đi kèm:
                           </p>
-                          <p className="text-slate-700">• Ăn trưa ngày 18 & 19/9 (Phát sinh): <strong className="text-amber-700">{lunchPricePerMeal.toLocaleString("vi-VN")}đ</strong> / bữa (tổng {lunchRate.toLocaleString("vi-VN")}đ / 2 bữa)</p>
-                          <p className="text-emerald-700 font-bold">• Bữa sáng Buffet & Tiệc Gala Dinner: Miễn phí theo chương trình</p>
+                          <p className="text-emerald-700 font-bold">• Ăn trưa ngày 18 & 19/09: Miễn phí 02 bữa theo chương trình</p>
+                          <p className="text-emerald-700 font-bold">• Bữa sáng Buffet & Tiệc Gala Dinner: Miễn phí trọn gói</p>
                         </div>
                       </div>
                     </div>

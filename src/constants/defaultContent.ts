@@ -787,7 +787,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   defaultPackageDelegatesCount: 2,
   extraDelegateSharedRoomPriceVND: 350000,
   extraDelegateSingleRoomPriceVND: 700000,
-  extraDelegateLunchPriceVND: 100000,
+  extraDelegateLunchPriceVND: 0,
   extraDelegateBreakfastNote: "Bữa sáng miễn phí theo phòng",
   extraDelegateDinnerNote: "Bữa tối miễn phí theo Chương trình",
   earlyBirdLabel: "Đăng ký ngay",

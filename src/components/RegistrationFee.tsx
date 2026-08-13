@@ -193,9 +193,9 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   </div>
                   <div className="bg-white/5 p-2.5 rounded-xl border border-white/10">
                     <span className="text-emerald-300 font-bold block mb-0.5">🍽️ Ăn uống theo chương trình:</span>
-                    • Ăn trưa ngày 18 & 19/9 (Phát sinh): <strong className="text-amber-300">{lunchPrice.toLocaleString("vi-VN")}đ</strong> / bữa ({(lunchPrice * 2).toLocaleString("vi-VN")}đ / 2 bữa)<br />
-                    • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí theo chương trình</strong><br />
-                    <span className="text-[10.5px] text-slate-300 italic">* Đại biểu trong gói chính miễn phí trọn gói 02 bữa trưa *</span>
+                    • Ăn trưa ngày 18 & 19/9: <strong className="text-emerald-400">Miễn phí 02 bữa theo chương trình</strong><br />
+                    • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí trọn gói</strong><br />
+                    <span className="text-[10.5px] text-emerald-300 italic">* Miễn phí trọn gói các bữa ăn sáng, trưa (18 & 19/9) & Gala Dinner *</span>
                   </div>
                 </div>
               </div>
