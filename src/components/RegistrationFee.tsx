@@ -195,7 +195,8 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                     <span className="text-emerald-300 font-bold block mb-0.5">🍽️ Ăn uống theo chương trình:</span>
                     • Ăn trưa ngày 18 & 19/9: <strong className="text-emerald-400">Miễn phí 02 bữa theo chương trình</strong><br />
                     • Ăn trưa Ngày 20/9 (Tham dự thêm): <strong className="text-amber-300">{(content?.day20LunchPriceVND ?? DEFAULT_TICKET_FEE.day20LunchPriceVND ?? 100000).toLocaleString("vi-VN")}đ</strong> / người<br />
-                    • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí trọn gói</strong>
+                    • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí trọn gói</strong><br />
+                    <span className="text-[10.5px] text-amber-300/90 italic font-semibold">* Giá niêm yết trên chưa bao gồm thuế VAT *</span>
                   </div>
                 </div>
               </div>

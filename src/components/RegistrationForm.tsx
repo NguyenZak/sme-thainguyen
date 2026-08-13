@@ -772,9 +772,12 @@ export default function RegistrationForm({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-sm sm:text-base font-extrabold text-emerald-400 pt-0.5">
-                    <span className="uppercase tracking-wide text-xs sm:text-sm">Tổng Chi Phí Thanh Toán:</span>
-                    <span className="text-amber-400 text-xl sm:text-2xl font-black">{totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
+                  <div className="flex flex-col items-end pt-0.5">
+                    <div className="flex items-center justify-between w-full text-sm sm:text-base font-extrabold text-emerald-400">
+                      <span className="uppercase tracking-wide text-xs sm:text-sm">Tổng Chi Phí Thanh Toán:</span>
+                      <span className="text-amber-400 text-xl sm:text-2xl font-black">{totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
+                    </div>
+                    <span className="text-[11px] text-emerald-200/80 italic font-medium mt-1">* Giá trên chưa bao gồm thuế VAT *</span>
                   </div>
                 </div>
               </div>
