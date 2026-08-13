@@ -124,7 +124,7 @@ export default function RegistrationForm({
   const extraDelegatesCount = Math.max(0, parseInt(watchExtraDelegatesStr, 10) || 0);
   const totalDelegatesCount = totalPackageDelegates + extraDelegatesCount;
 
-  const watchIncludeDay20Lunch = watch("includeDay20Lunch") || false;
+  const watchIncludeDay20Lunch = extraNights === 3 ? (watch("includeDay20Lunch") || false) : false;
   const day20LunchUnitPrice = Number(ticketFee?.day20LunchPriceVND) ?? DEFAULT_TICKET_FEE.day20LunchPriceVND ?? 100000;
   const day20LunchTotalFee = watchIncludeDay20Lunch ? (totalDelegatesCount * day20LunchUnitPrice) : 0;
 
@@ -649,24 +649,31 @@ export default function RegistrationForm({
                   />
                 </div>
 
-                {/* Day 20 Lunch Option Card */}
-                <div className="p-4 rounded-2xl bg-[#0D3B2E]/5 border border-emerald-300/80 space-y-2">
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("includeDay20Lunch")}
-                      className="mt-1 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                    />
-                    <div>
-                      <span className="font-bold text-slate-900 text-xs sm:text-sm block flex items-center gap-1.5">
-                        🍱 Đăng ký Bữa Ăn Trưa Ngày 20/09 (+{(day20LunchUnitPrice).toLocaleString("vi-VN")} VNĐ / người)
-                      </span>
-                      <span className="text-[11.5px] text-slate-600 block mt-0.5">
-                        Ban tổ chức <strong>miễn phí 02 bữa trưa ngày 18 & 19/09</strong> theo chương trình. Quý đoàn tham dự thêm Ngày 20/09 vui lòng chọn tùy chọn này để BTC chuẩn bị suất ăn trưa ngày 20 cho {totalDelegatesCount} đại biểu ({day20LunchTotalFee > 0 ? `+${day20LunchTotalFee.toLocaleString("vi-VN")}đ` : "chưa chọn"}).
-                      </span>
-                    </div>
-                  </label>
-                </div>
+                {/* Day 20 Lunch Option Card - Automatically hidden for 1 or 2 nights stay, only visible for 3 nights stay */}
+                {extraNights === 3 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="p-4 rounded-2xl bg-[#0D3B2E]/5 border border-emerald-300/80 space-y-2"
+                  >
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        {...register("includeDay20Lunch")}
+                        className="mt-1 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                      />
+                      <div>
+                        <span className="font-bold text-slate-900 text-xs sm:text-sm block flex items-center gap-1.5">
+                          🍱 Đăng ký Bữa Ăn Trưa Ngày 20/09 (+{(day20LunchUnitPrice).toLocaleString("vi-VN")} VNĐ / người)
+                        </span>
+                        <span className="text-[11.5px] text-slate-600 block mt-0.5">
+                          Quý đoàn chọn lưu trú 3 đêm (có Ngày 20/09), vui lòng tích chọn nếu muốn BTC chuẩn bị thêm suất ăn trưa Ngày 20/09 cho {totalDelegatesCount} đại biểu ({day20LunchTotalFee > 0 ? `+${day20LunchTotalFee.toLocaleString("vi-VN")}đ` : "chưa chọn"}).
+                        </span>
+                      </div>
+                    </label>
+                  </motion.div>
+                )}
 
                 {/* Extra Delegate Sub-card Configuration */}
                 {extraDelegatesCount > 0 && (
