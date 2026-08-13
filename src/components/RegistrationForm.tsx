@@ -81,6 +81,96 @@ export default function RegistrationForm({
     status?: "pending" | "completed" | "confirmed";
   }>({ open: false });
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [userConfirmedPaid, setUserConfirmedPaid] = useState(false);
+  const [reminderSecondsLeft, setReminderSecondsLeft] = useState<number>(180);
+  const [reminderSent, setReminderSent] = useState(false);
+
+  // 3-Minute Countdown timer for automatic reminder email
+  useEffect(() => {
+    if (!successModal.open || successModal.status !== "pending" || reminderSent) return;
+
+    const interval = setInterval(() => {
+      setReminderSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          trigger3MinReminder();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [successModal.open, successModal.status, reminderSent]);
+
+  const trigger3MinReminder = async () => {
+    if (reminderSent || !successModal.registrationId) return;
+    setReminderSent(true);
+
+    const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
+    const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
+
+    try {
+      await fetch("/api/send-payment-reminder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registrationId: successModal.registrationId,
+          fullName: successModal.data?.fullName,
+          email: successModal.data?.email,
+          phone: successModal.data?.phone,
+          company: successModal.data?.company,
+          registrationType: successModal.data?.registrationType,
+          totalCalculatedAmount: amountVal,
+          sepayBankCode: config.sepayBankCode,
+          sepayAccountNumber: config.sepayAccountNumber,
+          sepayAccountName: config.sepayAccountName,
+          qrCodeUrl,
+          isUserConfirmedPaid: false,
+        }),
+      });
+
+      toast.info(
+        "📨 Đã gửi Email nhắc nhở thanh toán 3 phút!",
+        "Hóa đơn thanh toán kèm mã VietQR đã được tự động gửi tới Email của Quý khách."
+      );
+    } catch (err) {
+      console.warn("Failed to send 3-min reminder:", err);
+    }
+  };
+
+  const handleUserConfirmPaid = async () => {
+    if (userConfirmedPaid || !successModal.registrationId) return;
+    setUserConfirmedPaid(true);
+
+    const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
+
+    try {
+      await fetch("/api/send-payment-reminder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registrationId: successModal.registrationId,
+          fullName: successModal.data?.fullName,
+          email: successModal.data?.email,
+          phone: successModal.data?.phone,
+          company: successModal.data?.company,
+          registrationType: successModal.data?.registrationType,
+          totalCalculatedAmount: amountVal,
+          isUserConfirmedPaid: true,
+        }),
+      });
+
+      toast.success(
+        "✅ Đã xác nhận chuyển khoản!",
+        "Ban tổ chức đã nhận thông báo đối soát và sẽ kích hoạt vé chính thức qua Email ngay khi khớp lệnh."
+      );
+    } catch (err) {
+      console.warn("Failed to confirm paid:", err);
+      toast.error("Không thể gửi xác nhận, vui lòng thử lại!");
+      setUserConfirmedPaid(false);
+    }
+  };
 
   // Extra Delegate calculation states
   const [extraRoomType, setExtraRoomType] = useState<"shared" | "single">("shared");
@@ -313,6 +403,10 @@ export default function RegistrationForm({
         "Đăng ký thành công!",
         "Ban tổ chức đã ghi nhận thông tin & sẽ liên hệ với bạn trong 24h."
       );
+
+      setUserConfirmedPaid(false);
+      setReminderSecondsLeft(180);
+      setReminderSent(false);
 
       setSuccessModal({
         open: true,
@@ -979,10 +1073,12 @@ export default function RegistrationForm({
                             <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
                               <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
                                 <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                                  💳 Cổng Thanh Toán VietQR SePay
+                                  💳 Thanh Toán VietQR SePay
                                 </span>
-                                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
-                                  ⏳ Chờ chuyển khoản
+                                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30 font-mono">
+                                  {reminderSent
+                                    ? "✉️ Đã gửi Email nhắc"
+                                    : `⏳ Nhắc Email: ${Math.floor(reminderSecondsLeft / 60).toString().padStart(2, "0")}:${(reminderSecondsLeft % 60).toString().padStart(2, "0")}`}
                                 </span>
                               </div>
 
@@ -1001,6 +1097,25 @@ export default function RegistrationForm({
                                 <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
                                 <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
                               </div>
+
+                              {/* Prominent Confirm Paid Button */}
+                              <button
+                                type="button"
+                                onClick={handleUserConfirmPaid}
+                                disabled={userConfirmedPaid}
+                                className={`w-full py-3 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
+                                  userConfirmedPaid
+                                    ? "bg-slate-800 text-emerald-300 border border-emerald-500/40 cursor-default opacity-90"
+                                    : "bg-emerald-600 hover:bg-emerald-700 text-white animate-pulse"
+                                }`}
+                              >
+                                <CheckCircle2 className="w-4 h-4" />
+                                <span>
+                                  {userConfirmedPaid
+                                    ? "✅ ĐÃ GỬI XÁC NHẬN CHUYỂN KHOẢN (ĐANG ĐỐI SOÁT)"
+                                    : "XÁC NHẬN ĐÃ THANH TOÁN"}
+                                </span>
+                              </button>
 
                               <div className="w-full bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-xl text-[11px] text-emerald-300 font-medium text-center space-y-0.5 shadow-sm">
                                 <div className="font-bold flex items-center justify-center gap-1 text-emerald-300 text-xs">
