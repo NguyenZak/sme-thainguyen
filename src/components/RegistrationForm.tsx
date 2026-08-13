@@ -959,7 +959,7 @@ export default function RegistrationForm({
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
             {(() => {
               const tab = successModal.data?.intentTab || "delegate";
-              const isDelegateSepay = tab === "delegate" && config?.sepayEnabled && config?.sepayAccountNumber;
+              const isDelegateSepay = tab === "delegate" && config?.sepayEnabled !== false;
               const isCompleted = successModal.status === "completed";
 
               let modalTitle = isDelegateSepay
@@ -1097,7 +1097,10 @@ export default function RegistrationForm({
                         {isDelegateSepay && !isCompleted ? (() => {
                           const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
                           const amountFormatted = amountVal.toLocaleString("vi-VN");
-                          const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
+                          const bankCode = config?.sepayBankCode || "VCB";
+                          const accountNumber = config?.sepayAccountNumber || "1230446868";
+                          const accountName = config?.sepayAccountName || "HIEP HOI DNNVV THAI NGUYEN";
+                          const qrCodeUrl = config?.customQrImage || `https://qr.sepay.vn/img?bank=${bankCode}&acc=${accountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
 
                           return (
                             <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
@@ -1121,9 +1124,9 @@ export default function RegistrationForm({
                               </div>
 
                               <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
-                                <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{config.sepayBankCode || "MBBank"}</b></div>
-                                <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{config.sepayAccountNumber}</b></div>
-                                <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{config.sepayAccountName}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{bankCode}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{accountNumber}</b></div>
+                                <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{accountName}</b></div>
                                 <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
                                 <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
                               </div>
