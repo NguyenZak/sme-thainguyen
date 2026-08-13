@@ -55,18 +55,64 @@ import {
 } from "@/constants/defaultContent";
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
+  const [activeTab, setActiveTabState] = useState<AdminTab>("dashboard");
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string>("");
   const [registrationsList, setRegistrationsList] = useState<RegistrationRecord[]>([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  // Restore active tab from URL query param or localStorage on initial mount
   useEffect(() => {
-    const saved = localStorage.getItem("admin_sidebar_collapsed");
-    if (saved !== null) {
-      setSidebarCollapsed(saved === "true");
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("admin_sidebar_collapsed");
+      if (saved !== null) {
+        setSidebarCollapsed(saved === "true");
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabFromUrl = urlParams.get("tab") as AdminTab | null;
+      const tabFromStorage = localStorage.getItem("admin_active_tab") as AdminTab | null;
+
+      const validTabs: AdminTab[] = [
+        "dashboard",
+        "general",
+        "sepay_qr",
+        "registrations",
+        "navbar",
+        "hero",
+        "statistics",
+        "about",
+        "speakers",
+        "benefits",
+        "timeline",
+        "ticket_fee",
+        "registration",
+        "sponsors",
+        "booths",
+        "faq",
+        "footer",
+      ];
+
+      const initialTab =
+        tabFromUrl && validTabs.includes(tabFromUrl)
+          ? tabFromUrl
+          : tabFromStorage && validTabs.includes(tabFromStorage)
+          ? tabFromStorage
+          : "dashboard";
+
+      setActiveTabState(initialTab);
     }
   }, []);
+
+  const setActiveTab = (tab: AdminTab) => {
+    setActiveTabState(tab);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("admin_active_tab", tab);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", tab);
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
 
   const handleToggleSidebar = () => {
     setSidebarCollapsed((prev) => {
