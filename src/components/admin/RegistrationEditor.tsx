@@ -734,7 +734,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
           <p className="text-xs text-slate-500 mt-0.5">Thay đổi tên các Nút / Tab lựa chọn Form Đăng Ký (Vé đại biểu, Nhà tài trợ, Gian hàng...).</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">🎟️ Form 1: Đăng ký Vé / Tham Gia (VD: Vé Đại biểu)</label>
             <input
@@ -753,22 +753,13 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">🎪 Form 3: Đăng ký Gian Hàng (VD: Gian hàng)</label>
-            <input
-              type="text"
-              value={registration.boothTab || ""}
-              onChange={(e) => setRegistration({ ...registration, boothTab: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
-            />
-          </div>
         </div>
       </div>
 
       {/* Tab Introductions */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">NỘI DUNG GIỚI THIỆU TỪNG TAB</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Đăng ký tham gia</label>
             <input
@@ -784,15 +775,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
               type="text"
               value={registration.sponsorIntro || ""}
               onChange={(e) => setRegistration({ ...registration, sponsorIntro: e.target.value })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả Tab Gian hàng</label>
-            <input
-              type="text"
-              value={registration.boothIntro || ""}
-              onChange={(e) => setRegistration({ ...registration, boothIntro: e.target.value })}
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
             />
           </div>
@@ -825,40 +807,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
                 onClick={() => removeSponsorTier(index)}
                 className="p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors"
                 title="Xóa gói tài trợ này"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Booth Options List */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">TÙY CHỌN GIAN HÀNG TRONG DROPDOWN</h3>
-          <button
-            type="button"
-            onClick={addBoothOption}
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-900 hover:text-black bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" /> Thêm Gian Hàng
-          </button>
-        </div>
-        <div className="space-y-3">
-          {registration.boothOptions.map((option, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={option}
-                onChange={(e) => handleBoothChange(index, e.target.value)}
-                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => removeBoothOption(index)}
-                className="p-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 transition-colors"
-                title="Xóa tùy chọn này"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
