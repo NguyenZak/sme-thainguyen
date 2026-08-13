@@ -754,14 +754,21 @@ export default function RegistrationForm({
                 {/* Live Real-time Price Calculation Summary Box */}
                 <div className="p-4 sm:p-5 rounded-2xl bg-[#0D3B2E] text-white space-y-3 shadow-md border border-emerald-800">
                   <div className="flex items-center justify-between text-xs border-b border-emerald-800/80 pb-2.5">
-                    <span className="text-slate-300 font-medium">Gói trọn gói chính (02 Đại biểu + 01 Gian hàng):</span>
-                    <span className="font-bold text-white text-sm">{basePackagePrice.toLocaleString("vi-VN")} VNĐ</span>
+                    <span className="text-slate-300 font-medium">Gói trọn gói chính ({watchPackageCount} gói = {totalPackageDelegates < 10 ? `0${totalPackageDelegates}` : totalPackageDelegates} Đại biểu):</span>
+                    <span className="font-bold text-white text-sm">{totalPackagePrice.toLocaleString("vi-VN")} VNĐ</span>
                   </div>
 
                   {extraDelegatesCount > 0 && (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-amber-300 border-b border-emerald-800/80 pb-2.5">
-                      <span>Phí phát sinh {extraDelegatesCount} Đại biểu ({extraNights} đêm {extraRoomType === "single" ? "phòng đơn" : "ở ghép"} + ăn trưa):</span>
+                      <span>Phí phát sinh {extraDelegatesCount} Đại biểu ({extraNights} đêm {extraRoomType === "single" ? "phòng đơn" : "ở ghép"}):</span>
                       <span className="font-extrabold text-sm text-amber-400">+{totalExtraFees.toLocaleString("vi-VN")} VNĐ</span>
+                    </div>
+                  )}
+
+                  {watchIncludeDay20Lunch && (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-amber-300 border-b border-emerald-800/80 pb-2.5">
+                      <span>Phí ăn trưa Ngày 20/09 ({totalDelegatesCount} Đại biểu × {day20LunchUnitPrice.toLocaleString("vi-VN")}đ):</span>
+                      <span className="font-extrabold text-sm text-amber-400">+{day20LunchTotalFee.toLocaleString("vi-VN")} VNĐ</span>
                     </div>
                   )}
 
