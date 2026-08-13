@@ -33,36 +33,27 @@ import {
 } from "@/constants/defaultContent";
 import { toast } from "@/components/ui/Toast";
 
-const formSchema = z
-  .object({
-    intentTab: z.enum(["delegate", "sponsor", "booth"]),
-    fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
-    company: z.string().min(2, "Vui lòng nhập tên đơn vị / tổ chức"),
-    position: z.string().min(1, "Vui lòng nhập chức vụ"),
-    sector: z.string().min(1, "Vui lòng nhập lĩnh vực hoạt động"),
-    phone: z
-      .string()
-      .min(9, "Số điện thoại không hợp lệ")
-      .regex(/^[0-9+\s-]{9,15}$/, "Số điện thoại chứa ký tự không hợp lệ"),
-    email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
-    sponsorTier: z.string().optional(),
-    boothNumber: z.string().optional(),
-    attendeesCount: z.string().optional(),
-    extraRoomType: z.enum(["shared", "single"]).optional(),
-    extraNights: z.number().optional(),
-    totalCalculatedAmount: z.number().optional(),
-    networkingNeeds: z.string().optional(),
-    notes: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.intentTab !== "sponsor" && (!data.attendeesCount || data.attendeesCount.trim() === "")) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Số người không được để trống",
-        path: ["attendeesCount"],
-      });
-    }
-  });
+const formSchema = z.object({
+  intentTab: z.enum(["delegate", "sponsor", "booth"]),
+  fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
+  company: z.string().min(2, "Vui lòng nhập tên đơn vị / tổ chức"),
+  position: z.string().min(1, "Vui lòng nhập chức vụ"),
+  sector: z.string().min(1, "Vui lòng nhập lĩnh vực hoạt động"),
+  phone: z
+    .string()
+    .min(9, "Số điện thoại không hợp lệ")
+    .regex(/^[0-9+\s-]{9,15}$/, "Số điện thoại chứa ký tự không hợp lệ"),
+  email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
+  sponsorTier: z.string().optional(),
+  boothNumber: z.string().optional(),
+  attendeesCount: z.string().optional(),
+  extraDelegatesCount: z.string().optional(),
+  extraRoomType: z.enum(["shared", "single"]).optional(),
+  extraNights: z.number().optional(),
+  totalCalculatedAmount: z.number().optional(),
+  networkingNeeds: z.string().optional(),
+  notes: z.string().optional(),
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -112,7 +103,7 @@ export default function RegistrationForm({
       email: "",
       sponsorTier: registration.sponsorTiers[0] || "",
       boothNumber: registration.boothOptions[0] || "",
-      attendeesCount: "2",
+      extraDelegatesCount: "0",
       extraRoomType: "shared",
       extraNights: 2,
       networkingNeeds: "",
@@ -120,10 +111,10 @@ export default function RegistrationForm({
     },
   });
 
-  const watchAttendeesCountStr = watch("attendeesCount") || "2";
-  const watchCount = Math.max(1, parseInt(watchAttendeesCountStr, 10) || 2);
   const defaultPackageDelegates = Number(ticketFee?.defaultPackageDelegatesCount) || 2;
-  const extraDelegatesCount = Math.max(0, watchCount - defaultPackageDelegates);
+  const watchExtraDelegatesStr = watch("extraDelegatesCount") || "0";
+  const extraDelegatesCount = Math.max(0, parseInt(watchExtraDelegatesStr, 10) || 0);
+  const totalDelegatesCount = defaultPackageDelegates + extraDelegatesCount;
 
   const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
@@ -559,53 +550,68 @@ export default function RegistrationForm({
               </div>
             </div>
 
-            {/* Attendees Count & Extra Delegate Configuration */}
+            {/* Separate Delegate Fields: Package Delegates vs Extra Delegates */}
             {activeTab === "delegate" && (
               <div className="space-y-5 pt-2 border-t border-slate-100">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Number of Attendees */}
+                  {/* Field 1: Đại biểu trong gói chính */}
                   <div className="space-y-2">
                     <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider flex items-center justify-between">
-                      <span>Số lượng Đại biểu tham gia <span className="text-red-500">*</span></span>
-                      <span className="text-[11px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
-                        Gói đã gồm {defaultPackageDelegates} đại biểu
+                      <span>Đại biểu trong gói chính</span>
+                      <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">
+                        Gói cố định
                       </span>
                     </label>
-                    <div className="flex items-center gap-2">
-                      <select
-                        {...register("attendeesCount")}
-                        className="input-focus-ring flex-1 px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-extrabold transition-all"
-                      >
-                        <option value="2">02 Đại biểu (Trong gói trọn gói)</option>
-                        <option value="3">03 Đại biểu (+1 đại biểu phát sinh)</option>
-                        <option value="4">04 Đại biểu (+2 đại biểu phát sinh)</option>
-                        <option value="5">05 Đại biểu (+3 đại biểu phát sinh)</option>
-                        <option value="6">06 Đại biểu (+4 đại biểu phát sinh)</option>
-                        <option value="7">07 Đại biểu (+5 đại biểu phát sinh)</option>
-                        <option value="8">08 Đại biểu (+6 đại biểu phát sinh)</option>
-                        <option value="9">09 Đại biểu (+7 đại biểu phát sinh)</option>
-                        <option value="10">10 Đại biểu (+8 đại biểu phát sinh)</option>
-                      </select>
+                    <div className="w-full px-4 py-3 rounded-xl border border-emerald-300 bg-emerald-50/70 text-emerald-950 text-sm sm:text-base font-extrabold flex items-center justify-between">
+                      <span>{defaultPackageDelegates < 10 ? `0${defaultPackageDelegates}` : defaultPackageDelegates} Đại biểu (Đã bao gồm trong gói)</span>
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-black">
+                        Mặc định
+                      </span>
                     </div>
-                    {errors.attendeesCount && (
-                      <p className="text-xs text-red-500 font-medium">
-                        {errors.attendeesCount.message}
-                      </p>
-                    )}
+                    <p className="text-[11px] text-slate-500">Số lượng đại biểu cố định được hưởng trọn gói quyền lợi sự kiện.</p>
                   </div>
 
-                  {/* B2B Networking Needs */}
+                  {/* Field 2: Số đại biểu phát sinh (Ngoài gói chính) */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
-                      Nhu cầu kết nối B2B
+                    <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider flex items-center justify-between">
+                      <span>Số đại biểu phát sinh thêm</span>
+                      {extraDelegatesCount > 0 && (
+                        <span className="text-[10px] text-amber-800 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+                          +{extraDelegatesCount} phát sinh
+                        </span>
+                      )}
                     </label>
-                    <input
-                      type="text"
-                      placeholder="VD: Tìm nhà phân phối, đối tác cung ứng..."
-                      {...register("networkingNeeds")}
-                      className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
-                    />
+                    <select
+                      {...register("extraDelegatesCount")}
+                      className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base font-extrabold transition-all"
+                    >
+                      <option value="0">0 Đại biểu (Không phát sinh thêm)</option>
+                      <option value="1">01 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="2">02 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="3">03 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="4">04 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="5">05 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="6">06 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="7">07 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="8">08 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="9">09 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                      <option value="10">10 Đại biểu phát sinh thêm (+đêm phòng +ăn trưa)</option>
+                    </select>
+                    <p className="text-[11px] text-slate-500">Đại biểu đi cùng đăng ký thêm ngoài số lượng trong gói.</p>
                   </div>
+                </div>
+
+                {/* B2B Networking Needs */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold uppercase text-[#0D3B2E] tracking-wider">
+                    Nhu cầu kết nối B2B (Nếu có)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="VD: Tìm nhà phân phối, đối tác cung ứng, đầu tư dự án..."
+                    {...register("networkingNeeds")}
+                    className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
+                  />
                 </div>
 
                 {/* Extra Delegate Sub-card Configuration */}
