@@ -148,14 +148,19 @@ export async function POST(request: Request) {
       posterUrl = registrationContent.boothPosterUrl || "";
     } else {
       const customSub = registrationContent.delegateEmailSubject;
-      emailSubject = (customSub && customSub.includes("THANH TOÁN")) 
-        ? customSub 
+      emailSubject = customSub
+        ? customSub.replace(/\{\{registrationId\}\}/g, registrationCode).replace(/\{\{fullName\}\}/g, fullName)
         : `[SME VIỆT NAM 2026] XÁC NHẬN THANH TOÁN THÀNH CÔNG - ${registrationCode}`;
 
       const customText = registrationContent.delegateEmailBody;
-      paymentBody = (customText && customText.includes("thanh toán")) 
-        ? customText 
-        : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu {{fullName}}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
+      paymentBody = customText
+        ? customText
+            .replace(/\{\{fullName\}\}/g, fullName)
+            .replace(/\{\{company\}\}/g, company)
+            .replace(/\{\{phone\}\}/g, phone)
+            .replace(/\{\{email\}\}/g, email)
+            .replace(/\{\{registrationId\}\}/g, registrationCode)
+        : `Ban Tổ Chức Diễn đàn SME Việt Nam 2026 xác nhận đã nhận được khoản thanh toán cho đơn đăng ký của Quý đại biểu ${fullName}. Vé tham dự của Quý khách đã được kích hoạt thành công!`;
       posterUrl = registrationContent.delegatePosterUrl || "";
     }
 
