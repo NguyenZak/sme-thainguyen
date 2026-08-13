@@ -227,6 +227,7 @@ export interface TicketFeeContent {
   extraDelegateSharedRoomPriceVND?: number;
   extraDelegateSingleRoomPriceVND?: number;
   extraDelegateLunchPriceVND?: number;
+  day20LunchPriceVND?: number;
   extraDelegateBreakfastNote?: string;
   extraDelegateDinnerNote?: string;
   earlyBirdLabel?: string;
@@ -788,6 +789,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   extraDelegateSharedRoomPriceVND: 350000,
   extraDelegateSingleRoomPriceVND: 700000,
   extraDelegateLunchPriceVND: 0,
+  day20LunchPriceVND: 100000,
   extraDelegateBreakfastNote: "Bữa sáng miễn phí theo phòng",
   extraDelegateDinnerNote: "Bữa tối miễn phí theo Chương trình",
   earlyBirdLabel: "Đăng ký ngay",

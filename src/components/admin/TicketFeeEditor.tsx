@@ -372,6 +372,22 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
           </div>
 
           <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Chi Phí Bữa Ăn Trưa Ngày 20/09 <span className="text-amber-600 font-bold">*(VNĐ / người / bữa - Mặc định 100k)*</span>
+            </label>
+            <input
+              type="number"
+              value={fee.day20LunchPriceVND !== undefined ? fee.day20LunchPriceVND : 100000}
+              placeholder="100000"
+              onChange={(e) => setFee({ ...fee, day20LunchPriceVND: Number(e.target.value) })}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
+            />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Hiển thị: <strong className="text-amber-700">{(fee.day20LunchPriceVND || 100000).toLocaleString("vi-VN")} VNĐ</strong> / người / bữa (Dành cho khách tham dự Ngày 20/09)
+            </p>
+          </div>
+
+          <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Số Đại Biểu Mặc Định Trong Gói Chính</label>
             <input
               type="number"

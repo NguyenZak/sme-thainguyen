@@ -51,6 +51,7 @@ const formSchema = z.object({
   extraDelegatesCount: z.string().optional(),
   extraRoomType: z.enum(["shared", "single"]).optional(),
   extraNights: z.number().optional(),
+  includeDay20Lunch: z.boolean().optional(),
   totalCalculatedAmount: z.number().optional(),
   networkingNeeds: z.string().optional(),
   notes: z.string().optional(),
@@ -108,6 +109,7 @@ export default function RegistrationForm({
       extraDelegatesCount: "0",
       extraRoomType: "shared",
       extraNights: 2,
+      includeDay20Lunch: false,
       networkingNeeds: "",
       notes: "",
     },
@@ -122,6 +124,10 @@ export default function RegistrationForm({
   const extraDelegatesCount = Math.max(0, parseInt(watchExtraDelegatesStr, 10) || 0);
   const totalDelegatesCount = totalPackageDelegates + extraDelegatesCount;
 
+  const watchIncludeDay20Lunch = watch("includeDay20Lunch") || false;
+  const day20LunchUnitPrice = Number(ticketFee?.day20LunchPriceVND) ?? DEFAULT_TICKET_FEE.day20LunchPriceVND ?? 100000;
+  const day20LunchTotalFee = watchIncludeDay20Lunch ? (totalDelegatesCount * day20LunchUnitPrice) : 0;
+
   const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
   const lunchPricePerMeal = Number(ticketFee?.extraDelegateLunchPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 0;
@@ -132,7 +138,7 @@ export default function RegistrationForm({
   const totalExtraFees = extraDelegatesCount * extraFeePerDelegate;
   const basePackagePrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
   const totalPackagePrice = watchPackageCount * basePackagePrice;
-  const totalCalculatedAmount = totalPackagePrice + totalExtraFees;
+  const totalCalculatedAmount = totalPackagePrice + totalExtraFees + day20LunchTotalFee;
 
   const handleGatewayCheckout = async () => {
     if (!successModal.registrationId) return;
@@ -236,10 +242,11 @@ export default function RegistrationForm({
     try {
       let typeLabel = "";
       if (values.intentTab === "delegate") {
+        const day20Text = watchIncludeDay20Lunch ? ` + Ăn trưa 20/09 (+${day20LunchTotalFee.toLocaleString("vi-VN")}đ)` : "";
         if (extraDelegatesCount > 0) {
-          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} đại biểu = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} đại biểu phát sinh (phòng ${extraRoomType === "single" ? "đơn" : "ở ghép"} ${extraNights} đêm = +${totalExtraFees.toLocaleString("vi-VN")}đ) -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
+          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} ĐB phát sinh (+${totalExtraFees.toLocaleString("vi-VN")}đ)${day20Text} -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
         } else {
-          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} đại biểu trọn gói = ${totalPackagePrice.toLocaleString("vi-VN")} VNĐ)`;
+          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ)${day20Text} -> Tổng: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
         }
       } else {
         typeLabel = `Nhà tài trợ: ${values.sponsorTier}`;
@@ -270,10 +277,12 @@ export default function RegistrationForm({
         totalDelegatesCount,
         extraRoomType,
         extraNights,
+        includeDay20Lunch: watchIncludeDay20Lunch,
+        day20LunchTotalFee,
         totalCalculatedAmount: values.intentTab === "delegate" ? totalCalculatedAmount : 0,
         registrationId: clientRegId,
         registrationType: typeLabel,
-        attendeesCount: `${totalDelegatesCount} đại biểu (${watchPackageCount} gói [${totalPackageDelegates} ĐB] + ${extraDelegatesCount} phát sinh)`,
+        attendeesCount: `${totalDelegatesCount} đại biểu (${watchPackageCount} gói [${totalPackageDelegates} ĐB] + ${extraDelegatesCount} phát sinh${watchIncludeDay20Lunch ? " + Ăn trưa 20/9" : ""})`,
         emailSubject,
         emailBody,
         emailPosterUrl,
@@ -638,6 +647,25 @@ export default function RegistrationForm({
                     {...register("networkingNeeds")}
                     className="input-focus-ring w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-sm sm:text-base transition-all"
                   />
+                </div>
+
+                {/* Day 20 Lunch Option Card */}
+                <div className="p-4 rounded-2xl bg-[#0D3B2E]/5 border border-emerald-300/80 space-y-2">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register("includeDay20Lunch")}
+                      className="mt-1 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <div>
+                      <span className="font-bold text-slate-900 text-xs sm:text-sm block flex items-center gap-1.5">
+                        🍱 Đăng ký Bữa Ăn Trưa Ngày 20/09 (+{(day20LunchUnitPrice).toLocaleString("vi-VN")} VNĐ / người)
+                      </span>
+                      <span className="text-[11.5px] text-slate-600 block mt-0.5">
+                        Ban tổ chức <strong>miễn phí 02 bữa trưa ngày 18 & 19/09</strong> theo chương trình. Quý đoàn tham dự thêm Ngày 20/09 vui lòng chọn tùy chọn này để BTC chuẩn bị suất ăn trưa ngày 20 cho {totalDelegatesCount} đại biểu ({day20LunchTotalFee > 0 ? `+${day20LunchTotalFee.toLocaleString("vi-VN")}đ` : "chưa chọn"}).
+                      </span>
+                    </div>
+                  </label>
                 </div>
 
                 {/* Extra Delegate Sub-card Configuration */}
