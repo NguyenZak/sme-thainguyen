@@ -114,28 +114,150 @@ export default function RegistrationForm({
   const [userConfirmedPaid, setUserConfirmedPaid] = useState(false);
   const [reminderSecondsLeft, setReminderSecondsLeft] = useState<number>(180);
   const [reminderSent, setReminderSent] = useState(false);
+  const [hasPendingPayment, setHasPendingPayment] = useState<any>(null);
 
-  // 3-Minute Countdown timer for automatic reminder email
+  // 1. Restore active payment state from localStorage on page reload / tab open
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem("sme_active_payment");
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (!saved || !saved.registrationId) return;
+
+      if (saved.status === "pending") {
+        const createdAt = saved.createdAt || Date.now();
+        const elapsed = Math.floor((Date.now() - createdAt) / 1000);
+        const remaining = Math.max(0, 180 - elapsed);
+
+        setSuccessModal({
+          open: true,
+          registrationId: saved.registrationId,
+          data: saved.data,
+          status: "pending",
+        });
+        setReminderSecondsLeft(remaining);
+        setUserConfirmedPaid(!!saved.userConfirmedPaid);
+        setReminderSent(!!saved.reminderSent || elapsed >= 180);
+        setHasPendingPayment(saved);
+      }
+    } catch (err) {
+      console.warn("Failed to restore saved payment state:", err);
+    }
+  }, []);
+
+  // 2. Cross-tab synchronization via Storage API
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "sme_active_payment") {
+        if (!e.newValue) {
+          setHasPendingPayment(null);
+          return;
+        }
+        try {
+          const saved = JSON.parse(e.newValue);
+          if (saved && saved.registrationId) {
+            setHasPendingPayment(saved);
+            if (saved.status === "completed") {
+              setSuccessModal((prev) => ({ ...prev, status: "completed", open: true }));
+              confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+              toast.success("🟢 Thanh toán thành công!", "Giao dịch đã được xác nhận.");
+            } else if (saved.status === "pending") {
+              if (saved.userConfirmedPaid !== undefined) setUserConfirmedPaid(saved.userConfirmedPaid);
+              if (saved.reminderSent !== undefined) setReminderSent(saved.reminderSent);
+            }
+          }
+        } catch (err) {
+          console.warn("Storage sync error:", err);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  // 3. 3-Minute Countdown timer based on createdAt timestamp
   useEffect(() => {
     if (!successModal.open || successModal.status !== "pending" || reminderSent) return;
 
-    const interval = setInterval(() => {
-      setReminderSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          trigger3MinReminder();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    let createdAt = Date.now();
+    try {
+      const raw = localStorage.getItem("sme_active_payment");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.createdAt) createdAt = parsed.createdAt;
+      }
+    } catch {}
 
+    const updateTimer = () => {
+      const elapsed = Math.floor((Date.now() - createdAt) / 1000);
+      const remaining = Math.max(0, 180 - elapsed);
+      setReminderSecondsLeft(remaining);
+
+      if (remaining <= 0 && !reminderSent) {
+        trigger3MinReminder();
+      }
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
   }, [successModal.open, successModal.status, reminderSent]);
+
+  // 4. Realtime Status Polling from Supabase (SePay webhook or Admin CMS confirmation)
+  useEffect(() => {
+    if (!successModal.open || successModal.status !== "pending" || !successModal.registrationId) return;
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`/api/register/status?registrationId=${encodeURIComponent(successModal.registrationId!)}`);
+        const resData = await res.json();
+
+        if (resData.success && resData.status === "completed") {
+          setSuccessModal((prev) => ({ ...prev, status: "completed" }));
+          setHasPendingPayment(null);
+
+          // Update local storage
+          try {
+            const raw = localStorage.getItem("sme_active_payment");
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              parsed.status = "completed";
+              localStorage.setItem("sme_active_payment", JSON.stringify(parsed));
+            }
+          } catch {}
+
+          confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+          toast.success(
+            "🟢 THANH TOÁN THÀNH CÔNG!",
+            "Hệ thống đã nhận chuyển khoản và tự động kích hoạt vé tham dự của bạn."
+          );
+        }
+      } catch (err) {
+        console.warn("Polling payment status error:", err);
+      }
+    };
+
+    checkStatus();
+    const pollInterval = setInterval(checkStatus, 5000);
+    return () => clearInterval(pollInterval);
+  }, [successModal.open, successModal.status, successModal.registrationId]);
 
   const trigger3MinReminder = async () => {
     if (reminderSent || !successModal.registrationId) return;
     setReminderSent(true);
+
+    // Sync reminderSent to localStorage
+    try {
+      const raw = localStorage.getItem("sme_active_payment");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        parsed.reminderSent = true;
+        localStorage.setItem("sme_active_payment", JSON.stringify(parsed));
+      }
+    } catch {}
 
     const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
     const qrCodeUrl = config.customQrImage || `https://qr.sepay.vn/img?bank=${config.sepayBankCode || "MB"}&acc=${config.sepayAccountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
@@ -173,6 +295,16 @@ export default function RegistrationForm({
     if (userConfirmedPaid || !successModal.registrationId) return;
     setUserConfirmedPaid(true);
 
+    // Sync userConfirmedPaid to localStorage
+    try {
+      const raw = localStorage.getItem("sme_active_payment");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        parsed.userConfirmedPaid = true;
+        localStorage.setItem("sme_active_payment", JSON.stringify(parsed));
+      }
+    } catch {}
+
     const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
 
     try {
@@ -192,12 +324,9 @@ export default function RegistrationForm({
       });
 
       toast.success(
-        "✅ Đã xác nhận chuyển khoản!",
-        "Ban tổ chức đã nhận thông báo đối soát và sẽ kích hoạt vé chính thức qua Email ngay khi khớp lệnh."
+        "✅ Đã gửi xác nhận chuyển khoản!",
+        "Ban tổ chức đã nhận thông báo đối soát và đang tự động xác thực cổng thanh toán SePay..."
       );
-      setTimeout(() => {
-        setSuccessModal({ open: false });
-      }, 500);
     } catch (err) {
       console.warn("Failed to confirm paid:", err);
       toast.error("Không thể gửi xác nhận, vui lòng thử lại!");
@@ -451,11 +580,34 @@ export default function RegistrationForm({
       setReminderSecondsLeft(180);
       setReminderSent(false);
 
+      const isDelegateSepay = values.intentTab === "delegate" && config.sepayEnabled !== false;
+      const initialStatus = isDelegateSepay ? "pending" : "completed";
+
+      if (isDelegateSepay) {
+        const savedState = {
+          registrationId: regId,
+          data: payload,
+          status: "pending",
+          createdAt: Date.now(),
+          userConfirmedPaid: false,
+          reminderSent: false,
+        };
+        try {
+          localStorage.setItem("sme_active_payment", JSON.stringify(savedState));
+          setHasPendingPayment(savedState);
+        } catch (e) {
+          console.warn("Failed to save payment state:", e);
+        }
+      } else {
+        localStorage.removeItem("sme_active_payment");
+        setHasPendingPayment(null);
+      }
+
       setSuccessModal({
         open: true,
         registrationId: regId,
         data: payload,
-        status: values.intentTab === "delegate" && config.sepayEnabled ? "pending" : "completed",
+        status: initialStatus,
       });
 
       reset();
@@ -1294,6 +1446,34 @@ export default function RegistrationForm({
                 </div>
               );
             })()}
+          </div>
+        )}
+
+        {/* Floating Sticky Widget when Modal is minimized/closed while pending */}
+        {!successModal.open && hasPendingPayment && hasPendingPayment.status === "pending" && (
+          <div className="fixed bottom-6 right-6 z-40 bg-slate-900 text-white p-3 sm:p-4 rounded-2xl shadow-2xl border border-amber-500/50 flex items-center gap-3 animate-pulse">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold shrink-0">
+              <Clock className="w-5 h-5 animate-spin" />
+            </div>
+            <div className="text-left text-xs">
+              <div className="font-extrabold text-amber-300">
+                ⏳ Giao dịch đếm ngược: <span className="font-mono text-white">{hasPendingPayment.registrationId}</span>
+              </div>
+              <p className="text-[11px] text-slate-300">Form sẽ giữ đến khi thanh toán hoàn tất.</p>
+            </div>
+            <button
+              onClick={() => {
+                setSuccessModal({
+                  open: true,
+                  registrationId: hasPendingPayment.registrationId,
+                  data: hasPendingPayment.data,
+                  status: "pending",
+                });
+              }}
+              className="ml-2 px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs hover:bg-amber-400 transition-all shrink-0 cursor-pointer shadow-md"
+            >
+              Mở lại QR
+            </button>
           </div>
         )}
       </div>

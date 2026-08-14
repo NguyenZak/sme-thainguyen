@@ -16,8 +16,11 @@ import {
   CreditCard,
   Send,
   Mail,
+  Eye,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import RegistrationDetailModal from "./RegistrationDetailModal";
+import LogisticsSummaryWidget from "./LogisticsSummaryWidget";
 
 export interface RegistrationRecord {
   id: string;
@@ -72,6 +75,7 @@ export default function RegistrationsManager() {
   const [categoryFilter, setCategoryFilter] = useState<FormCategory>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [selectedRecordForModal, setSelectedRecordForModal] = useState<RegistrationRecord | null>(null);
 
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -356,6 +360,9 @@ export default function RegistrationsManager() {
         </div>
       </div>
 
+      {/* ── Executive Logistics & Meal Catering Preparation Summary Widget ── */}
+      <LogisticsSummaryWidget registrations={registrations} />
+
       {/* ── Stat Cards Summary ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <button
@@ -599,6 +606,16 @@ export default function RegistrationsManager() {
                       {/* Fast Action Buttons */}
                       <td className="px-4 py-3.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedRecordForModal(r)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shadow-xs"
+                            title="Xem chi tiết xếp phòng & suất ăn"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-slate-600" />
+                            <span>Chi Tiết</span>
+                          </button>
+
                           {r.status !== "completed" ? (
                             <button
                               type="button"
@@ -659,6 +676,22 @@ export default function RegistrationsManager() {
           </div>
         )}
       </div>
+
+      {/* Registration Detail Modal */}
+      <RegistrationDetailModal
+        record={selectedRecordForModal}
+        onClose={() => setSelectedRecordForModal(null)}
+        onConfirmPayment={async (id, name) => {
+          const target = registrations.find((r) => r.id === id);
+          const cat = target ? getFormCategory(target.ticket_type) : "delegate";
+          await confirmPaymentManual(id, name, cat, true);
+        }}
+        onStatusChange={(id, newStatus) => {
+          const target = registrations.find((r) => r.id === id);
+          const cat = target ? getFormCategory(target.ticket_type) : "delegate";
+          updateStatus(id, newStatus, target?.full_name, cat);
+        }}
+      />
     </div>
   );
 }

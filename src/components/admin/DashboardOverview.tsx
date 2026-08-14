@@ -30,6 +30,8 @@ import {
 import { AdminTab } from "./AdminSidebar";
 import { RegistrationRecord, getFormCategory } from "./RegistrationsManager";
 import TrafficAnalyticsSection from "./TrafficAnalyticsSection";
+import RegistrationDetailModal from "./RegistrationDetailModal";
+import LogisticsSummaryWidget from "./LogisticsSummaryWidget";
 import {
   SiteConfig,
   NavbarContent,
@@ -75,6 +77,7 @@ export default function DashboardOverview({
   registrationsCount,
   onNavigateTab,
 }: DashboardOverviewProps) {
+  const [selectedRecordForModal, setSelectedRecordForModal] = useState<RegistrationRecord | null>(null);
   // Compute registration metrics
   const totalRegs = registrationsCount || registrations.length || 0;
   const pendingRegs = registrations.filter((r) => r.status === "pending" || !r.status).length;
@@ -302,6 +305,9 @@ export default function DashboardOverview({
             </div>
           </div>
 
+          {/* Executive Logistics & Catering Summary Card */}
+          <LogisticsSummaryWidget registrations={registrations} />
+
           {/* Recent Registrations Table Card (shadcn/ui Table style) */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -341,7 +347,11 @@ export default function DashboardOverview({
                           : "Gian hàng";
 
                       return (
-                        <tr key={reg.id} className="hover:bg-slate-50/60 transition-colors">
+                        <tr
+                          key={reg.id}
+                          onClick={() => setSelectedRecordForModal(reg)}
+                          className="hover:bg-slate-50/80 transition-colors cursor-pointer"
+                        >
                           <td className="py-3 px-4 font-medium text-slate-900">
                             <div>{reg.full_name || "—"}</div>
                             <div className="text-[11px] text-slate-400 font-normal">{reg.phone || reg.email}</div>
@@ -469,6 +479,12 @@ export default function DashboardOverview({
           </div>
         </div>
       </div>
+
+      {/* Registration Detail Modal */}
+      <RegistrationDetailModal
+        record={selectedRecordForModal}
+        onClose={() => setSelectedRecordForModal(null)}
+      />
     </div>
   );
 }
