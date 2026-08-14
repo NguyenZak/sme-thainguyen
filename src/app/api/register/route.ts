@@ -192,8 +192,13 @@ export async function POST(request: Request) {
           ? `\n👥 <b>Đại biểu phát sinh:</b> ${data.extraDelegatesCount} ĐB (${data.extraNights || 2} đêm ${data.extraRoomType === "single" ? "phòng đơn" : "ở ghép"})`
           : "";
 
-        const lunch20DetailStr = data.includeDay20Lunch
-          ? `\n🍱 <b>Bữa trưa 20/09:</b> Đã đăng ký (+${(data.day20LunchTotalFee || 0).toLocaleString("vi-VN")}đ)`
+        const selectedLunchesStr = [
+          data.includeDay18Lunch && "Trưa 18/09",
+          data.includeDay19Lunch && "Trưa 19/09",
+        ].filter(Boolean).join(", ");
+
+        const lunchDetailStr = selectedLunchesStr
+          ? `\n🍱 <b>Bữa trưa đăng ký:</b> ${selectedLunchesStr} (+${(data.totalLunchFee || 0).toLocaleString("vi-VN")}đ)`
           : "";
 
         const tgMsg =
@@ -208,7 +213,7 @@ export async function POST(request: Request) {
           `💰 <b>Tổng chi phí:</b> <b>${totalAmountStr}</b>` +
           (packageDetailStr ? `${packageDetailStr}` : "") +
           (extraDetailStr ? `${extraDetailStr}` : "") +
-          (lunch20DetailStr ? `${lunch20DetailStr}` : "") +
+          (lunchDetailStr ? `${lunchDetailStr}` : "") +
           `\n📋 <b>Chi tiết đăng ký:</b> ${ticketType}\n` +
           `📝 <b>Ghi chú:</b> ${notes || "Không có"}\n` +
           `📨 <b>Trạng thái Email:</b> ${emailStatusText}\n` +

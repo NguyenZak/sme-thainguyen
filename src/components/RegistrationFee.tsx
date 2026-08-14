@@ -27,7 +27,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
   const packageIncludesNote = content?.packageIncludesNote || DEFAULT_TICKET_FEE.packageIncludesNote || "Đã bao gồm 02 Đại biểu chính thức & 01 Gian hàng Triển lãm tiêu chuẩn";
   const sharedRoomPrice = content?.extraDelegateSharedRoomPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomPrice = content?.extraDelegateSingleRoomPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
-  const lunchPrice = content?.extraDelegateLunchPriceVND ?? DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND ?? 200000;
+  const lunchPrice = content?.extraDelegateLunchPriceVND || DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND || 100000;
 
   const inclusionsTitle = content?.inclusionsTitle || DEFAULT_TICKET_FEE.inclusionsTitle || "Gói dịch vụ đã bao gồm:";
   const inclusions = content?.inclusions?.length ? content.inclusions : DEFAULT_TICKET_FEE.inclusions;
@@ -193,8 +193,8 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   </div>
                   <div className="bg-white/5 p-2.5 rounded-xl border border-white/10">
                     <span className="text-emerald-300 font-bold block mb-0.5">🍽️ Ăn uống theo chương trình:</span>
-                    • Ăn trưa ngày 18 & 19/9: <strong className="text-emerald-400">Miễn phí 02 bữa theo chương trình</strong><br />
-                    • Ăn trưa Ngày 20/9 (Tham dự thêm): <strong className="text-amber-300">{(content?.day20LunchPriceVND ?? DEFAULT_TICKET_FEE.day20LunchPriceVND ?? 100000).toLocaleString("vi-VN")}đ</strong> / người<br />
+                    • Ăn trưa ngày 18 & 19/9: <strong className="text-amber-300">{lunchPrice.toLocaleString("vi-VN")}đ</strong> / bữa / người<br />
+                    • Ăn trưa Ngày 20/9: <strong className="text-slate-300">Không phục vụ (Kết thúc chương trình)</strong><br />
                     • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí trọn gói</strong><br />
                     <span className="text-[10.5px] text-amber-300/90 italic font-semibold">* Giá niêm yết trên chưa bao gồm thuế VAT *</span>
                   </div>

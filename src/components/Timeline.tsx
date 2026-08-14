@@ -123,9 +123,9 @@ const SCHEDULE_DATA: DaySchedule[] = [
         highlight: true,
       },
       {
-        time: "12:00 - 13:30",
-        title: "Tiệc chia tay (Farewell Lunch) & Check-out",
-        desc: "Tiễn đoàn đại biểu, chụp ảnh lưu niệm.",
+        time: "12:00 - 13:00",
+        title: "Check-out Khách sạn & Kết thúc Diễn đàn",
+        desc: "Tiễn đoàn đại biểu, hoàn tất thủ tục trả phòng và bế mạc sự kiện.",
       },
     ],
   },
