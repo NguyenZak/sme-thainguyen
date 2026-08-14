@@ -1,5 +1,7 @@
 import { createClient as createServerSupabase } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import fs from "fs";
+import path from "path";
 import {
   DEFAULT_SITE_CONFIG,
   DEFAULT_HERO,
@@ -31,6 +33,21 @@ import {
   FooterContent,
 } from "@/constants/defaultContent";
 
+const STORE_PATH = path.join(process.cwd(), "src", "data", "cms_store.json");
+
+function getLocalStoreContent(key: string): any {
+  try {
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, "utf-8");
+      const json = JSON.parse(raw || "{}");
+      return json[key];
+    }
+  } catch (e) {
+    // ignore
+  }
+  return null;
+}
+
 const DEFAULTS: Record<string, any> = {
   site_config: DEFAULT_SITE_CONFIG,
   navbar: DEFAULT_NAVBAR,
@@ -49,7 +66,14 @@ const DEFAULTS: Record<string, any> = {
 };
 
 export async function getSectionContent<T>(key: string): Promise<T> {
-  const fallback = DEFAULTS[key] as T;
+  const codeDefault = DEFAULTS[key] as T;
+  const localSaved = getLocalStoreContent(key);
+  const baseFallback = localSaved
+    ? (Array.isArray(codeDefault)
+        ? (Array.isArray(localSaved) ? localSaved : codeDefault)
+        : { ...codeDefault, ...localSaved })
+    : codeDefault;
+
   try {
     const cookieStore = await cookies();
     const supabase = createServerSupabase(cookieStore);
@@ -60,12 +84,14 @@ export async function getSectionContent<T>(key: string): Promise<T> {
       .single();
 
     if (error || !data || !data.content) {
-      return fallback;
+      return baseFallback as T;
     }
 
-    return { ...fallback, ...data.content };
+    return (Array.isArray(baseFallback)
+      ? data.content
+      : { ...baseFallback, ...data.content }) as T;
   } catch (err) {
-    return fallback;
+    return baseFallback as T;
   }
 }
 
