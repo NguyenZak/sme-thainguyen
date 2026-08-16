@@ -1069,34 +1069,56 @@ export default function RegistrationForm({
                 )}
 
                 {/* Live Real-time Price Calculation Summary Box */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-[#0D3B2E] text-white space-y-3 shadow-md border border-emerald-800">
-                  <div className="flex items-center justify-between text-xs border-b border-emerald-800/80 pb-2.5">
-                    <span className="text-slate-300 font-medium">Gói trọn gói chính ({watchPackageCount} gói = {totalPackageDelegates < 10 ? `0${totalPackageDelegates}` : totalPackageDelegates} Đại biểu):</span>
-                    <span className="font-bold text-white text-sm">{totalPackagePrice.toLocaleString("vi-VN")} VNĐ</span>
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0B3026] via-[#0D3B2E] to-[#08281E] text-white space-y-3.5 shadow-lg border border-emerald-700/60">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-xs border-b border-emerald-800/80 pb-3">
+                    <span className="text-emerald-100 font-semibold leading-snug">
+                      Gói trọn gói chính ({watchPackageCount} gói = {totalPackageDelegates < 10 ? `0${totalPackageDelegates}` : totalPackageDelegates} Đại biểu):
+                    </span>
+                    <span className="font-extrabold text-white text-sm sm:text-base whitespace-nowrap self-end sm:self-auto">
+                      {totalPackagePrice.toLocaleString("vi-VN")} VNĐ
+                    </span>
                   </div>
 
                   {extraDelegatesCount > 0 && (
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-amber-300 border-b border-emerald-800/80 pb-2.5">
-                      <span>Phí phát sinh {extraDelegatesCount} Đại biểu ({extraNights} đêm {extraRoomType === "single" ? "phòng đơn" : "ở ghép"}):</span>
-                      <span className="font-extrabold text-sm text-amber-400">+{totalExtraFees.toLocaleString("vi-VN")} VNĐ</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-xs border-b border-emerald-800/80 pb-3">
+                      <span className="text-amber-200/90 font-medium leading-snug">
+                        Phí phát sinh {extraDelegatesCount} Đại biểu ({extraNights} đêm {extraRoomType === "single" ? "phòng đơn" : "ở ghép"}):
+                      </span>
+                      <span className="font-extrabold text-sm sm:text-base text-amber-400 whitespace-nowrap self-end sm:self-auto">
+                        +{totalExtraFees.toLocaleString("vi-VN")} VNĐ
+                      </span>
                     </div>
                   )}
 
                   {totalLunchFee > 0 && (
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-amber-300 border-b border-emerald-800/80 pb-2.5">
-                      <span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-xs border-b border-emerald-800/80 pb-3">
+                      <span className="text-amber-200/90 font-medium leading-snug">
                         Phí ăn trưa ({[watchIncludeDay18Lunch && "Bữa trưa 18/09", watchIncludeDay19Lunch && "Bữa trưa 19/09"].filter(Boolean).join(" & ")}):
                       </span>
-                      <span className="font-extrabold text-sm text-amber-400">+{totalLunchFee.toLocaleString("vi-VN")} VNĐ</span>
+                      <span className="font-extrabold text-sm sm:text-base text-amber-400 whitespace-nowrap self-end sm:self-auto">
+                        +{totalLunchFee.toLocaleString("vi-VN")} VNĐ
+                      </span>
                     </div>
                   )}
 
-                  <div className="flex flex-col items-end pt-0.5">
-                    <div className="flex items-center justify-between w-full text-sm sm:text-base font-extrabold text-emerald-400">
-                      <span className="uppercase tracking-wide text-xs sm:text-sm">Tổng Chi Phí Thanh Toán:</span>
-                      <span className="text-amber-400 text-xl sm:text-2xl font-black">{totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ</span>
+                  <div className="pt-1 flex flex-col gap-1.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <span className="uppercase tracking-wider text-xs sm:text-sm font-extrabold text-emerald-300">
+                        TỔNG CHI PHÍ THANH TOÁN:
+                      </span>
+                      <div className="flex items-baseline gap-1.5 self-end sm:self-auto whitespace-nowrap">
+                        <span
+                          className="text-amber-400 text-2xl sm:text-3xl font-black tracking-tight"
+                          style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
+                        >
+                          {totalCalculatedAmount.toLocaleString("vi-VN")}
+                        </span>
+                        <span className="text-amber-300 font-bold text-sm sm:text-base">VNĐ</span>
+                      </div>
                     </div>
-                    <span className="text-[11px] text-emerald-200/80 italic font-medium mt-1">* Giá trên chưa bao gồm thuế VAT *</span>
+                    <p className="text-[11px] text-emerald-200/70 italic font-medium text-center sm:text-right">
+                      * Giá trên chưa bao gồm thuế VAT *
+                    </p>
                   </div>
                 </div>
               </div>
