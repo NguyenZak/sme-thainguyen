@@ -315,20 +315,20 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
         </motion.div>
 
         {/* Day Tabs Switcher */}
-        <div className="flex justify-center p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-xl mx-auto gap-2">
+        <div className="flex flex-col sm:flex-row justify-center p-1.5 sm:p-2 bg-white rounded-2xl sm:rounded-3xl border border-emerald-200 shadow-sm max-w-4xl mx-auto gap-2">
           {days.map((dayItem, idx) => (
             <button
               key={dayItem.dayNumber || idx}
               onClick={() => setActiveTab(idx)}
-              className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex flex-col items-center gap-0.5 cursor-pointer ${
+              className={`flex-1 py-3 px-3 sm:px-5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 flex flex-col items-center justify-center text-center gap-1 cursor-pointer ${
                 activeTab === idx
                   ? "bg-[#0D3B2E] text-white shadow-md"
-                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+                  : "text-slate-700 hover:text-[#0D3B2E] hover:bg-slate-50"
               }`}
             >
-              <span>{dayItem.dayTitle || `Ngày ${dayItem.dayNumber}`}</span>
+              <span className="leading-snug">{dayItem.dayTitle || `Ngày ${dayItem.dayNumber}`}</span>
               <span
-                className={`text-[11px] font-medium ${
+                className={`text-[11px] font-medium tracking-wide ${
                   activeTab === idx ? "text-[#F59E0B]" : "text-slate-400"
                 }`}
               >
