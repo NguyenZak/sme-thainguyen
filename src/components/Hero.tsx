@@ -167,15 +167,23 @@ export default function Hero({ content }: { content?: HeroContent }) {
           className="hero-title space-y-3 sm:space-y-4"
         >
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
+            className="font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            {data.titlePrefix !== undefined && data.titlePrefix !== "" ? data.titlePrefix : "DIỄN ĐÀN"} <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-amber-300 inline-block min-h-[1.25em] py-2 -my-2">
+            {data.titlePrefix !== undefined && data.titlePrefix !== "" && (
+              <span className="block text-3xl sm:text-4xl lg:text-5xl font-black">
+                {data.titlePrefix}
+              </span>
+            )}
+            {data.titleSuffix !== undefined && data.titleSuffix !== "" && (
+              <span className="block text-xl sm:text-2xl lg:text-3xl font-bold text-slate-100/95 tracking-wide mt-1.5 mb-2">
+                {data.titleSuffix}
+              </span>
+            )}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-amber-300 inline-block text-3xl sm:text-5xl lg:text-6xl font-black min-h-[1.25em] py-1">
               {currentText}
               <span className="text-[#F59E0B] animate-pulse font-normal ml-0.5 opacity-90">|</span>
-            </span> <br />
-            {data.titleSuffix !== undefined && data.titleSuffix !== "" ? data.titleSuffix : "SME VIỆT NAM 2026"}
+            </span>
           </h1>
           {data.englishTitle && (
             <p className="text-sm sm:text-xl font-medium text-emerald-200 tracking-wide">

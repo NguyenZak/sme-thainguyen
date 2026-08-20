@@ -339,26 +339,26 @@ export default function HeroEditor({ initialHero, onSaveSuccess }: HeroEditorPro
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Tiêu Đề Dòng 1 (Tiền tố trên chữ gõ động)
+              Tiêu Đề Dòng 1 (Tiền tố tiêu đề)
             </label>
             <input
               type="text"
               value={hero.titlePrefix !== undefined ? hero.titlePrefix : "DIỄN ĐÀN"}
               onChange={(e) => setHero({ ...hero, titlePrefix: e.target.value })}
-              placeholder="VD: DIỄN ĐÀN"
+              placeholder="VD: DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG"
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none font-bold"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Tiêu Đề Dòng 2 (Hậu tố dưới chữ gõ động)
+              Tiêu Đề Dòng 2 (Dòng phụ nhỏ - trên chữ gõ động)
             </label>
             <input
               type="text"
-              value={hero.titleSuffix !== undefined ? hero.titleSuffix : "SME VIỆT NAM 2026"}
+              value={hero.titleSuffix !== undefined ? hero.titleSuffix : "DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026"}
               onChange={(e) => setHero({ ...hero, titleSuffix: e.target.value })}
-              placeholder="VD: SME VIỆT NAM 2026"
+              placeholder="VD: DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026"
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none font-bold"
             />
           </div>
