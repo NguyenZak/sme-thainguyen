@@ -203,10 +203,33 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                   className="text-lg sm:text-xl font-extrabold text-white leading-tight"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
-                  <FormattedText
-                    content={data.attendeesTitle || DEFAULT_ABOUT.attendeesTitle || "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao"}
-                    as="span"
-                  />
+                  {(() => {
+                    const fullTitle = data.attendeesTitle || DEFAULT_ABOUT.attendeesTitle || "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao";
+                    const hl = data.attendeesHighlightNumber !== undefined ? data.attendeesHighlightNumber : "500+";
+                    const hlColor = data.attendeesHighlightColor || "#F59E0B";
+
+                    if (fullTitle.includes("<span") || fullTitle.includes("<strong") || fullTitle.includes("<b")) {
+                      return <FormattedText content={fullTitle} as="span" />;
+                    }
+
+                    if (hl && fullTitle.includes(hl)) {
+                      const parts = fullTitle.split(hl);
+                      return (
+                        <>
+                          <FormattedText content={parts[0]} as="span" />
+                          <span
+                            className="font-black px-1 transition-colors"
+                            style={{ color: hlColor }}
+                          >
+                            {hl}
+                          </span>
+                          <FormattedText content={parts.slice(1).join(hl)} as="span" />
+                        </>
+                      );
+                    }
+
+                    return <FormattedText content={fullTitle} as="span" />;
+                  })()}
                 </h3>
                 {(data.attendeesSubtitle || DEFAULT_ABOUT.attendeesSubtitle) && (
                   <FormattedText

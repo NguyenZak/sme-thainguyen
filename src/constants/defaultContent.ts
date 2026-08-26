@@ -173,6 +173,8 @@ export interface AboutContent {
   statCardLabel: string;
   attendeesEyebrow?: string;
   attendeesTitle?: string;
+  attendeesHighlightNumber?: string;
+  attendeesHighlightColor?: string;
   attendeesSubtitle?: string;
   attendeesBadge1?: string;
   attendeesBadge2?: string;
@@ -571,6 +573,8 @@ export const DEFAULT_ABOUT: AboutContent = {
   statCardLabel: "Không gian kết nối giao thương thực tế",
   attendeesEyebrow: "✦ Thành phần Tham dự Trọng điểm ✦",
   attendeesTitle: "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao",
+  attendeesHighlightNumber: "500+",
+  attendeesHighlightColor: "#F59E0B",
   attendeesSubtitle: "Hội tụ lãnh đạo từ Chính phủ, doanh nghiệp hàng đầu và nhà đầu tư quốc tế trong 3 ngày sự kiện.",
   attendeesBadge1: "✦ Toàn quốc",
   attendeesBadge2: "🌐 FDI Quốc tế",

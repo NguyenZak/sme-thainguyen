@@ -487,6 +487,60 @@ export default function AboutEditor({ initialAbout, onSaveSuccess }: AboutEditor
                 className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
               />
             </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Từ / Số Cần Làm Nổi Bật
+              </label>
+              <input
+                type="text"
+                value={about.attendeesHighlightNumber !== undefined ? about.attendeesHighlightNumber : "500+"}
+                onChange={(e) => setAbout({ ...about, attendeesHighlightNumber: e.target.value })}
+                placeholder="VD: 500+"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                🎨 Màu Sắc Chữ Nổi Bật ({about.attendeesHighlightColor || "#F59E0B"})
+              </label>
+              <div className="flex items-center gap-2 flex-wrap">
+                <input
+                  type="color"
+                  value={about.attendeesHighlightColor || "#F59E0B"}
+                  onChange={(e) => setAbout({ ...about, attendeesHighlightColor: e.target.value })}
+                  className="w-8 h-8 rounded-lg border border-slate-300 cursor-pointer p-0.5"
+                />
+                <input
+                  type="text"
+                  value={about.attendeesHighlightColor || "#F59E0B"}
+                  onChange={(e) => setAbout({ ...about, attendeesHighlightColor: e.target.value })}
+                  placeholder="#F59E0B"
+                  className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-mono text-slate-900 focus:outline-none"
+                />
+                {/* Color quick presets */}
+                {[
+                  { name: "Vàng Gold", color: "#F59E0B" },
+                  { name: "Vàng Sáng", color: "#FBBF24" },
+                  { name: "Xanh Ngọc", color: "#10B981" },
+                  { name: "Xanh Dương", color: "#3B82F6" },
+                  { name: "Đỏ Cam", color: "#EF4444" },
+                  { name: "Tím Hồng", color: "#EC4899" },
+                ].map((preset) => (
+                  <button
+                    key={preset.color}
+                    type="button"
+                    onClick={() => setAbout({ ...about, attendeesHighlightColor: preset.color })}
+                    className="inline-flex items-center gap-1 text-[10.5px] px-2 py-1 rounded-md border border-slate-200 hover:border-slate-400 bg-white font-semibold transition-colors cursor-pointer"
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: preset.color }} />
+                    <span>{preset.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="md:col-span-3">
               <label className="block text-[11px] font-semibold text-slate-700 mb-1">
                 Mô Tả Phụ Đề (Subtitle)
