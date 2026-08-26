@@ -303,6 +303,10 @@ export interface SponsorsContent {
   title: string;
   subtitle: string;
   prospectusPdfUrl?: string;
+  ctaBadge?: string;
+  ctaTitle?: string;
+  ctaSubtitle?: string;
+  ctaButtonText?: string;
   packages?: SponsorPackageTier[];
   priorityCategories?: SponsorPriorityCategory[];
   milestones?: SponsorMilestone[];
@@ -893,6 +897,10 @@ export const DEFAULT_SPONSORS: SponsorsContent = {
   title: "Các Gói Quyền Lợi Đồng Hành Tài Trợ",
   subtitle: "Lựa chọn gói tài trợ phù hợp với chiến lược quảng bá thương hiệu, tiếp cận 500+ CEO, doanh nghiệp SME & nhà đầu tư FDI.",
   prospectusPdfUrl: "",
+  ctaBadge: "CƠ HỘI KHẲNG ĐỊNH THƯƠNG HIỆU",
+  ctaTitle: "Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp & Lãnh đạo",
+  ctaSubtitle: "Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP.",
+  ctaButtonText: "Đăng Ký Đồng Hành Ngay",
   packages: [
     {
       id: "pkg-1",

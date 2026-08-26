@@ -364,13 +364,26 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
           <div className="space-y-2 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" />
-              <span>Cơ Hội Khẳng Định Thương Hiệu</span>
+              <FormattedText
+                content={content?.ctaBadge || DEFAULT_SPONSORS.ctaBadge || "Cơ Hội Khẳng Định Thương Hiệu"}
+                as="span"
+              />
             </div>
             <h3 className="text-xl sm:text-2xl font-extrabold">
-              Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp &amp; Lãnh đạo
+              <FormattedText
+                content={content?.ctaTitle || DEFAULT_SPONSORS.ctaTitle || "Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp & Lãnh đạo"}
+                as="span"
+              />
             </h3>
             <p className="text-emerald-200 text-xs sm:text-sm max-w-xl">
-              Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP.
+              <FormattedText
+                content={
+                  content?.ctaSubtitle ||
+                  DEFAULT_SPONSORS.ctaSubtitle ||
+                  "Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP."
+                }
+                as="span"
+              />
             </p>
           </div>
           <a
@@ -386,7 +399,10 @@ export default function SponsorSection({ content }: { content?: SponsorsContent 
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs sm:text-sm bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md transition-all shrink-0 cursor-pointer"
           >
             <Handshake className="w-4 h-4" />
-            <span>Đăng Ký Đồng Hành Ngay</span>
+            <FormattedText
+              content={content?.ctaButtonText || DEFAULT_SPONSORS.ctaButtonText || "Đăng Ký Đồng Hành Ngay"}
+              as="span"
+            />
           </a>
         </motion.div>
 

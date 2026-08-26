@@ -786,6 +786,71 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
           ))}
         </div>
       </div>
+
+      {/* 5. Banner Kêu Gọi Đồng Hành (Bottom CTA Banner) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-amber-500" />
+          5. Cấu Hình Banner Kêu Gọi Đồng Hành (Bottom CTA Banner)
+        </h3>
+        <p className="text-xs text-slate-500">
+          Chỉnh sửa nội dung banner xanh ở cuối phần Tài Trợ (*"Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp..."*).
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Huy Hiệu Banner (CTA Badge)
+            </label>
+            <input
+              type="text"
+              value={sponsors.ctaBadge || ""}
+              onChange={(e) => setSponsors({ ...sponsors, ctaBadge: e.target.value })}
+              placeholder="VD: CƠ HỘI KHẲNG ĐỊNH THƯƠNG HIỆU"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Chữ Trên Nút Đăng Ký (CTA Button)
+            </label>
+            <input
+              type="text"
+              value={sponsors.ctaButtonText || ""}
+              onChange={(e) => setSponsors({ ...sponsors, ctaButtonText: e.target.value })}
+              placeholder="VD: Đăng Ký Đồng Hành Ngay"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Tiêu Đề Lớn Banner (CTA Title)
+            </label>
+            <input
+              type="text"
+              value={sponsors.ctaTitle || ""}
+              onChange={(e) => setSponsors({ ...sponsors, ctaTitle: e.target.value })}
+              placeholder="VD: Đưa thương hiệu của bạn tiếp cận 500+ Doanh nghiệp & Lãnh đạo"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Đoạn Văn Mô Tả Banner (CTA Subtitle)
+            </label>
+            <input
+              type="text"
+              value={sponsors.ctaSubtitle || ""}
+              onChange={(e) => setSponsors({ ...sponsors, ctaSubtitle: e.target.value })}
+              placeholder="VD: Trở thành Nhà tài trợ chính thức của Diễn đàn SME Việt Nam 2026 để nhận trọn bộ đặc quyền truyền thông và gian hàng VIP."
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
     </form>
   );
 }
