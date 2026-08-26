@@ -438,23 +438,92 @@ export default function AboutEditor({ initialAbout, onSaveSuccess }: AboutEditor
       </div>
 
       {/* 3. Attendee Tags (Thành phần tham dự trọng điểm VIP/GOLD/STANDARD) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              3. Khối Thành Phần Tham Dự Trọng Điểm (Attendee Tags)
+              3. Khối Thành Phần Tham Dự Trọng Điểm (Attendees Section)
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Thêm, sửa, xóa các thẻ đại biểu (Lãnh đạo Chính phủ, 500+ CEO, Quỹ đầu tư, FDI, BQL KCN...).
+              Chỉnh sửa tiêu đề khối, phụ đề, huy hiệu và danh sách các thẻ đại biểu (Lãnh đạo Chính phủ, 500+ CEO, FDI...).
             </p>
           </div>
           <button
             type="button"
             onClick={addAttendeeTag}
-            className="inline-flex items-center gap-1 text-[11px] text-amber-700 hover:text-amber-900 font-bold bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 transition-colors"
+            className="inline-flex items-center gap-1 text-[11px] text-amber-700 hover:text-amber-900 font-bold bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" /> Thêm Nhóm Đại Biểu
           </button>
+        </div>
+
+        {/* Header fields for attendees section */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider block">
+            Cấu hình Tiêu đề &amp; Huy hiệu khối Đại biểu
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Dòng Tiêu Đề Nhỏ (Eyebrow)
+              </label>
+              <input
+                type="text"
+                value={about.attendeesEyebrow || ""}
+                onChange={(e) => setAbout({ ...about, attendeesEyebrow: e.target.value })}
+                placeholder="VD: ✦ Thành phần Tham dự Trọng điểm ✦"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Tiêu Đề Chính Khối Đại Biểu (Title)
+              </label>
+              <input
+                type="text"
+                value={about.attendeesTitle || ""}
+                onChange={(e) => setAbout({ ...about, attendeesTitle: e.target.value })}
+                placeholder="VD: Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+            <div className="md:col-span-3">
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Mô Tả Phụ Đề (Subtitle)
+              </label>
+              <input
+                type="text"
+                value={about.attendeesSubtitle || ""}
+                onChange={(e) => setAbout({ ...about, attendeesSubtitle: e.target.value })}
+                placeholder="VD: Hội tụ lãnh đạo từ Chính phủ, doanh nghiệp hàng đầu và nhà đầu tư quốc tế trong 3 ngày sự kiện."
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Huy Hiệu 1 (Badge 1)
+              </label>
+              <input
+                type="text"
+                value={about.attendeesBadge1 || ""}
+                onChange={(e) => setAbout({ ...about, attendeesBadge1: e.target.value })}
+                placeholder="VD: ✦ Toàn quốc"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                Huy Hiệu 2 (Badge 2)
+              </label>
+              <input
+                type="text"
+                value={about.attendeesBadge2 || ""}
+                onChange={(e) => setAbout({ ...about, attendeesBadge2: e.target.value })}
+                placeholder="VD: 🌐 FDI Quốc tế"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">

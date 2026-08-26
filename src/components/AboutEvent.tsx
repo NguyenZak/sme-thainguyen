@@ -192,7 +192,10 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-px w-8 bg-amber-500/50" />
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.28em] text-amber-400 whitespace-nowrap">
-                    ✦ Thành phần Tham dự Trọng điểm ✦
+                    <FormattedText
+                      content={data.attendeesEyebrow || DEFAULT_ABOUT.attendeesEyebrow || "✦ Thành phần Tham dự Trọng điểm ✦"}
+                      as="span"
+                    />
                   </span>
                   <div className="h-px flex-1 bg-amber-500/20" />
                 </div>
@@ -200,23 +203,30 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                   className="text-lg sm:text-xl font-extrabold text-white leading-tight"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
-                  Quy tụ hơn{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">
-                    500+
-                  </span>{" "}
-                  Đại biểu & Khách mời Cấp cao
+                  <FormattedText
+                    content={data.attendeesTitle || DEFAULT_ABOUT.attendeesTitle || "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao"}
+                    as="span"
+                  />
                 </h3>
-                <p className="mt-1.5 text-sm text-white/50 max-w-md">
-                  Hội tụ lãnh đạo từ Chính phủ, doanh nghiệp hàng đầu và nhà đầu tư quốc tế trong 3 ngày sự kiện.
-                </p>
+                {(data.attendeesSubtitle || DEFAULT_ABOUT.attendeesSubtitle) && (
+                  <FormattedText
+                    content={data.attendeesSubtitle || DEFAULT_ABOUT.attendeesSubtitle || ""}
+                    as="p"
+                    className="mt-1.5 text-sm text-white/60 max-w-md leading-relaxed"
+                  />
+                )}
               </div>
               <div className="flex flex-wrap gap-2 sm:justify-end">
-                <span className="px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-300 text-[11px] font-bold border border-amber-500/30 uppercase tracking-wide whitespace-nowrap">
-                  ✦ Toàn quốc
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[11px] font-bold border border-emerald-500/30 uppercase tracking-wide whitespace-nowrap">
-                  🌐 FDI Quốc tế
-                </span>
+                {(data.attendeesBadge1 || DEFAULT_ABOUT.attendeesBadge1) && (
+                  <span className="px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-300 text-[11px] font-bold border border-amber-500/30 uppercase tracking-wide whitespace-nowrap">
+                    <FormattedText content={data.attendeesBadge1 || DEFAULT_ABOUT.attendeesBadge1 || "✦ Toàn quốc"} as="span" />
+                  </span>
+                )}
+                {(data.attendeesBadge2 || DEFAULT_ABOUT.attendeesBadge2) && (
+                  <span className="px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[11px] font-bold border border-emerald-500/30 uppercase tracking-wide whitespace-nowrap">
+                    <FormattedText content={data.attendeesBadge2 || DEFAULT_ABOUT.attendeesBadge2 || "🌐 FDI Quốc tế"} as="span" />
+                  </span>
+                )}
               </div>
             </motion.div>
 

@@ -171,6 +171,11 @@ export interface AboutContent {
   imageUrl: string;
   statCardNumber: string;
   statCardLabel: string;
+  attendeesEyebrow?: string;
+  attendeesTitle?: string;
+  attendeesSubtitle?: string;
+  attendeesBadge1?: string;
+  attendeesBadge2?: string;
   featureCards: FeatureCard[];
   attendeeTags: AttendeeTag[];
 }
@@ -564,6 +569,11 @@ export const DEFAULT_ABOUT: AboutContent = {
   imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop",
   statCardNumber: "100%",
   statCardLabel: "Không gian kết nối giao thương thực tế",
+  attendeesEyebrow: "✦ Thành phần Tham dự Trọng điểm ✦",
+  attendeesTitle: "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao",
+  attendeesSubtitle: "Hội tụ lãnh đạo từ Chính phủ, doanh nghiệp hàng đầu và nhà đầu tư quốc tế trong 3 ngày sự kiện.",
+  attendeesBadge1: "✦ Toàn quốc",
+  attendeesBadge2: "🌐 FDI Quốc tế",
   featureCards: [
     {
       id: "about-card-1",
