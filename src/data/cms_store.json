@@ -245,5 +245,238 @@
     "ctaText": "Đăng ký ngay",
     "ctaLink": "#register",
     "mobileRegisterText": "Đăng ký"
+  },
+  "about": {
+    "badge": "TỔNG QUAN SỰ KIỆN",
+    "title": "KẾT NỐI GIAO THƯƠNG, VƯƠN TẦM QUỐC TẾ",
+    "highlightText": "Vietnam SME Prosperity Link Forum 2026 ",
+    "descriptionParagraph1": "Diễn đàn Kết nối giao thương Doanh nghiệp nhỏ và vừa Việt Nam 2026 được Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên (TASME) chủ trì tổ chức chào mừng Đại hội TASME nhiệm kỳ 2026 – 2031.",
+    "descriptionParagraph2": "Quy mô 100 gian hàng và 500 đại biểu quy tụ đại diện cơ quan quản lý, VCCI, hiệp hội doanh nghiệp các tỉnh thành, doanh nghiệp SME, doanh nghiệp FDI, nhà đầu tư, ngân hàng, quỹ đầu tư & các cơ quan báo chí truyền thông.",
+    "bullets": [
+      "Tạo không gian kết nối giao thương B2B, mở rộng thị trường và liên kết vùng cho cộng đồng SME.",
+      "Kết nối doanh nghiệp với đối tác FDI, tập đoàn lớn, nhà mua hàng, tổ chức tài chính & quỹ đầu tư.",
+      "Xúc tiến hợp tác thương mại, chuyển đổi số, công nghệ AI & hỗ trợ ký kết MOU / Thỏa thuận đầu tư.",
+      "Quảng bá môi trường đầu tư, văn hóa trà Thái Nguyên & sản phẩm tiêu biểu; tôn vinh doanh nhân xuất sắc."
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop",
+    "statCardNumber": "100%",
+    "statCardLabel": "Không gian kết nối giao thương thực tế",
+    "attendeesEyebrow": "✦ Thành phần Tham dự Trọng điểm ✦",
+    "attendeesTitle": "Quy tụ hơn 500+ Đại biểu & Khách mời Cấp cao",
+    "attendeesHighlightNumber": "500+",
+    "attendeesHighlightColor": "#F59E0B",
+    "attendeesSubtitle": "Hội tụ lãnh đạo từ Chính phủ, doanh nghiệp hàng đầu và nhà đầu tư quốc tế trong 3 ngày sự kiện.",
+    "attendeesBadge1": "✦ Toàn quốc",
+    "attendeesBadge2": "🌐 FDI Quốc tế",
+    "featureCards": [
+      {
+        "id": "about-card-1",
+        "rank": "01",
+        "title": "Kết nối giao thương",
+        "iconName": "Target",
+        "footerText": "Được thiết kế để tạo ra cơ hội hợp tác ngay tại sự kiện.",
+        "description": "Tổ chức 100+ phiên gặp gỡ B2B trực tiếp 1:1 theo nhu cầu ngành nghề giữa các đại biểu doanh nghiệp toàn quốc.",
+        "footerLabel": "Giao thương B2B trực tiếp"
+      },
+      {
+        "id": "about-card-2",
+        "rank": "02",
+        "title": "Xúc tiến đầu tư – tài chính",
+        "iconName": "Users",
+        "footerText": "Kết nối doanh nghiệp với nhà đầu tư trong nước và quốc tế.",
+        "description": "Giới thiệu danh mục các dự án ưu đãi đầu tư, hạ tầng KCN & giải pháp tài chính xanh hỗ trợ DNNVV.",
+        "footerLabel": "Tiếp cận Quỹ đầu tư"
+      },
+      {
+        "id": "about-card-3",
+        "rank": "03",
+        "title": "Ký kết hợp tác (MOU)",
+        "iconName": "ShieldCheck",
+        "footerText": "Hỗ trợ quan hệ đối tác chiến lược, hợp tác đầu tư và thỏa thuận mới.",
+        "description": "Nơi diễn ra các nghi thức ký kết Biên bản ghi nhớ hợp tác chiến lược, hợp đồng kinh tế giá trị cao.",
+        "footerLabel": "Ký kết hợp đồng ngay sự kiện"
+      },
+      {
+        "id": "about-card-4",
+        "rank": "04",
+        "title": "Quảng bá Thái Nguyên",
+        "iconName": "Award",
+        "footerText": "Tiếp cận đối tác, khách hàng và nhà đầu tư tiềm năng.",
+        "description": "Tôn vinh văn hóa Trà Đệ nhất danh sơn, giới thiệu môi trường đầu tư năng động của tỉnh Thái Nguyên.",
+        "footerLabel": "Quảng bá thương hiệu địa phương"
+      }
+    ],
+    "attendeeTags": [
+      {
+        "id": "about-tag-1",
+        "sub": "Đại diện cơ quan quản lý Nhà nước cấp Trung ương",
+        "rank": "01",
+        "tier": "vip",
+        "count": "Cấp Bộ trưởng trở lên",
+        "label": "Lãnh đạo Chính phủ & Bộ ngành",
+        "iconName": "Landmark"
+      },
+      {
+        "id": "about-tag-2",
+        "sub": "Lãnh đạo cấp cao doanh nghiệp trên toàn quốc",
+        "rank": "02",
+        "tier": "vip",
+        "count": "350+ lãnh đạo",
+        "label": "350+ CEO, Chủ tịch Doanh nghiệp",
+        "iconName": "Crown"
+      },
+      {
+        "id": "about-tag-3",
+        "sub": "Quỹ mạo hiểm, Angel Investor & Private Equity",
+        "rank": "03",
+        "tier": "gold",
+        "count": "50+ quỹ đầu tư",
+        "label": "Nhà đầu tư & Quỹ đầu tư",
+        "iconName": "TrendingUp"
+      },
+      {
+        "id": "about-tag-4",
+        "sub": "Đại diện hiệp hội ngành nghề 34 tỉnh thành",
+        "rank": "04",
+        "tier": "gold",
+        "count": "34 tỉnh thành",
+        "label": "Hiệp hội Doanh nghiệp Toàn quốc",
+        "iconName": "Building2"
+      },
+      {
+        "id": "about-tag-5",
+        "sub": "Doanh nghiệp nước ngoài & tổ chức quốc tế",
+        "rank": "05",
+        "tier": "standard",
+        "count": "10+ quốc gia",
+        "label": "Đối tác FDI Quốc tế",
+        "iconName": "Globe2"
+      },
+      {
+        "id": "about-tag-6",
+        "sub": "Đại diện khu công nghiệp & khu kinh tế trọng điểm",
+        "rank": "06",
+        "tier": "standard",
+        "count": "20+ KCN",
+        "label": "Ban quản lý KCN & Khu kinh tế",
+        "iconName": "Factory"
+      }
+    ]
+  },
+  "booths": {
+    "badge": "GIAN HÀNG TRIỂN LÃM",
+    "title": "Sơ Đồ & Đăng Ký Gian Hàng",
+    "subtitle": "100+ gian hàng tiêu chuẩn &amp; đặc biệt dành cho các doanh nghiệp giới thiệu sản phẩm dịch vụ.",
+    "mapImageUrl": "/images/so-do.jpg",
+    "totalBooths": 100,
+    "availableBooths": 35,
+    "boothPackageBadge": "Gian hàng tiêu chuẩn",
+    "boothPackageTitle": "Gian hàng Triển lãm 2m x 1,5m",
+    "boothPackageNote": "Vị trí gian hàng được BTC phân bổ theo ngành nghề/ sản phẩm",
+    "priceVND": 8500000,
+    "priceFormatted": "-",
+    "priceUnit": "VNĐ / Gian",
+    "inclusions": [
+      "Mặt bằng gian tiêu chuẩn diện tích 2m x 1,5m theo sơ đồ Ban Tổ chức",
+      "01 Standee, 02 Bàn + 02 Ghế tiêu chuẩn",
+      "Ổ cắm điện & kết nối Internet Wi-Fi tốc độ cao riêng khu vực"
+    ],
+    "ctaText": "Đăng ký gian hàng ngay",
+    "modalTitle": "Sơ đồ Chi tiết Mặt bằng Triển lãm",
+    "modalSubtitle": "Kéo giữ chuột để di chuyển (trái/phải/lên/xuống). Lăn chuột hoặc bấm +/- để zoom.",
+    "modalBottomNote": "Mặt bằng 100 gian hàng tiêu chuẩn & VIP tại Trung tâm Tổ chức Sự kiện May Plaza",
+    "items": [
+      {
+        "id": "b-101",
+        "size": "2m x 1.5m",
+        "status": "available",
+        "areaName": "Khu Vực A - Công Nghệ & Chuyển Đổi Số",
+        "priceVND": 0,
+        "boothCode": "A-01",
+        "description": "Gian hàng góc 2 mặt tiền ngay lối vào chính"
+      },
+      {
+        "id": "b-102",
+        "size": "2m x 1.5m",
+        "status": "reserved",
+        "areaName": "Khu Vực A - Công Nghệ & Chuyển Đổi Số",
+        "priceVND": 8500000,
+        "boothCode": "A-02",
+        "reservedBy": "Công ty Cổ phần Công nghệ ABC",
+        "description": "Gian hàng tiêu chuẩn"
+      }
+    ]
+  },
+  "benefits": {
+    "badge": "GIÁ TRỊ ĐỒNG HÀNH",
+    "title": "5 Giá Trị Cốt Lõi Dành Cho Đối Tác & Nhà Tài Trợ",
+    "subtitle": "",
+    "items": [
+      {
+        "id": "ben-1",
+        "badge": "Hiện diện VIP",
+        "title": "Hiện diện Đúng Đối tượng",
+        "iconName": "Users",
+        "description": "Tiếp cận trực tiếp 350+ l&atilde;nh đạo doanh nghiệp, nh&agrave; đầu tư, nh&agrave; mua h&agrave;ng, hiệp hội &amp; cơ quan quản l&yacute; nh&agrave; nước."
+      },
+      {
+        "id": "ben-2",
+        "badge": "Ưu tiên 1:1",
+        "title": "Kết nối Có Mục tiêu (B2B Matching)",
+        "iconName": "Handshake",
+        "description": "Được ưu tiên đăng ký các phiên B2B Matching 1:1, Investment Matching phù hợp chính xác theo ngành hàng."
+      },
+      {
+        "id": "ben-3",
+        "title": "Truyền thông Đa điểm chạm",
+        "iconName": "TrendingUp",
+        "description": "Xuất hiện nổi bật trên bộ nhận diện, backdrop, màn hình LED, ấn phẩm chính & báo chí truyền thông toàn quốc."
+      },
+      {
+        "id": "ben-4",
+        "title": "Trưng bày & Trải nghiệm Sản phẩm",
+        "iconName": "Store",
+        "description": "Sở hữu b&agrave;n trưng b&agrave;y triển l&atilde;m ti&ecirc;u chuẩn tại khu vực trung t&acirc;m sảnh Kh&aacute;ch sạn May Plaza."
+      },
+      {
+        "id": "ben-5",
+        "title": "Khẳng định Vai trò Đồng hành",
+        "iconName": "Award",
+        "description": "Được tôn vinh, tri ân tại đêm Gala Dinner, nhận Kỷ niệm chương &amp; Báo cáo đo lường quyền lợi chi tiết sau sự kiện."
+      }
+    ]
+  },
+  "hero": {
+    "badgeText": "VIETNAM SME PROSPERITY LINK 2026 • CHÀO MỪNG ĐẠI HỘI TASME NHIỆM KỲ 2026 - 2031",
+    "honorBadgeText": "",
+    "titlePrefix": "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG",
+    "titleSuffix": "DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026",
+    "mainTitle": "DIỄN ĐÀN KẾT NỐI GIAO THƯƠNG",
+    "subTitle": "DOANH NGHIỆP NHỎ VÀ VỪA VIỆT NAM 2026",
+    "englishTitle": "Vietnam SME Prosperity Link Forum 2026",
+    "sloganText": "“Kết nối giao thương, vươn tầm quốc tế” • Connecting SME – Going Global",
+    "keywords": [
+      "DIỄN ĐÀN LIÊN KẾT",
+      "XÚC TIẾN ĐẦU TƯ",
+      "KẾT NỐI GIAO THƯƠNG",
+      "VƯƠN TẦM QUỐC TẾ"
+    ],
+    "tickerMessages": [
+      "🔥 Doanh nhân Nguyễn Văn T. (Hà Nội) vừa đăng ký vé Đại biểu (2 phút trước)",
+      "⚡ Công ty Cổ phần Công nghệ ABC vừa đăng ký Gian hàng Triển lãm A-05",
+      "🔥 Doanh nhân Lê Thị M. (Đà Nẵng) vừa hoàn tất đăng ký vé Đại biểu trọn gói"
+    ],
+    "countdownLabel": "Đếm ngược sự kiện:",
+    "dateLabel": "Thời gian",
+    "eventDateText": "19 - 20 tháng 09, 2026",
+    "targetDateISO": "2026-09-18T08:00:00+07:00",
+    "venueLabel": "Địa điểm",
+    "venueText": "Khách sạn May Plaza, Tỉnh Thái Nguyên",
+    "primaryCtaText": "ĐĂNG KÝ ĐẠI BIỂU THAM GIA ",
+    "primaryCtaLink": "#register",
+    "secondaryCtaText": "ĐĂNG KÝ GIAN HÀNG ",
+    "secondaryCtaLink": "#booths",
+    "tertiaryCtaText": "THAM KHẢO GÓI TÀI TRỢ",
+    "tertiaryCtaLink": "#sponsors"
   }
 }

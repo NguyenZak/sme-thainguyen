@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { SiteConfig } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import { toast } from "@/components/ui/Toast";
 import { uploadImageToStorage } from "@/lib/cmsClient";
 import Image from "next/image";
@@ -35,13 +37,18 @@ interface SepayQrEditorProps {
 
 export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrEditorProps) {
   const [config, setConfig] = useState<SiteConfig>(initialConfig);
-  const [saving, setSaving] = useState(false);
   const [copiedWebhook, setCopiedWebhook] = useState(false);
   const [uploadingQr, setUploadingQr] = useState(false);
 
   useEffect(() => {
     setConfig(initialConfig);
   }, [initialConfig]);
+
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "site_config",
+    config,
+    { onSaveSuccess }
+  );
 
   const handleQrUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,34 +72,6 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
       toast.error("Lỗi upload ảnh!", err?.message || "Không thể upload");
     } finally {
       setUploadingQr(false);
-    }
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const res = await updateSectionAction("site_config", config);
-      if (res.success) {
-        toast.success(
-          "Đã lưu cấu hình SePay VietQR! 🎉",
-          "Thông tin tài khoản ngân hàng & QR code thanh toán đã được cập nhật."
-        );
-        if (onSaveSuccess) {
-          onSaveSuccess(config);
-        }
-      } else {
-        toast.error(
-          "Lưu thất bại!",
-          res.error || "Có lỗi xảy ra khi lưu vào hệ thống."
-        );
-      }
-    } catch (err: any) {
-      toast.error(
-        "Lưu thất bại!",
-        err.message || "Lỗi hệ thống."
-      );
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -134,23 +113,14 @@ export default function SepayQrEditor({ initialConfig, onSaveSuccess }: SepayQrE
           </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all disabled:opacity-50 shrink-0"
-        >
-          {saving ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Đang lưu...</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              <span>Lưu Cấu Hình QR</span>
-            </>
-          )}
-        </button>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

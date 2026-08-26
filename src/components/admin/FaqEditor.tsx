@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { FaqItem, FaqContent, DEFAULT_FAQ_CONTENT, DEFAULT_FAQS } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cms";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import { toast } from "@/components/ui/Toast";
 
 const CATEGORY_OPTIONS: { id: FaqItem["category"]; label: string; icon: any }[] = [
@@ -47,30 +49,17 @@ export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorPr
     }
   }, [initialContent]);
 
-  const [saving, setSaving] = useState(false);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "faq",
+    content,
+    { onSaveSuccess }
+  );
+
   const [editingItem, setEditingItem] = useState<FaqItem | null>(null);
   const [previewOpenId, setPreviewOpenId] = useState<string | null>("faq-1");
   const [searchTerm, setSearchTerm] = useState("");
 
   const items = content.items && content.items.length > 0 ? content.items : DEFAULT_FAQS;
-
-  const handleSave = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await updateSectionAction("faq", content);
-      if (res.success) {
-        onSaveSuccess?.(content);
-        toast.success("Lưu FAQ thành công! 🎉", "Đã cập nhật danh sách câu hỏi thường gặp lên trang chủ.");
-      } else {
-        toast.error("Lưu thất bại!", res.error || "Không thể lưu dữ liệu FAQ.");
-      }
-    } catch (err: any) {
-      toast.error("Lỗi khi lưu!", err?.message || "Đã xảy ra lỗi kết nối.");
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const handleAddNew = () => {
     const newItem: FaqItem = {
@@ -97,7 +86,7 @@ export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorPr
       if (editingItem?.id === id) {
         setEditingItem(null);
       }
-      toast.success("Đã xóa câu hỏi!", "Nhớ bấm nút 'Lưu Thay Đổi' để cập nhật lên trang web.");
+      toast.success("Đã xóa câu hỏi!", "Hệ thống sẽ tự động lưu thay đổi.");
     }
   };
 
@@ -145,7 +134,7 @@ export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorPr
             <HelpCircle className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Quản Lý Câu Hỏi Thường Gặp (FAQ)</h2>
+            <h2 className="text-lg font-bold text-slate-900">12 · Quản Lý Câu Hỏi Thường Gặp (FAQ)</h2>
             <p className="text-xs text-slate-500">
               Thêm, sửa, xóa các câu hỏi giải đáp thắc mắc và tự động đồng bộ Google FAQ Schema Rich Snippets.
             </p>
@@ -187,15 +176,12 @@ export default function FaqEditor({ initialContent, onSaveSuccess }: FaqEditorPr
             <span>+ Thêm Câu Hỏi Mới</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => handleSave()}
-            disabled={saving}
-            className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
-          >
-            <Save className="w-4 h-4" />
-            <span>{saving ? "Đang lưu..." : "Lưu Thay Đổi"}</span>
-          </button>
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
       </div>
 

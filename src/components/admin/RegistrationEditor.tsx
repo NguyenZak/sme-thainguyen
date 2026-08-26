@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { RegistrationContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import RichTextarea from "@/components/admin/RichTextarea";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, Upload, Eye, Smartphone, Monitor, Mail, Maximize2, X, Sparkles, Edit3, Image as ImageIcon, ExternalLink } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
@@ -21,8 +23,11 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
     setRegistration(initialRegistration);
   }, [initialRegistration]);
 
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "registration",
+    registration,
+    { onSaveSuccess }
+  );
 
   // Active view mode per form type: "inline_edit" (default direct edit) or "client_preview" (evaluated demo)
   const [activeMode, setActiveMode] = useState<Record<FormType, "inline_edit" | "client_preview">>({
@@ -89,22 +94,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
       ...registration,
       boothOptions: registration.boothOptions.filter((_, idx) => idx !== index),
     });
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("registration", registration);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(registration);
-      setMsg({ type: "success", text: "Đã lưu cấu hình phần Đăng ký thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Không thể lưu thay đổi." });
-    }
   };
 
   // Helper to render interpolated HTML string for recipient preview
@@ -687,36 +676,23 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 w-full">
+    <div className="space-y-6 w-full pb-16">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Nội dung Form Đăng ký & Mẫu Email</h2>
+          <h2 className="text-xl font-bold text-slate-900">11 · Nội Dung Form Đăng Ký &amp; Mẫu Email (Registration)</h2>
           <p className="text-xs text-slate-500 mt-1">
             Chỉnh sửa nội dung các Tab và Soạn thảo trực tiếp giao diện Email xác nhận gửi tự động cho khách hàng.
           </p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Lưu Thay Đổi
-        </button>
-      </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          {msg.text}
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
-      )}
+      </div>
 
       {/* Header Form */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -952,6 +928,6 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
           </div>
         </div>
       )}
-    </form>
+    </div>
   );
 }

@@ -8,6 +8,9 @@ import { uploadImageToStorage } from "@/lib/cmsClient";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, Upload, RotateCcw, Image as ImageIcon } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
+
 interface NavbarEditorProps {
   initialNavbar: NavbarContent;
   onSaveSuccess?: (updatedNavbar: NavbarContent) => void;
@@ -20,9 +23,13 @@ export default function NavbarEditor({ initialNavbar, onSaveSuccess }: NavbarEdi
     setNavbar(initialNavbar);
   }, [initialNavbar]);
 
-  const [saving, setSaving] = useState(false);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "navbar",
+    navbar,
+    { onSaveSuccess }
+  );
+
   const [uploadingLogo, setUploadingLogo] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,53 +76,22 @@ export default function NavbarEditor({ initialNavbar, onSaveSuccess }: NavbarEdi
     });
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("navbar", navbar);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(navbar);
-      toast.success("Lưu thành công! 🎉", "Cấu hình thanh điều hướng và logo đã được cập nhật.");
-      setMsg({ type: "success", text: "Đã lưu cấu hình Navbar thành công!" });
-    } else {
-      toast.error("Lưu thất bại!", res.error || "Không thể lưu thay đổi.");
-      setMsg({ type: "error", text: res.error || "Không thể lưu thay đổi." });
-    }
-  };
-
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-16">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Thanh điều hướng (Navbar) & Logo</h2>
+          <h2 className="text-xl font-bold text-slate-900">01 · Thanh Điều Hướng (Navbar) &amp; Logo</h2>
           <p className="text-xs text-slate-500 mt-1">Quản lý logo thương hiệu, tiêu đề, liên kết menu và nút kêu gọi hành động.</p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Lưu Thay Đổi
-        </button>
-      </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          {msg.text}
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
-      )}
+      </div>
 
       {/* ── CARD: CẤU HÌNH LOGO & THƯƠNG HIỆU ─────────────────────────── */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
@@ -328,6 +304,6 @@ export default function NavbarEditor({ initialNavbar, onSaveSuccess }: NavbarEdi
           className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
         />
       </div>
-    </form>
+    </div>
   );
 }

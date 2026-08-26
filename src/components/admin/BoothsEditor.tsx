@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { BoothsContent, BoothItem, DEFAULT_BOOTHS } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
@@ -80,9 +82,13 @@ export default function BoothsEditor({ initialBooths, onSaveSuccess }: BoothsEdi
     }
   }, [initialBooths]);
 
-  const [saving, setSaving] = useState(false);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "booths",
+    booths,
+    { onSaveSuccess }
+  );
+
   const [uploadingMap, setUploadingMap] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Search & Filter state for booth inventory
   const [searchQuery, setSearchQuery] = useState("");
@@ -175,22 +181,6 @@ export default function BoothsEditor({ initialBooths, onSaveSuccess }: BoothsEdi
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("booths", booths);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(booths);
-      setMsg({ type: "success", text: "Đã cập nhật toàn bộ nội dung gian hàng triển lãm thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
-    }
-  };
-
   // Filtered booth items for table/list view
   const filteredItems = booths.items
     .map((item, originalIndex) => ({ item, originalIndex }))
@@ -209,48 +199,26 @@ export default function BoothsEditor({ initialBooths, onSaveSuccess }: BoothsEdi
   const countSold = booths.items.filter((b) => b.status === "sold").length;
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl pb-16">
       {/* Sticky Header / Action bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4 bg-white/80 backdrop-blur sticky top-0 z-20 py-2">
         <div>
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <span>Sơ Đồ & Gian Hàng Triển Lãm</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-              CMS Quản Lý Đầy Đủ
-            </span>
+            <span>10 · Sơ Đồ &amp; Gian Hàng Triển Lãm (Booths)</span>
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Quản lý toàn bộ thông tin tiêu đề, báo giá gói, quyền lợi bao gồm, hình ảnh sơ đồ mặt bằng và danh sách từng gian hàng.
           </p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <button
-            type="submit"
-            disabled={saving}
-            className="inline-flex items-center gap-2 bg-[#0D3B2E] hover:bg-[#07241C] text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer hover:shadow-lg active:scale-95"
-          >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 text-emerald-400" />}
-            <span>{saving ? "Đang lưu thay đổi..." : "Lưu Thay Đổi"}</span>
-          </button>
+        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
       </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 shadow-sm ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          ) : (
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-          )}
-          <span>{msg.text}</span>
-        </div>
-      )}
 
       {/* Overview Stats Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -786,6 +754,6 @@ export default function BoothsEditor({ initialBooths, onSaveSuccess }: BoothsEdi
           )}
         </div>
       </div>
-    </form>
+    </div>
   );
 }

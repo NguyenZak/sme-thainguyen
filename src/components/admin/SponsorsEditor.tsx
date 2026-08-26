@@ -11,6 +11,8 @@ import {
 } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
@@ -77,9 +79,13 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
     }
   }, [initialSponsors]);
 
-  const [saving, setSaving] = useState(false);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "sponsors",
+    sponsors,
+    { onSaveSuccess }
+  );
+
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // 1. Packages & Tiers Handlers
   const handlePackageChange = (
@@ -98,13 +104,12 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
       name: "Gói Tài Trợ Mới",
       price: "Từ 50.000.000 VNĐ",
       badgeColor: "bg-emerald-900 text-white font-bold",
-      borderAccent: "border-emerald-500 shadow-emerald-50",
+      borderAccent: "border-slate-300",
       popular: false,
       perks: [
-        "Logo hiển thị trên backdrop và ấn phẩm chính",
-        "01 Gian trưng bày tiêu chuẩn",
-        "04 Thẻ Thư mời Đại biểu tham dự trọn gói",
-        "Tham gia phiên kết nối B2B Matching",
+        "Quyền lợi truyền thông thương hiệu nổi bật",
+        "01 Gian hàng tiêu chuẩn tại sảnh triển lãm",
+        "02 Vé đại biểu chính thức tham dự toàn bộ diễn đàn",
       ],
     };
     setSponsors({
@@ -123,45 +128,39 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
   };
 
   const movePackage = (index: number, direction: "up" | "down") => {
+    const packages = sponsors.packages || [];
     const targetIndex = direction === "up" ? index - 1 : index + 1;
-    const pkgs = sponsors.packages || [];
-    if (targetIndex < 0 || targetIndex >= pkgs.length) return;
-    const updated = [...pkgs];
+    if (targetIndex < 0 || targetIndex >= packages.length) return;
+    const updated = [...packages];
     const temp = updated[index];
     updated[index] = updated[targetIndex];
     updated[targetIndex] = temp;
     setSponsors({ ...sponsors, packages: updated });
   };
 
-  // Perks per package handlers
-  const handlePerkChange = (
-    pkgIndex: number,
-    perkIndex: number,
-    value: string
-  ) => {
-    const updated = [...(sponsors.packages || [])];
-    const updatedPerks = [...updated[pkgIndex].perks];
-    updatedPerks[perkIndex] = value;
-    updated[pkgIndex] = { ...updated[pkgIndex], perks: updatedPerks };
-    setSponsors({ ...sponsors, packages: updated });
+  // Perks handler for a package
+  const handlePerkChange = (pkgIdx: number, perkIdx: number, value: string) => {
+    const packages = [...(sponsors.packages || [])];
+    const perks = [...packages[pkgIdx].perks];
+    perks[perkIdx] = value;
+    packages[pkgIdx] = { ...packages[pkgIdx], perks };
+    setSponsors({ ...sponsors, packages });
   };
 
-  const addPerk = (pkgIndex: number) => {
-    const updated = [...(sponsors.packages || [])];
-    updated[pkgIndex] = {
-      ...updated[pkgIndex],
-      perks: [...updated[pkgIndex].perks, "Quyền lợi tài trợ bổ sung mới"],
+  const addPerk = (pkgIdx: number) => {
+    const packages = [...(sponsors.packages || [])];
+    packages[pkgIdx] = {
+      ...packages[pkgIdx],
+      perks: [...packages[pkgIdx].perks, "Quyền lợi chi tiết mới..."],
     };
-    setSponsors({ ...sponsors, packages: updated });
+    setSponsors({ ...sponsors, packages });
   };
 
-  const removePerk = (pkgIndex: number, perkIndex: number) => {
-    const updated = [...(sponsors.packages || [])];
-    updated[pkgIndex] = {
-      ...updated[pkgIndex],
-      perks: updated[pkgIndex].perks.filter((_, i) => i !== perkIndex),
-    };
-    setSponsors({ ...sponsors, packages: updated });
+  const removePerk = (pkgIdx: number, perkIdx: number) => {
+    const packages = [...(sponsors.packages || [])];
+    const perks = packages[pkgIdx].perks.filter((_, i) => i !== perkIdx);
+    packages[pkgIdx] = { ...packages[pkgIdx], perks };
+    setSponsors({ ...sponsors, packages });
   };
 
   // 2. Priority Categories Handlers
@@ -237,20 +236,10 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
     setSponsors({ ...sponsors, items: [...sponsors.items, newSp] });
   };
 
-  const removeSponsor = async (index: number) => {
+  const removeSponsor = (index: number) => {
     if (!window.confirm("Xóa nhà tài trợ này khỏi danh sách?")) return;
     const updated = sponsors.items.filter((_, i) => i !== index);
-    const updatedSponsors = { ...sponsors, items: updated };
-    setSponsors(updatedSponsors);
-    // Auto-save ngay lập tức
-    const res = await updateSectionAction("sponsors", updatedSponsors);
-    if (res.success) {
-      setMsg({ type: "success", text: "Đã xóa nhà tài trợ và lưu thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Xóa thất bại, thử lại." });
-      // Rollback nếu lỗi
-      setSponsors(sponsors);
-    }
+    setSponsors({ ...sponsors, items: updated });
   };
 
   const handleLogoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -275,25 +264,8 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
     }
   };
 
-  // Save
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("sponsors", sponsors);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(sponsors);
-      setMsg({ type: "success", text: "Đã cập nhật toàn bộ Gói Quyền Lợi Tài Trợ & Danh Sách Logo thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Lỗi lưu dữ liệu." });
-    }
-  };
-
   return (
-    <form onSubmit={handleSave} className="space-y-8 max-w-4xl pb-16">
+    <div className="space-y-8 max-w-4xl pb-16">
       {/* Header action bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
@@ -302,7 +274,7 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
               <Award className="w-5 h-5" />
             </span>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">
-              Quản Trị Các Gói Quyền Lợi Đồng Hành Tài Trợ (Sponsors)
+              09 · Quản Trị Các Gói Quyền Lợi Đồng Hành Tài Trợ (Sponsors)
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
@@ -310,42 +282,23 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
           <button
             type="button"
             onClick={handleResetDefaults}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Mặc Định
           </button>
-          <button
-            type="submit"
-            disabled={saving}
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-emerald-700/20 transition-all disabled:opacity-50 cursor-pointer"
-          >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            Lưu Thay Đổi
-          </button>
         </div>
       </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          ) : (
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-          )}
-          <span>{msg.text}</span>
-        </div>
-      )}
 
       {/* 1. Header & PDF */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -408,9 +361,7 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setSaving(true);
                     const { url, error } = await uploadImageToStorage(file);
-                    setSaving(false);
                     if (error || !url) {
                       alert("Tải file PDF thất bại: " + (error || "Lỗi"));
                     } else {
@@ -851,6 +802,6 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }

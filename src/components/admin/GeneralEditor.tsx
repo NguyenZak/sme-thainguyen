@@ -5,6 +5,8 @@ import Image from "next/image";
 import { SiteConfig, FooterContent } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
 import { uploadImageToStorage } from "@/lib/cmsClient";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import RichTextarea from "@/components/admin/RichTextarea";
 import {
   Save,
@@ -47,12 +49,25 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     setFooter(initialFooter);
   }, [initialFooter]);
 
-  const [saving, setSaving] = useState(false);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "site_config",
+    config,
+    {
+      onSaveSuccess: async (savedConfig) => {
+        const updatedFooter = {
+          ...footer,
+          logoSrc: savedConfig.logoUrl || footer.logoSrc || "/logo.png",
+        };
+        await updateSectionAction("footer", updatedFooter);
+        onSaveSuccess?.(savedConfig, updatedFooter);
+      },
+    }
+  );
+
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
   const [uploadingSeoImage, setUploadingSeoImage] = useState(false);
   const [testingTg, setTestingTg] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,30 +142,6 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
       toast.error("Lỗi upload ảnh SEO!", err?.message || "Không thể upload");
     } finally {
       setUploadingSeoImage(false);
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const updatedFooter = {
-      ...footer,
-      logoSrc: config.logoUrl || footer.logoSrc || "/logo.png",
-    };
-
-    const res1 = await updateSectionAction("site_config", config);
-    const res2 = await updateSectionAction("footer", updatedFooter);
-
-    setSaving(false);
-    if (res1.success && res2.success) {
-      toast.success("Lưu thành công! 🎉", "Đã cập nhật logo, favicon, cấu hình chung, Telegram & Google Sheets.");
-      setMsg({ type: "success", text: "Đã cập nhật logo, favicon, cấu hình chung, Telegram & Google Sheets thành công!" });
-      onSaveSuccess?.(config, updatedFooter);
-    } else {
-      toast.error("Lưu thất bại!", res1.error || res2.error || "Lỗi khi lưu dữ liệu.");
-      setMsg({ type: "error", text: res1.error || res2.error || "Lỗi khi lưu dữ liệu." });
     }
   };
 
@@ -290,34 +281,21 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-16">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Cấu Hình Chung, Telegram & Google Sheets</h2>
+          <h2 className="text-xl font-bold text-slate-900">Cấu Hình Chung, Telegram &amp; Google Sheets (General Settings)</h2>
           <p className="text-xs text-slate-500 mt-1">Quản lý thông tin sự kiện, kết nối bot Telegram thông báo theo từng Topic và đường dẫn Google Sheet tự động.</p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Lưu Thay Đổi
-        </button>
-      </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          {msg.text}
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
-      )}
+      </div>
 
       {/* ── Section Visibility Management Card ─────────────────────────── */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -1323,6 +1301,6 @@ function doPost(e) {
           />
         </div>
       </div>
-    </form>
+    </div>
   );
 }

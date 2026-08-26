@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { StatisticsContent, StatisticItem, DEFAULT_STATISTICS } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2, MapPin, Building2, Handshake, Calendar, Banknote, Users, Globe2, Store } from "lucide-react";
 
 interface StatisticsEditorProps {
@@ -23,8 +25,11 @@ export default function StatisticsEditor({ initialStats, onSaveSuccess }: Statis
     }
   }, [initialStats]);
 
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "statistics",
+    stats,
+    { onSaveSuccess }
+  );
 
   const handleItemChange = (index: number, field: keyof StatisticItem, value: any) => {
     const updated = [...stats.items];
@@ -53,61 +58,30 @@ export default function StatisticsEditor({ initialStats, onSaveSuccess }: Statis
     setStats({ ...stats, items: updated });
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("statistics", stats);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(stats);
-      setMsg({ type: "success", text: "Đã cập nhật các con số thống kê thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
-    }
-  };
-
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 gap-3">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Con Số Thống Kê Nổi Bật (Static Numbers)</h2>
+          <h2 className="text-xl font-bold text-slate-900">03 · Con Số Thống Kê Nổi Bật (Statistics)</h2>
           <p className="text-xs text-slate-500 mt-1">Thêm, sửa, xóa và thay đổi các chỉ số thống kê ấn tượng hiển thị trên website.</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
           <button
             type="button"
             onClick={addItem}
-            className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Thêm Chỉ Số
           </button>
-          <button
-            type="submit"
-            disabled={saving}
-            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50 cursor-pointer"
-          >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            Lưu Thay Đổi
-          </button>
         </div>
       </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          {msg.text}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {stats.items.map((item, idx) => (
@@ -200,6 +174,6 @@ export default function StatisticsEditor({ initialStats, onSaveSuccess }: Statis
           Thêm Mục Thống Kê Mới
         </button>
       </div>
-    </form>
+    </div>
   );
 }

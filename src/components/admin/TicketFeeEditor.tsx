@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { TicketFeeContent, RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import { Save, CheckCircle2, AlertCircle, Loader2, Plus, Trash2 } from "lucide-react";
 
 interface TicketFeeEditorProps {
@@ -25,8 +27,19 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
     }
   }, [initialRegistration]);
 
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "ticket_fee",
+    fee,
+    {
+      onSaveSuccess: async (savedFee) => {
+        if (savedFee.priceVND) {
+          await updateSectionAction("site_config", { eventPriceVND: savedFee.priceVND });
+        }
+        await updateSectionAction("registration", reg);
+        onSaveSuccess?.(savedFee, reg);
+      },
+    }
+  );
 
   const handleInclusionChange = (index: number, value: string) => {
     const updated = [...fee.inclusions];
@@ -43,59 +56,22 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
     setFee({ ...fee, inclusions: updated });
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("ticket_fee", fee);
-    if (res.success && fee.priceVND) {
-      // Also sync eventPriceVND to site_config for global price consistency
-      await updateSectionAction("site_config", { eventPriceVND: fee.priceVND });
-    }
-    // Also save registration tab titles if registration was provided
-    if (res.success) {
-      await updateSectionAction("registration", reg);
-    }
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(fee, reg);
-      setMsg({ type: "success", text: "Đã cập nhật giá vé, tên Form & đồng bộ chuyển khoản QR thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
-    }
-  };
-
   return (
-    <form onSubmit={handleSave} className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-16">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Chi Phí Tham Dự & Gói Vé</h2>
+          <h2 className="text-xl font-bold text-slate-900">08 · Chi Phí Tham Dự &amp; Gói Vé (Ticket Fee)</h2>
           <p className="text-xs text-slate-500 mt-1">Thay đổi giá vé tham dự, giá gốc trước giảm, danh sách quyền lợi, chính sách hoàn tiền và tên Form Đăng Ký.</p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Lưu Thay Đổi
-        </button>
-      </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          {msg.text}
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
         </div>
-      )}
+      </div>
 
       {/* Tùy Chỉnh Tên Form & Tab Đăng Ký */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -551,6 +527,6 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
           ))}
         </div>
       </div>
-    </form>
+    </div>
   );
 }

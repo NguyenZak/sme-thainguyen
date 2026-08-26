@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { TimelineContent, TimelineSlot, DayInfo, DEFAULT_TIMELINE } from "@/constants/defaultContent";
 import { updateSectionAction } from "@/app/actions/cmsActions";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import AutoSaveHeaderBadge from "@/components/admin/AutoSaveHeaderBadge";
 import {
   Save,
   CheckCircle2,
@@ -49,8 +51,11 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
     }
   }, [initialTimeline]);
 
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const { saveStatus, lastSavedTime, errorMessage, saveNow } = useAutoSave(
+    "timeline",
+    timeline,
+    { onSaveSuccess }
+  );
 
   // 1. Quản lý Ngày (Day Management)
   const handleDayChange = (dayNum: number, field: keyof DayInfo, value: string) => {
@@ -61,7 +66,6 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
   };
 
   const addDay = () => {
-    // Generate unique new dayNumber
     const existingDayNumbers = timeline.days.map((d) => d.dayNumber);
     const maxDayNum = existingDayNumbers.length > 0 ? Math.max(...existingDayNumbers) : 0;
     const nextDayNum = maxDayNum + 1;
@@ -95,85 +99,69 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
 
   const removeDay = (dayNum: number) => {
     if (timeline.days.length <= 1) {
-      alert("Cần giữ lại ít nhất 1 ngày trong lịch trình sự kiện!");
+      alert("Cần giữ lại ít nhất 1 ngày sự kiện!");
       return;
     }
-
-    const dayToDelete = timeline.days.find((d) => d.dayNumber === dayNum);
-    const slotsCount = timeline.slots.filter((s) => s.dayNumber === dayNum).length;
-
-    if (
-      !window.confirm(
-        `Bạn có chắc chắn muốn xóa "${dayToDelete?.dayTitle || `Ngày ${dayNum}`}" (${dayToDelete?.dateText}) cùng toàn bộ ${slotsCount} mốc thời gian của ngày này?`
-      )
-    ) {
-      return;
+    if (window.confirm(`Bạn có chắc chắn muốn xóa Ngày này cùng toàn bộ các mốc thời gian liên quan?`)) {
+      setTimeline({
+        ...timeline,
+        days: timeline.days.filter((d) => d.dayNumber !== dayNum),
+        slots: timeline.slots.filter((s) => s.dayNumber !== dayNum),
+      });
     }
-
-    const updatedDays = timeline.days.filter((d) => d.dayNumber !== dayNum);
-    const updatedSlots = timeline.slots.filter((s) => s.dayNumber !== dayNum);
-
-    setTimeline({
-      ...timeline,
-      days: updatedDays,
-      slots: updatedSlots,
-    });
   };
 
   const moveDay = (index: number, direction: "up" | "down") => {
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= timeline.days.length) return;
-
     const updatedDays = [...timeline.days];
     const temp = updatedDays[index];
     updatedDays[index] = updatedDays[targetIndex];
     updatedDays[targetIndex] = temp;
-
     setTimeline({ ...timeline, days: updatedDays });
   };
 
-  // 2. Quản lý Mốc Thời Gian (Slots Management)
+  // 2. Quản lý Slot
   const handleSlotChange = (slotId: string, field: keyof TimelineSlot, value: any) => {
-    const updated = timeline.slots.map((s) =>
-      s.id === slotId ? { ...s, [field]: value } : s
-    );
+    const updated = timeline.slots.map((slot) => {
+      if (slot.id === slotId) {
+        return { ...slot, [field]: value };
+      }
+      return slot;
+    });
     setTimeline({ ...timeline, slots: updated });
   };
 
-  const addSlot = (dayNum: number) => {
-    const dayItem = timeline.days.find((d) => d.dayNumber === dayNum);
+  const addSlotForDay = (dayNum: number, dayTitle: string) => {
     const newSlot: TimelineSlot = {
-      id: `ts-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      id: `ts-${Date.now()}`,
       dayNumber: dayNum,
-      dayTitle: dayItem?.dayTitle || `Ngày ${dayNum}`,
-      timeSlot: "14:00 - 16:30",
-      title: "Hoạt động / Phiên làm việc mới",
-      description: "Mô tả chi tiết nội dung chương trình...",
-      location: dayItem?.location || "Hội trường May Plaza Hotel",
+      dayTitle: dayTitle,
+      timeSlot: "08:00 - 11:30",
+      title: "Phiên làm việc / Hoạt động mới",
+      description: "Mô tả nội dung chương trình...",
+      location: "Khách sạn May Plaza",
       highlight: false,
     };
     setTimeline({ ...timeline, slots: [...timeline.slots, newSlot] });
   };
 
-  const removeSlot = (id: string) => {
-    setTimeline({ ...timeline, slots: timeline.slots.filter((s) => s.id !== id) });
+  const removeSlot = (slotId: string) => {
+    setTimeline({
+      ...timeline,
+      slots: timeline.slots.filter((s) => s.id !== slotId),
+    });
   };
 
-  const moveSlot = (slotId: string, dayNum: number, direction: "up" | "down") => {
-    // Find all slots for this day
+  const moveSlot = (dayNum: number, slotIndexInDay: number, direction: "up" | "down") => {
     const daySlots = timeline.slots.filter((s) => s.dayNumber === dayNum);
-    const currentDaySlotIdx = daySlots.findIndex((s) => s.id === slotId);
-    if (currentDaySlotIdx === -1) return;
+    const targetIdx = direction === "up" ? slotIndexInDay - 1 : slotIndexInDay + 1;
+    if (targetIdx < 0 || targetIdx >= daySlots.length) return;
 
-    const targetDaySlotIdx = direction === "up" ? currentDaySlotIdx - 1 : currentDaySlotIdx + 1;
-    if (targetDaySlotIdx < 0 || targetDaySlotIdx >= daySlots.length) return;
+    const temp = daySlots[slotIndexInDay];
+    daySlots[slotIndexInDay] = daySlots[targetIdx];
+    daySlots[targetIdx] = temp;
 
-    // Swap in daySlots
-    const temp = daySlots[currentDaySlotIdx];
-    daySlots[currentDaySlotIdx] = daySlots[targetDaySlotIdx];
-    daySlots[targetDaySlotIdx] = temp;
-
-    // Reconstruct global slots: replace slots of this day in-place
     const otherSlots = timeline.slots.filter((s) => s.dayNumber !== dayNum);
     setTimeline({
       ...timeline,
@@ -188,25 +176,8 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
     }
   };
 
-  // 4. Lưu dữ liệu
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-
-    const res = await updateSectionAction("timeline", timeline);
-    setSaving(false);
-
-    if (res.success) {
-      onSaveSuccess?.(timeline);
-      setMsg({ type: "success", text: "Đã cập nhật toàn bộ lịch trình và ngày sự kiện thành công!" });
-    } else {
-      setMsg({ type: "error", text: res.error || "Không thể lưu dữ liệu." });
-    }
-  };
-
   return (
-    <form onSubmit={handleSave} className="space-y-8 max-w-4xl pb-16">
+    <div className="space-y-8 max-w-4xl pb-16">
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
@@ -215,7 +186,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
               <Calendar className="w-5 h-5" />
             </span>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">
-              Quản Trị Lịch Trình & Các Ngày Sự Kiện (Timeline)
+              06 · Quản Trị Lịch Trình &amp; Các Ngày Sự Kiện (Timeline)
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
@@ -223,52 +194,33 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleResetDefaults}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            Mặc Định
-          </button>
+        <div className="flex items-center gap-2.5">
+          <AutoSaveHeaderBadge
+            status={saveStatus}
+            lastSavedTime={lastSavedTime}
+            errorMessage={errorMessage}
+            onManualSave={() => saveNow()}
+          />
 
           <button
             type="button"
             onClick={addDay}
-            className="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-3.5 py-2 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-xl font-bold text-xs transition-colors cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             Thêm Ngày Mới
           </button>
 
           <button
-            type="submit"
-            disabled={saving}
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl font-bold text-xs shadow-md shadow-emerald-700/20 transition-all disabled:opacity-50 cursor-pointer"
+            type="button"
+            onClick={handleResetDefaults}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
           >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            Lưu Thay Đổi
+            <RotateCcw className="w-3.5 h-3.5" />
+            Mặc Định
           </button>
         </div>
       </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2.5 ${
-            msg.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
-          {msg.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          ) : (
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-          )}
-          <span>{msg.text}</span>
-        </div>
-      )}
 
       {/* 1. Header config */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -488,7 +440,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
                   {/* Thêm mốc thời gian cho ngày này */}
                   <button
                     type="button"
-                    onClick={() => addSlot(dayNum)}
+                    onClick={() => addSlotForDay(dayNum, dayItem.dayTitle || `Ngày ${dayNum}`)}
                     className="inline-flex items-center gap-1 text-[11px] text-emerald-800 hover:text-emerald-950 font-bold bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> Thêm Mốc Giờ
@@ -569,7 +521,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
                   </span>
                   <button
                     type="button"
-                    onClick={() => addSlot(dayNum)}
+                    onClick={() => addSlotForDay(dayNum, dayItem.dayTitle || `Ngày ${dayNum}`)}
                     className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline inline-flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" /> Thêm mốc giờ mới
@@ -581,7 +533,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
                     <p className="text-xs text-slate-500 italic">Chưa có mốc thời gian nào cho ngày này.</p>
                     <button
                       type="button"
-                      onClick={() => addSlot(dayNum)}
+                      onClick={() => addSlotForDay(dayNum, dayItem.dayTitle || `Ngày ${dayNum}`)}
                       className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors"
                     >
                       <Plus className="w-3.5 h-3.5" /> Thêm Mốc Thời Gian Đầu Tiên
@@ -616,7 +568,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
                           <button
                             type="button"
                             disabled={slotIdx === 0}
-                            onClick={() => moveSlot(slot.id, dayNum, "up")}
+                            onClick={() => moveSlot(dayNum, slotIdx, "up")}
                             className="p-1 text-slate-500 hover:text-slate-800 disabled:opacity-30 rounded hover:bg-slate-200 transition-colors"
                             title="Di chuyển lên"
                           >
@@ -625,7 +577,7 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
                           <button
                             type="button"
                             disabled={slotIdx === daySlots.length - 1}
-                            onClick={() => moveSlot(slot.id, dayNum, "down")}
+                            onClick={() => moveSlot(dayNum, slotIdx, "down")}
                             className="p-1 text-slate-500 hover:text-slate-800 disabled:opacity-30 rounded hover:bg-slate-200 transition-colors"
                             title="Di chuyển xuống"
                           >
@@ -733,6 +685,6 @@ export default function TimelineEditor({ initialTimeline, onSaveSuccess }: Timel
           );
         })}
       </div>
-    </form>
+    </div>
   );
 }
