@@ -81,7 +81,7 @@ export default function RegistrationDetailModal({
   // Helper to parse room & delegate count if not directly in columns
   let extraDelegates = record.extraDelegatesCount ?? 0;
   let roomType = record.extraRoomType || (ticketTypeStr.includes("phòng đơn") ? "single" : "shared");
-  let nights = record.extraNights || (ticketTypeStr.includes("1 đêm") ? 1 : ticketTypeStr.includes("3 đêm") ? 3 : 2);
+  let nights = record.extraNights || (ticketTypeStr.includes("2 đêm") ? 2 : ticketTypeStr.includes("3 đêm") ? 3 : 1);
 
   // Parse lunches from string if boolean flags not saved directly
   const hasDay18Lunch = record.includeDay18Lunch ?? (ticketTypeStr.includes("18/09") || ticketTypeStr.includes("18"));
@@ -250,7 +250,7 @@ export default function RegistrationDetailModal({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600 font-medium">Số đêm lưu trú:</span>
-                  <span className="font-extrabold text-amber-900">{nights} đêm (Từ 18/09)</span>
+                  <span className="font-extrabold text-amber-900">{nights} đêm (Tối 19/09)</span>
                 </div>
                 <div className="p-2.5 bg-white rounded-xl border border-amber-200/90 text-[11.5px] font-bold text-amber-900 space-y-0.5 mt-2">
                   <span className="block text-[10.5px] text-slate-500 uppercase tracking-wider">Phân bổ chuẩn bị phòng:</span>
@@ -281,7 +281,7 @@ export default function RegistrationDetailModal({
                   </div>
                 )}
                 <div className="p-2.5 bg-white rounded-xl border border-blue-200/90 text-[11.5px] font-bold text-blue-900 mt-2">
-                  ✨ Miễn phí Bữa sáng Buffet &amp; 02 Đêm tiệc Gala Dinner
+                  ✨ Miễn phí Bữa sáng Buffet &amp; 01 Đêm tiệc Gala Dinner (19/09)
                 </div>
               </div>
             </div>

@@ -336,7 +336,7 @@ export default function RegistrationForm({
 
   // Extra Delegate calculation states
   const [extraRoomType, setExtraRoomType] = useState<"shared" | "single">("shared");
-  const [extraNights, setExtraNights] = useState<number>(2);
+  const [extraNights, setExtraNights] = useState<number>(1);
 
   const {
     register,
@@ -360,7 +360,7 @@ export default function RegistrationForm({
       packageCount: "1",
       extraDelegatesCount: "0",
       extraRoomType: "shared",
-      extraNights: 2,
+      extraNights: 1,
       includeDay18Lunch: false,
       includeDay19Lunch: false,
       includeDay20Lunch: false,
@@ -1028,8 +1028,8 @@ export default function RegistrationForm({
                             onChange={(e) => setExtraNights(Number(e.target.value))}
                             className="w-full p-3 rounded-xl border border-slate-300 bg-white font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                           >
-                            <option value={2}>2 Đêm (18 & 19/09)</option>
-                            <option value={1}>1 Đêm</option>
+                            <option value={1}>1 Đêm (Tối 19/09)</option>
+                            <option value={2}>2 Đêm</option>
                             <option value={3}>3 Đêm</option>
                           </select>
                         </div>

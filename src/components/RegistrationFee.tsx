@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Ticket, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 
 const INCLUSIONS = [
-  "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel",
-  "Bữa sáng Buffet cao cấp hàng ngày",
-  "Các bữa ăn trưa chính theo chương trình",
-  "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp",
+  "1 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel (đêm 19/09)",
+  "Bữa sáng Buffet cao cấp hàng ngày (Miễn phí theo phòng)",
+  "Bữa ăn trưa Ngày 20/09 (100.000đ / bữa / người)",
+  "01 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp (Tối 19/09, Miễn phí bữa tối)",
   "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
   "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
   "Thẻ Tham gia trọn gói tham dự 100+ phiên B2B Matching",

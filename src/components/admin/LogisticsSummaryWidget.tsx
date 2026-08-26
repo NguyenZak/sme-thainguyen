@@ -55,9 +55,9 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
       }
 
       // Stay duration
-      if (typeStr.includes("1 đêm")) stay1Night += delegatesInThisRecord;
+      if (typeStr.includes("2 đêm")) stay2Nights += delegatesInThisRecord;
       else if (typeStr.includes("3 đêm")) stay3Nights += delegatesInThisRecord;
-      else stay2Nights += delegatesInThisRecord;
+      else stay1Night += delegatesInThisRecord;
 
       // Lunch meals calculation
       if (typeStr.includes("trưa 20") || typeStr.includes("20/09") || typeStr.includes("ăn trưa ngày 20") || (r as any).includeDay20Lunch) {
@@ -147,8 +147,8 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
               <strong className="text-emerald-400 text-sm">~{summary.sharedRoomsNeeded} phòng đôi</strong>
             </div>
             <div className="pt-1 text-[11.5px] text-emerald-200/80 space-y-0.5 font-medium">
-              <p>• Lưu trú 2 đêm (18 &amp; 19/09): <strong className="text-white">{summary.stay2Nights} người</strong></p>
-              <p>• Lưu trú 1 đêm: <strong className="text-white">{summary.stay1Night} người</strong> | 3 đêm: <strong className="text-white">{summary.stay3Nights} người</strong></p>
+              <p>• Lưu trú chính 1 đêm (19/09): <strong className="text-white">{summary.stay1Night} người</strong></p>
+              <p>• Ở thêm 2 đêm: <strong className="text-white">{summary.stay2Nights} người</strong> | 3 đêm: <strong className="text-white">{summary.stay3Nights} người</strong></p>
             </div>
           </div>
         </div>

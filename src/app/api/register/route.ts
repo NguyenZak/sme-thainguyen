@@ -189,7 +189,7 @@ export async function POST(request: Request) {
           : "";
 
         const extraDetailStr = data.extraDelegatesCount && Number(data.extraDelegatesCount) > 0
-          ? `\n👥 <b>Đại biểu phát sinh:</b> ${data.extraDelegatesCount} ĐB (${data.extraNights || 2} đêm ${data.extraRoomType === "single" ? "phòng đơn" : "ở ghép"})`
+          ? `\n👥 <b>Đại biểu phát sinh:</b> ${data.extraDelegatesCount} ĐB (${data.extraNights || 1} đêm ${data.extraRoomType === "single" ? "phòng đơn" : "ở ghép"})`
           : "";
 
         const selectedLunchesStr = [

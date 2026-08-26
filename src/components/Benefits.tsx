@@ -252,9 +252,9 @@ const DEFAULT_ITEMS = [
   {
     id: "ben-4",
     iconName: "Globe2",
-    title: "Tham gia 3 Gala Networking",
+    title: "Đêm Gala Networking & Tri Ân",
     description:
-      "Tham dự ba đêm Gala Networking cao cấp để mở rộng kết nối, đàm phán hợp tác và gia tăng nhận diện thương hiệu.",
+      "Tham dự đêm tiệc Gala Dinner đẳng cấp (Tối 19/09) để mở rộng kết nối, đàm phán hợp tác và tôn vinh doanh nhân.",
     badge: "Gala Dinner",
   },
   {
