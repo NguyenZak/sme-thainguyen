@@ -76,7 +76,7 @@ export default function AdminSidebar({
         { id: "statistics", label: "Con Số Thống Kê", icon: BarChart3, orderNumber: "03" },
         { id: "about", label: "Về Diễn Đàn & Đại Biểu", icon: Info, orderNumber: "04" },
         { id: "benefits", label: "Giá Trị & Quyền Lợi", icon: Sparkles, orderNumber: "05" },
-        { id: "timeline", label: "Lịch Trình 3 Ngày", icon: CalendarDays, orderNumber: "06" },
+        { id: "timeline", label: "Lịch Trình Sự Kiện", icon: CalendarDays, orderNumber: "06" },
         { id: "speakers", label: "Diễn Giả Keynote", icon: Users, orderNumber: "07" },
         { id: "ticket_fee", label: "Bảng Phí & Giá Vé", icon: Ticket, orderNumber: "08" },
         { id: "sponsors", label: "Nhà Tài Trợ & Gói Quyền Lợi", icon: Handshake, orderNumber: "09" },

@@ -247,7 +247,7 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     { id: "about", label: "Tổng quan Diễn đàn & Thành phần tham dự", icon: "ℹ️" },
     { id: "speakers", label: "Diễn giả & Khách mời danh dự", icon: "🎤" },
     { id: "benefits", label: "5 Giá trị cốt lõi / Quyền lợi đồng hành", icon: "💎" },
-    { id: "timeline", label: "Lịch trình 3 ngày diễn đàn", icon: "📅" },
+    { id: "timeline", label: "Lịch trình sự kiện diễn đàn (Timeline)", icon: "📅" },
     { id: "sponsors", label: "Nhà tài trợ & Đơn vị đồng hành", icon: "🤝" },
     { id: "booths", label: "Sơ đồ & Đăng ký 100 gian hàng triển lãm", icon: "🎪" },
     { id: "ticket_fee", label: "Bảng giá vé & Chi phí tham dự", icon: "🎟️" },
