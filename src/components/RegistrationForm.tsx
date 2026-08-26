@@ -1021,17 +1021,16 @@ export default function RegistrationForm({
                       <div className="space-y-3 flex flex-col justify-between">
                         <div>
                           <label className="block font-bold text-slate-800 mb-1.5 flex items-center gap-1">
-                            <Calendar className="w-4 h-4 text-emerald-700" /> Số đêm lưu trú:
+                            <Calendar className="w-4 h-4 text-emerald-700" /> Thời gian lưu trú:
                           </label>
-                          <select
-                            value={extraNights}
-                            onChange={(e) => setExtraNights(Number(e.target.value))}
-                            className="w-full p-3 rounded-xl border border-slate-300 bg-white font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                          >
-                            <option value={1}>1 Đêm (Tối 19/09)</option>
-                            <option value={2}>2 Đêm</option>
-                            <option value={3}>3 Đêm</option>
-                          </select>
+                          <div className="w-full p-2.5 sm:p-3 rounded-xl border border-emerald-300 bg-emerald-50/80 font-bold text-xs text-emerald-950 flex items-center justify-between shadow-xs">
+                            <span className="flex items-center gap-1.5">
+                              🌙 <strong>1 Đêm (Tối 19/09/2026)</strong>
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 text-[10px] font-extrabold tracking-wide">
+                              Trọn gói sự kiện
+                            </span>
+                          </div>
                         </div>
 
                         <div className="p-3 rounded-xl bg-white/90 border border-amber-200/80 space-y-1 text-[11.5px] mt-auto">
