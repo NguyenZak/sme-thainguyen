@@ -378,14 +378,11 @@ export default function RegistrationForm({
   const extraDelegatesCount = Math.max(0, parseInt(watchExtraDelegatesStr, 10) || 0);
   const totalDelegatesCount = totalPackageDelegates + extraDelegatesCount;
 
-  const watchIncludeDay18Lunch = watch("includeDay18Lunch") || false;
-  const watchIncludeDay19Lunch = watch("includeDay19Lunch") || false;
-  const watchIncludeDay20Lunch = false;
+  const watchIncludeDay20Lunch = watch("includeDay20Lunch") || false;
 
   const lunchUnitPrice = Number(ticketFee?.extraDelegateLunchPriceVND) || DEFAULT_TICKET_FEE.extraDelegateLunchPriceVND || 100000;
-  const day18LunchTotalFee = watchIncludeDay18Lunch ? (totalDelegatesCount * lunchUnitPrice) : 0;
-  const day19LunchTotalFee = watchIncludeDay19Lunch ? (totalDelegatesCount * lunchUnitPrice) : 0;
-  const totalLunchFee = day18LunchTotalFee + day19LunchTotalFee;
+  const day20LunchTotalFee = watchIncludeDay20Lunch ? (totalDelegatesCount * lunchUnitPrice) : 0;
+  const totalLunchFee = day20LunchTotalFee;
 
   const sharedRoomRate = Number(ticketFee?.extraDelegateSharedRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSharedRoomPriceVND ?? 350000;
   const singleRoomRate = Number(ticketFee?.extraDelegateSingleRoomPriceVND) ?? DEFAULT_TICKET_FEE.extraDelegateSingleRoomPriceVND ?? 700000;
@@ -499,10 +496,7 @@ export default function RegistrationForm({
     try {
       let typeLabel = "";
       if (values.intentTab === "delegate") {
-        const selectedLunches = [];
-        if (watchIncludeDay18Lunch) selectedLunches.push("Trưa 18/09");
-        if (watchIncludeDay19Lunch) selectedLunches.push("Trưa 19/09");
-        const lunchText = selectedLunches.length > 0 ? ` + Ăn trưa (${selectedLunches.join(", ")}) (+${totalLunchFee.toLocaleString("vi-VN")}đ)` : "";
+        const lunchText = watchIncludeDay20Lunch ? ` + Ăn trưa 20/09 (+${totalLunchFee.toLocaleString("vi-VN")}đ)` : "";
 
         if (extraDelegatesCount > 0) {
           typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} ĐB phát sinh (+${totalExtraFees.toLocaleString("vi-VN")}đ)${lunchText} -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
@@ -538,13 +532,14 @@ export default function RegistrationForm({
         totalDelegatesCount,
         extraRoomType,
         extraNights,
-        includeDay18Lunch: watchIncludeDay18Lunch,
-        includeDay19Lunch: watchIncludeDay19Lunch,
+        includeDay18Lunch: false,
+        includeDay19Lunch: false,
+        includeDay20Lunch: watchIncludeDay20Lunch,
         totalLunchFee,
         totalCalculatedAmount: values.intentTab === "delegate" ? totalCalculatedAmount : 0,
         registrationId: clientRegId,
         registrationType: typeLabel,
-        attendeesCount: `${totalDelegatesCount} đại biểu (${watchPackageCount} gói [${totalPackageDelegates} ĐB] + ${extraDelegatesCount} phát sinh${(watchIncludeDay18Lunch || watchIncludeDay19Lunch) ? " + Ăn trưa" : ""})`,
+        attendeesCount: `${totalDelegatesCount} đại biểu (${watchPackageCount} gói [${totalPackageDelegates} ĐB] + ${extraDelegatesCount} phát sinh${watchIncludeDay20Lunch ? " + Ăn trưa 20/09" : ""})`,
         emailSubject,
         emailBody,
         emailPosterUrl,
@@ -938,48 +933,32 @@ export default function RegistrationForm({
                   />
                 </div>
 
-                {/* Lunch Selection Checkboxes (Day 18 & Day 19) */}
+                {/* Lunch Selection Checkbox (Day 20/09 only) */}
                 <div className="p-4.5 rounded-2xl bg-[#0D3B2E]/5 border border-emerald-300/80 space-y-3">
                   <label className="block text-xs font-extrabold uppercase text-[#0D3B2E] tracking-wider flex items-center gap-1.5">
-                    <Utensils className="w-4 h-4 text-emerald-700" /> Đăng ký suất ăn trưa theo nhu cầu (+{lunchUnitPrice.toLocaleString("vi-VN")}đ / bữa / đại biểu):
+                    <Utensils className="w-4 h-4 text-emerald-700" /> Đăng ký suất ăn trưa theo nhu cầu:
                   </label>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
-                    {/* Day 18 Lunch Option */}
-                    <label className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${watchIncludeDay18Lunch ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm" : "bg-white border-slate-200 hover:bg-slate-50"}`}>
-                      <input
-                        type="checkbox"
-                        {...register("includeDay18Lunch")}
-                        className="mt-0.5 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                      />
-                      <div>
-                        <span className="font-bold text-slate-900 text-xs sm:text-sm block">
-                          🍱 Bữa trưa Ngày 18/09
+                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${watchIncludeDay20Lunch ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm" : "bg-white border-slate-200 hover:bg-slate-50"}`}>
+                    <input
+                      type="checkbox"
+                      {...register("includeDay20Lunch")}
+                      className="mt-0.5 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 text-xs sm:text-sm">
+                          🍱 Bữa ăn trưa Ngày 20/09
                         </span>
-                        <span className="text-[11.5px] text-slate-600 block mt-0.5">
-                          {totalDelegatesCount} đại biểu × {lunchUnitPrice.toLocaleString("vi-VN")}đ = <strong className="text-emerald-700 font-extrabold">{day18LunchTotalFee > 0 ? `+${day18LunchTotalFee.toLocaleString("vi-VN")}đ` : "Chưa chọn"}</strong>
-                        </span>
-                      </div>
-                    </label>
-
-                    {/* Day 19 Lunch Option */}
-                    <label className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${watchIncludeDay19Lunch ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20 shadow-sm" : "bg-white border-slate-200 hover:bg-slate-50"}`}>
-                      <input
-                        type="checkbox"
-                        {...register("includeDay19Lunch")}
-                        className="mt-0.5 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                      />
-                      <div>
-                        <span className="font-bold text-slate-900 text-xs sm:text-sm block">
-                          🍱 Bữa trưa Ngày 19/09
-                        </span>
-                        <span className="text-[11.5px] text-slate-600 block mt-0.5">
-                          {totalDelegatesCount} đại biểu × {lunchUnitPrice.toLocaleString("vi-VN")}đ = <strong className="text-emerald-700 font-extrabold">{day19LunchTotalFee > 0 ? `+${day19LunchTotalFee.toLocaleString("vi-VN")}đ` : "Chưa chọn"}</strong>
+                        <span className="text-xs font-bold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-lg border border-amber-300">
+                          {lunchUnitPrice.toLocaleString("vi-VN")}đ / bữa / người
                         </span>
                       </div>
-                    </label>
-                  </div>
-                  <p className="text-[11px] text-slate-500 italic">* Ngày 20/09 không phục vụ ăn trưa (Kết thúc sự kiện). Vui lòng tích chọn nếu đoàn có nhu cầu dùng bữa trưa Ngày 18 & 19.*</p>
+                      <span className="text-[11.5px] text-slate-600 block mt-1">
+                        {totalDelegatesCount} đại biểu × {lunchUnitPrice.toLocaleString("vi-VN")}đ = <strong className="text-emerald-700 font-extrabold">{day20LunchTotalFee > 0 ? `+${day20LunchTotalFee.toLocaleString("vi-VN")}đ` : "Chưa chọn"}</strong>
+                      </span>
+                    </div>
+                  </label>
                 </div>
 
 
@@ -1059,8 +1038,7 @@ export default function RegistrationForm({
                           <p className="font-bold text-slate-900 flex items-center gap-1">
                             <Utensils className="w-3.5 h-3.5 text-emerald-700" /> Quyền lợi ăn uống đi kèm:
                           </p>
-                          <p className="text-amber-800 font-bold">• Ăn trưa ngày 18 & 19/09: {lunchUnitPrice.toLocaleString("vi-VN")}đ / bữa / người</p>
-                          <p className="text-slate-500 font-medium">• Trưa ngày 20/09: Không ăn / Không phục vụ</p>
+                          <p className="text-amber-800 font-bold">• Ăn trưa Ngày 20/09: {lunchUnitPrice.toLocaleString("vi-VN")}đ / bữa / người</p>
                           <p className="text-emerald-700 font-bold">• Bữa sáng Buffet & Tiệc Gala Dinner: Miễn phí trọn gói</p>
                         </div>
                       </div>
@@ -1093,7 +1071,7 @@ export default function RegistrationForm({
                   {totalLunchFee > 0 && (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-xs border-b border-emerald-800/80 pb-3">
                       <span className="text-amber-200/90 font-medium leading-snug">
-                        Phí ăn trưa ({[watchIncludeDay18Lunch && "Bữa trưa 18/09", watchIncludeDay19Lunch && "Bữa trưa 19/09"].filter(Boolean).join(" & ")}):
+                        Phí ăn trưa (Bữa trưa Ngày 20/09):
                       </span>
                       <span className="font-extrabold text-sm sm:text-base text-amber-400 whitespace-nowrap self-end sm:self-auto">
                         +{totalLunchFee.toLocaleString("vi-VN")} VNĐ

@@ -862,7 +862,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
     "02 Thẻ Đại biểu chính thức tham dự trọn gói chuỗi sự kiện 3 ngày",
     "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel (ở ghép 2 người/phòng)",
     "Bữa sáng Buffet cao cấp hàng ngày (Miễn phí theo phòng)",
-    "Bữa ăn trưa Ngày 18 & 19/09 (100.000đ / bữa / người)",
+    "Bữa ăn trưa Ngày 20/09 (100.000đ / bữa / người)",
     "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp (Miễn phí bữa tối)",
     "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
     "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",

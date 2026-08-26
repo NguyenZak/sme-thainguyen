@@ -218,5 +218,32 @@
         "description": "Chào mừng Đại hội và vinh danh các nhà tài trợ, đối tác."
       }
     ]
+  },
+  "navbar": {
+    "brandName": "SME VIỆT NAM 2026",
+    "brandSub": "TASME THÁI NGUYÊN",
+    "logoSrc": "https://miggxblnqiwblugyklat.supabase.co/storage/v1/object/public/cms-media/cms-uploads/1786283365354_7h54cmcj9c3.jpg",
+    "eventDateText": "19-20/9/2026",
+    "navLinks": [
+      {
+        "href": "#about",
+        "name": "Giới thiệu"
+      },
+      {
+        "href": "#timeline",
+        "name": "Chương trình"
+      },
+      {
+        "href": "#sponsors",
+        "name": "Gói Tài Trợ"
+      },
+      {
+        "href": "#register",
+        "name": "Đăng ký tham gia"
+      }
+    ],
+    "ctaText": "Đăng ký ngay",
+    "ctaLink": "#register",
+    "mobileRegisterText": "Đăng ký"
   }
 }

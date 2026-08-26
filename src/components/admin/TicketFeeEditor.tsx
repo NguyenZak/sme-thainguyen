@@ -355,9 +355,9 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
             </p>
           </div>
 
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Chi Phí Bữa Ăn Trưa Ngày 18 & 19/09 <span className="text-emerald-600 font-bold">*(VNĐ / người / bữa - Mặc định 100k)*</span>
+              🍱 Chi Phí Bữa Ăn Trưa Ngày 20/09 <span className="text-emerald-600 font-bold">*(VNĐ / người / bữa - Mặc định 100.000đ)*</span>
             </label>
             <input
               type="number"
@@ -367,23 +367,7 @@ export default function TicketFeeEditor({ initialFee, initialRegistration, onSav
               className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
             />
             <p className="text-[11px] text-slate-500 mt-1">
-              Hiển thị: <strong className="text-emerald-700">{(fee.extraDelegateLunchPriceVND || 100000).toLocaleString("vi-VN")} VNĐ</strong> / bữa / người (Ngày 18 & 19/09)
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Chi Phí Bữa Ăn Trưa Ngày 20/09 <span className="text-slate-500 font-bold">*(Mặc định 0đ = Không ăn / Không phục vụ)*</span>
-            </label>
-            <input
-              type="number"
-              value={fee.day20LunchPriceVND !== undefined ? fee.day20LunchPriceVND : 0}
-              placeholder="0"
-              onChange={(e) => setFee({ ...fee, day20LunchPriceVND: Number(e.target.value) })}
-              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none font-bold"
-            />
-            <p className="text-[11px] text-slate-500 mt-1">
-              Hiển thị: <strong className="text-slate-600">{fee.day20LunchPriceVND ? `${fee.day20LunchPriceVND.toLocaleString("vi-VN")} VNĐ` : "0 VNĐ (Ngày 20/09 không phục vụ ăn trưa)"}</strong>
+              Hiển thị: <strong className="text-emerald-700">{(fee.extraDelegateLunchPriceVND || 100000).toLocaleString("vi-VN")} VNĐ</strong> / bữa / người (Ăn trưa Ngày 20/09)
             </p>
           </div>
 

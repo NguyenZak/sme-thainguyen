@@ -20,6 +20,7 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
 
     let day18LunchMeals = 0;
     let day19LunchMeals = 0;
+    let day20LunchMeals = 0;
 
     let b2bRequestCount = 0;
     let delegateFormCount = 0;
@@ -56,13 +57,16 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
       // Stay duration
       if (typeStr.includes("1 đêm")) stay1Night += delegatesInThisRecord;
       else if (typeStr.includes("3 đêm")) stay3Nights += delegatesInThisRecord;
-      else stay2Nights += delegatesInThisRecord; // Default 2 nights
+      else stay2Nights += delegatesInThisRecord;
 
       // Lunch meals calculation
-      if (typeStr.includes("trưa 18") || typeStr.includes("18/09") || typeStr.includes("ăn trưa ngày 18")) {
+      if (typeStr.includes("trưa 20") || typeStr.includes("20/09") || typeStr.includes("ăn trưa ngày 20") || (r as any).includeDay20Lunch) {
+        day20LunchMeals += delegatesInThisRecord;
+      }
+      if (typeStr.includes("trưa 18") || typeStr.includes("18/09") || typeStr.includes("ăn trưa ngày 18") || (r as any).includeDay18Lunch) {
         day18LunchMeals += delegatesInThisRecord;
       }
-      if (typeStr.includes("trưa 19") || typeStr.includes("19/09") || typeStr.includes("ăn trưa ngày 19")) {
+      if (typeStr.includes("trưa 19") || typeStr.includes("19/09") || typeStr.includes("ăn trưa ngày 19") || (r as any).includeDay19Lunch) {
         day19LunchMeals += delegatesInThisRecord;
       }
 
@@ -84,6 +88,7 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
       stay3Nights,
       day18LunchMeals,
       day19LunchMeals,
+      day20LunchMeals,
       b2bRequestCount,
       delegateFormCount,
       sponsorFormCount,
@@ -94,57 +99,56 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
   if (registrations.length === 0) return null;
 
   return (
-    <div className="bg-gradient-to-br from-[#0B3026] via-[#0D3B2E] to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-700/60 space-y-6 relative overflow-hidden">
-      {/* Decorative Accents */}
-      <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Widget Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-800/80 pb-4 relative z-10">
+    <div className="bg-gradient-to-br from-[#0B3026] via-[#0D3B2E] to-[#07241C] text-white rounded-3xl p-6 shadow-xl border border-emerald-500/20 space-y-5">
+      {/* Header Widget */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-extrabold border border-amber-500/30 uppercase tracking-wider mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Bảng Thống Kê Hậu Cần Chuẩn Bị
-          </span>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            Tổng Hợp Xếp Phòng Khách Sạn &amp; Suất Ăn Phục Vụ
-          </h2>
-          <p className="text-xs text-emerald-200/90 mt-0.5">
-            Dữ liệu tổng hợp thời gian thực từ các đơn đăng ký để Ban Quản lý đặt phòng May Plaza và báo bếp chuẩn bị.
+          <div className="flex items-center gap-2">
+            <span className="p-2 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <Building2 className="w-5 h-5" />
+            </span>
+            <h3 className="text-base sm:text-lg font-black tracking-tight text-white">
+              Bảng Tổng Hợp Hậu Cần &amp; Khách Sạn Tự Động (Logistics Hub)
+            </h3>
+          </div>
+          <p className="text-xs text-emerald-200/80 mt-1">
+            Số liệu thời gian thực được tính toán trực tiếp từ các hồ sơ đăng ký đại biểu chính thức và phát sinh.
           </p>
         </div>
 
-        <div className="bg-emerald-950/80 border border-emerald-700/80 p-3 rounded-2xl text-right shrink-0">
-          <span className="text-[11px] text-emerald-300 font-medium block">Tổng Đại Biểu Dự Kiến:</span>
-          <span className="text-2xl font-black text-amber-400 tracking-tight">{summary.totalDelegates} người</span>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <span className="text-[11px] text-emerald-300 block uppercase font-bold tracking-wider">Tổng Đại Biểu</span>
+            <span className="text-2xl font-black text-amber-400 leading-none">{summary.totalDelegates}</span>
+          </div>
         </div>
       </div>
 
-      {/* 3 Main Logistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
-        
-        {/* Card 1: Xếp phòng Khách sạn May Plaza */}
+      {/* 3 Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Card 1: Khách sạn & Phòng ở */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4.5 border border-white/15 space-y-3">
           <div className="flex items-center justify-between border-b border-white/15 pb-2.5">
-            <span className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-              <BedDouble className="w-4 h-4 text-amber-400" /> 1. Khách Sạn May Plaza
+            <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+              <BedDouble className="w-4 h-4 text-emerald-400" /> 1. Phòng Nghỉ Khách Sạn
             </span>
             <span className="text-[11px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-400/30">
-              {summary.singleRoomsNeeded + summary.sharedRoomsNeeded} phòng
+              May Plaza 4*
             </span>
           </div>
 
           <div className="space-y-2 text-xs">
             <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl">
-              <span className="text-slate-200">🏨 Phòng đơn (Single Room):</span>
+              <span className="text-slate-200">🏨 Phòng đơn (1 người/phòng):</span>
               <strong className="text-amber-400 text-sm">{summary.singleRoomsNeeded} phòng</strong>
             </div>
             <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl">
-              <span className="text-slate-200">🏨 Ở ghép (Shared Room):</span>
-              <strong className="text-emerald-300 text-sm">{summary.sharedRoomsNeeded} phòng ({summary.sharedPeopleCount} người)</strong>
+              <span className="text-slate-200">👥 Ở ghép ({summary.sharedPeopleCount} người):</span>
+              <strong className="text-emerald-400 text-sm">~{summary.sharedRoomsNeeded} phòng đôi</strong>
             </div>
             <div className="pt-1 text-[11.5px] text-emerald-200/80 space-y-0.5 font-medium">
-              <p>• Lưu trú 2 đêm (18 &amp; 19/09): <strong className="text-white">{summary.stay2Nights} đại biểu</strong></p>
-              <p>• Lưu trú 3 đêm (18, 19 &amp; 20/09): <strong className="text-white">{summary.stay3Nights} đại biểu</strong></p>
+              <p>• Lưu trú 2 đêm (18 &amp; 19/09): <strong className="text-white">{summary.stay2Nights} người</strong></p>
+              <p>• Lưu trú 1 đêm: <strong className="text-white">{summary.stay1Night} người</strong> | 3 đêm: <strong className="text-white">{summary.stay3Nights} người</strong></p>
             </div>
           </div>
         </div>
@@ -162,15 +166,15 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
 
           <div className="space-y-2 text-xs">
             <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl">
-              <span className="text-slate-200">🍱 Suất ăn trưa Ngày 18/09:</span>
-              <strong className="text-amber-400 text-sm">{summary.day18LunchMeals} suất</strong>
+              <span className="text-slate-200">🍱 Suất ăn trưa Ngày 20/09:</span>
+              <strong className="text-amber-400 text-sm">{summary.day20LunchMeals} suất</strong>
             </div>
-            <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl">
-              <span className="text-slate-200">🍱 Suất ăn trưa Ngày 19/09:</span>
-              <strong className="text-amber-400 text-sm">{summary.day19LunchMeals} suất</strong>
-            </div>
+            {(summary.day18LunchMeals > 0 || summary.day19LunchMeals > 0) && (
+              <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl text-[11px] text-slate-300">
+                <span>(Dữ liệu cũ: Trưa 18: {summary.day18LunchMeals}, Trưa 19: {summary.day19LunchMeals})</span>
+              </div>
+            )}
             <div className="pt-1 text-[11.5px] text-emerald-200/80 space-y-0.5 font-medium">
-              <p>• Suất ăn trưa Ngày 20/09: <strong className="text-slate-300">0 suất (Không phục vụ)</strong></p>
               <p>• Tiệc Gala Dinner &amp; Buffet sáng: <strong className="text-white">{summary.totalDelegates} suất</strong></p>
             </div>
           </div>
