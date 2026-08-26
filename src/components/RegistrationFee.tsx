@@ -14,6 +14,7 @@ const INCLUSIONS = [
 ];
 
 import { TicketFeeContent, DEFAULT_TICKET_FEE } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 export default function RegistrationFee({ content }: { content?: TicketFeeContent }) {
   const badge = content?.badge || DEFAULT_TICKET_FEE.badge;
@@ -65,9 +66,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
           >
             {title}
           </h2>
-          <p className="text-slate-600 text-base max-w-3xl mx-auto">
-            {subtitle}
-          </p>
+          <FormattedText content={subtitle} as="p" className="text-slate-600 text-base max-w-3xl mx-auto" />
         </motion.div>
 
         {/* Highlighted Ticket Card */}
@@ -173,9 +172,11 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                     className="flex items-start gap-3 bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/10 transition-colors"
                   >
                     <CheckCircle2 className="w-5 h-5 text-[#22C55E] shrink-0 mt-0.5" />
-                    <span className="text-sm font-semibold text-slate-100">
-                      {item}
-                    </span>
+                    <FormattedText
+                      content={item}
+                      as="span"
+                      className="text-sm font-semibold text-slate-100"
+                    />
                   </motion.li>
                 ))}
               </ul>

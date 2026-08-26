@@ -32,5 +32,191 @@
     "sepaySecretKey": "",
     "sepaySandbox": false,
     "hiddenSections": []
+  },
+  "timeline": {
+    "badge": "LỊCH TRÌNH CHUYÊN NGHIỆP",
+    "title": "Chương Trình Chi Tiết 2 Ngày Diễn Đàn",
+    "subtitle": "Chuỗi hoạt động phong phú gồm Triển lãm, Diễn đàn cấp cao, B2B Matching, Gala Dinner và Đại hội TASME.",
+    "bannerEyebrow": "✦ Quy mô sự kiện · 3 ngày sôi động ✦",
+    "bannerDateText": "18 – 20 / 09 / 2026",
+    "bannerLocationText": "May Plaza Hotel, Thái Nguyên",
+    "bannerStats": [
+      {
+        "id": "bs-1",
+        "iconName": "Users",
+        "value": "100+",
+        "label": "Phiên B2B",
+        "sub": "Kết nối 1:1 trực tiếp",
+        "accent": "#22C55E"
+      },
+      {
+        "id": "bs-2",
+        "iconName": "Utensils",
+        "value": "02",
+        "label": "Gala Dinner",
+        "sub": "Đẳng cấp & nghệ thuật",
+        "accent": "#F59E0B"
+      },
+      {
+        "id": "bs-3",
+        "iconName": "LayoutList",
+        "value": "01",
+        "label": "Diễn đàn chính",
+        "sub": "Quy mô quốc gia",
+        "accent": "#22C55E"
+      },
+      {
+        "id": "bs-4",
+        "iconName": "BookOpen",
+        "value": "05",
+        "label": "Chuyên đề",
+        "sub": "Nội dung chuyên sâu",
+        "accent": "#F59E0B"
+      },
+      {
+        "id": "bs-5",
+        "iconName": "Mic2",
+        "value": "20+",
+        "label": "Diễn giả",
+        "sub": "Chuyên gia hàng đầu",
+        "accent": "#22C55E"
+      }
+    ],
+    "days": [
+      {
+        "dateText": "19/09/2026",
+        "dayTitle": "Ngày 1: Vietnam SME Forum 2026",
+        "location": "Thời gian: 15:30 – 18:30, ngày 19/9/2026 Địa điểm: Khách sạn May Plaza Thái Nguyên",
+        "subTitle": "Liên kết – Đổi mới – Hội nhập – Thịnh vượng",
+        "dayNumber": 2
+      },
+      {
+        "dateText": "20/09/2026",
+        "dayTitle": "Ngày 2: Đại hội HHDNNVV Tỉnh Thái Nguyên",
+        "dayNumber": 3
+      }
+    ],
+    "slots": [
+      {
+        "id": "ts-4",
+        "title": "KHAI MẠC DIỄN ĐÀN",
+        "speaker": "",
+        "dayTitle": "Ngày 2",
+        "location": "Sảnh VIP May Plaza",
+        "timeSlot": "15:30 – 15:45",
+        "dayNumber": 2,
+        "highlight": true,
+        "description": "* Tuyên bố lý do, giới thiệu đại biểu.\n* Trình chiếu video giới thiệu: “Thái Nguyên – Điểm đến đầu tư, đổi mới sáng tạo và liên kết phát triển”.\n* Phát biểu khai mạc của đại diện Ban Tổ chức.\n* Phát biểu chào mừng của lãnh đạo Trung ương và/hoặc lãnh đạo tỉnh Thái Nguyên."
+      },
+      {
+        "id": "ts-5",
+        "title": "LỄ TRÀ KẾT NỐI – TEA CONNECTION CEREMONY",
+        "speaker": "",
+        "dayTitle": "Ngày 2",
+        "location": "",
+        "timeSlot": "15:45 – 16:00",
+        "dayNumber": 2,
+        "description": "Chủ đề: “Một chén trà – Muôn vàn kết nối”"
+      },
+      {
+        "id": "ts-6",
+        "title": "PHIÊN TOÀN THỂ",
+        "dayTitle": "Ngày 2",
+        "location": "",
+        "timeSlot": "16:00 – 16:15",
+        "dayNumber": 2,
+        "description": "Chủ đề: Doanh nghiệp nhỏ và vừa Việt Nam trong kỷ nguyên tăng trưởng xanh, chuyển đổi số và hội nhập quốc tế."
+      },
+      {
+        "id": "ts-7",
+        "title": "Đại hội Hiệp hội Doanh nghiệp NV Tỉnh Thái Nguyên (Nhiệm kỳ 2026 - 2031)",
+        "speaker": "Lãnh đạo Tỉnh ủy, UBND Tỉnh Thái Nguyên & Ban Chấp hành",
+        "dayTitle": "Ngày 3",
+        "location": "Hội trường Trọng tâm",
+        "timeSlot": "08:00 - 11:30",
+        "dayNumber": 3,
+        "description": "Đại hội chính thức nhiệm kỳ 2026 - 2031; ra mắt Ban Chấp hành mới; tri ân khen thưởng & tiệc chúc mừng."
+      },
+      {
+        "id": "ts-1787739235471",
+        "title": "DIỄN ĐÀN CẤP CAO 1",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "16:15 – 16:40",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Chủ đề: Xúc tiến đầu tư và tài chính."
+      },
+      {
+        "id": "ts-1787739380166",
+        "title": "DIỄN ĐÀN CẤP CAO 2",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "16:40 – 17:05",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Chủ đề: AI, chuyển đổi số, thương mại điện tử, liên kết vùng, xúc tiến thương mại và hợp tác quốc tế cho SME."
+      },
+      {
+        "id": "ts-1787739400022",
+        "title": "PHIÊN ĐỐI THOẠI",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "17:05 – 17:30",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Chủ đề: Chính quyền – Doanh nghiệp – Nhà đầu tư"
+      },
+      {
+        "id": "ts-1787739401928",
+        "title": "Chương trình mới",
+        "dayTitle": "Ngày 02",
+        "location": "Hội trường May Plaza Hotel",
+        "timeSlot": "09:00 - 10:00",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Mô tả nội dung chương trình"
+      },
+      {
+        "id": "ts-1787739402416",
+        "title": " LỄ KÝ KẾT HỢP TÁC",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "17:30 – 17:45",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": ""
+      },
+      {
+        "id": "ts-1787739402920",
+        "title": "CÔNG BỐ KẾT QUẢ DIỄN ĐÀN & NGHI THỨC TRAO CỜ ĐĂNG CAI",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "17:45 – 18:15",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Trao cờ đăng cai tổ chức Diễn đàn lần tiếp theo cho tỉnh Phú Thọ."
+      },
+      {
+        "id": "ts-1787739484095",
+        "title": "BẾ MẠC DIỄN ĐÀN",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "18:15 – 18:30",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Mô tả nội dung chương trình"
+      },
+      {
+        "id": "ts-1787739519192",
+        "title": "GALA DINNER",
+        "dayTitle": "Ngày 02",
+        "location": "",
+        "timeSlot": "19:00 – 21:30",
+        "dayNumber": 2,
+        "highlight": false,
+        "description": "Chào mừng Đại hội và vinh danh các nhà tài trợ, đối tác."
+      }
+    ]
   }
 }

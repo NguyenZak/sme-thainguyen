@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Handshake, CalendarDays, Wine, TrendingUp, Building2, Banknote, MapPin, Users, Store, Globe2 } from "lucide-react";
 import { StatisticsContent, DEFAULT_STATISTICS } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 const ICON_MAP: Record<string, any> = {
   Users: Users,
@@ -80,9 +81,18 @@ export default function Statistics({ content }: { content?: StatisticsContent })
               >
                 <Counter end={item.value} suffix={item.suffix} formatZero={item.value < 10 && item.value > 0} />
               </div>
-              <p className="text-[11px] sm:text-xs font-bold text-slate-600 mt-1 uppercase tracking-wider">
-                {item.label}
-              </p>
+              <FormattedText
+                content={item.label}
+                as="p"
+                className="text-[11px] sm:text-xs font-bold text-slate-600 mt-1 uppercase tracking-wider"
+              />
+              {item.subtext && (
+                <FormattedText
+                  content={item.subtext}
+                  as="p"
+                  className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 leading-snug"
+                />
+              )}
             </motion.div>
           );
         })}

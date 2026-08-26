@@ -67,6 +67,8 @@ export default function RichTextarea({
             forced_root_block: "",
             force_br_newlines: true,
             force_p_newlines: false,
+            entity_encoding: "raw",
+            entities: "160,nbsp",
             plugins: [
               "advlist",
               "autolink",

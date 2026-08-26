@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Clock, MapPin, Sparkles, Users, Utensils, LayoutList, BookOpen, Mic2 } from "lucide-react";
+import { Clock, MapPin, Sparkles, Users, Utensils, LayoutList, BookOpen, Mic2, Calendar } from "lucide-react";
 
 /** Animated counter that counts up when scrolled into view */
 function AnimatedValue({ raw }: { raw: string }) {
@@ -132,6 +132,7 @@ const SCHEDULE_DATA: DaySchedule[] = [
 ];
 
 import { TimelineContent, DEFAULT_TIMELINE } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 export default function Timeline({ content }: { content?: TimelineContent }) {
   const badge = content?.badge || DEFAULT_TIMELINE.badge;
@@ -142,8 +143,9 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const activeDay = days[activeTab] || days[0];
-  const activeDayNumber = activeDay?.dayNumber ?? (activeTab + 1);
+  const safeTab = Math.min(activeTab, Math.max(0, days.length - 1));
+  const activeDay = days[safeTab] || days[0];
+  const activeDayNumber = activeDay?.dayNumber ?? (safeTab + 1);
   const activeSlots = slots.filter((s) => s.dayNumber === activeDayNumber);
 
   return (
@@ -158,17 +160,15 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
           className="text-center max-w-5xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            {badge}
+            <FormattedText content={badge} as="span" />
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            {title}
+            <FormattedText content={title} as="span" />
           </h2>
-          <p className="text-slate-600 text-base max-w-3xl mx-auto">
-            {subtitle}
-          </p>
+          <FormattedText content={subtitle} as="p" className="text-slate-600 text-base max-w-3xl mx-auto" />
         </motion.div>
 
         {/* Event Scale Summary — PREMIUM banner */}
@@ -228,78 +228,95 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
             >
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-500/40" />
               <span className="text-[11px] font-extrabold uppercase tracking-[0.28em] text-emerald-400 whitespace-nowrap">
-                ✦ Quy mô sự kiện · 3 ngày sôi động ✦
+                <FormattedText
+                  content={content?.bannerEyebrow || `✦ Quy mô sự kiện · ${days.length} ngày sôi động ✦`}
+                  as="span"
+                />
               </span>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-500/40" />
             </motion.div>
 
             {/* Stats row */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-              {[
-                { icon: Users,      value: "100+", label: "Phiên B2B",      sub: "Kết nối 1:1 trực tiếp",  accent: "#22C55E" },
-                { icon: Utensils,   value: "02",   label: "Gala Dinner",    sub: "Đẳng cấp & nghệ thuật",  accent: "#F59E0B" },
-                { icon: LayoutList, value: "01",   label: "Diễn đàn chính", sub: "Quy mô quốc gia",         accent: "#22C55E" },
-                { icon: BookOpen,   value: "05",   label: "Chuyên đề",      sub: "Nội dung chuyên sâu",     accent: "#F59E0B" },
-                { icon: Mic2,       value: "20+",  label: "Diễn giả",       sub: "Chuyên gia hàng đầu",     accent: "#22C55E" },
-              ].map(({ icon: Icon, value, label, sub, accent }, i) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="relative flex flex-col items-center gap-3 rounded-2xl px-3 py-5 text-center cursor-default group"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
-                >
-                  {/* Hover highlight */}
-                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ background: "rgba(255,255,255,0.06)", boxShadow: `0 0 24px ${accent}22` }} />
+              {(content?.bannerStats && content.bannerStats.length > 0
+                ? content.bannerStats
+                : (DEFAULT_TIMELINE.bannerStats || [])
+              ).map((statItem, i) => {
+                const iconMap: Record<string, any> = {
+                  Users,
+                  Utensils,
+                  LayoutList,
+                  BookOpen,
+                  Mic2,
+                  Calendar,
+                  MapPin,
+                  Sparkles,
+                };
+                const Icon = iconMap[statItem.iconName || ""] || Users;
+                const accent = statItem.accent || (i % 2 === 0 ? "#22C55E" : "#F59E0B");
 
-                  {/* Icon ring */}
-                  <div className="relative z-10">
-                    <motion.div
-                      className="absolute inset-0 rounded-2xl blur-lg"
-                      style={{ backgroundColor: accent }}
-                      animate={{ opacity: [0.15, 0.35, 0.15] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
-                    />
-                    <div
-                      className="relative flex items-center justify-center w-12 h-12 rounded-2xl"
-                      style={{ background: `${accent}22`, border: `1.5px solid ${accent}55` }}
-                    >
-                      <Icon className="w-5 h-5" style={{ color: accent }} />
-                    </div>
-                  </div>
-
-                  {/* Number */}
-                  <motion.span
-                    className="relative z-10 text-5xl font-black leading-none tracking-tight text-white"
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                return (
+                  <motion.div
+                    key={statItem.id || statItem.label || i}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ type: "spring", stiffness: 220, damping: 14, delay: 0.4 + i * 0.1 }}
+                    transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="relative flex flex-col items-center gap-3 rounded-2xl px-3 py-5 text-center cursor-default group"
+                    style={{ background: "rgba(255,255,255,0.04)" }}
                   >
-                    <AnimatedValue raw={value} />
-                  </motion.span>
+                    {/* Hover highlight */}
+                    <div
+                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ background: "rgba(255,255,255,0.06)", boxShadow: `0 0 24px ${accent}22` }}
+                    />
 
-                  {/* Gold underline */}
-                  <div className="relative z-10 w-8 h-[2px] rounded-full" style={{ backgroundColor: accent }} />
+                    {/* Icon ring */}
+                    <div className="relative z-10">
+                      <motion.div
+                        className="absolute inset-0 rounded-2xl blur-lg"
+                        style={{ backgroundColor: accent }}
+                        animate={{ opacity: [0.15, 0.35, 0.15] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                      />
+                      <div
+                        className="relative flex items-center justify-center w-12 h-12 rounded-2xl"
+                        style={{ background: `${accent}22`, border: `1.5px solid ${accent}55` }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color: accent }} />
+                      </div>
+                    </div>
 
-                  {/* Label */}
-                  <span className="relative z-10 text-[12px] font-extrabold uppercase tracking-[0.18em] text-white/90 leading-tight">
-                    {label}
-                  </span>
+                    {/* Number */}
+                    <motion.span
+                      className="relative z-10 text-5xl font-black leading-none tracking-tight text-white"
+                      initial={{ opacity: 0, scale: 0.6 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ type: "spring", stiffness: 220, damping: 14, delay: 0.4 + i * 0.1 }}
+                    >
+                      <AnimatedValue raw={statItem.value} />
+                    </motion.span>
 
-                  {/* Sub-label */}
-                  <span className="relative z-10 text-[11px] text-white/40 leading-snug">
-                    {sub}
-                  </span>
-                </motion.div>
-              ))}
+                    {/* Gold underline */}
+                    <div className="relative z-10 w-8 h-[2px] rounded-full" style={{ backgroundColor: accent }} />
+
+                    {/* Label */}
+                    <span className="relative z-10 text-[12px] font-extrabold uppercase tracking-[0.18em] text-white/90 leading-tight">
+                      <FormattedText content={statItem.label} as="span" />
+                    </span>
+
+                    {/* Sub-label */}
+                    <span className="relative z-10 text-[11px] text-white/40 leading-snug">
+                      <FormattedText content={statItem.sub} as="span" />
+                    </span>
+                  </motion.div>
+                );
+              })}
             </div>
 
-            {/* Bottom strip */}
+            {/* Bottom strip (Footer of Scale Summary Banner) */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -307,32 +324,51 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
               transition={{ delay: 1.0 }}
               className="mt-7 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6"
             >
-              <span className="text-[11px] text-white/35 tracking-widest uppercase">📅 18 – 20 / 09 / 2026</span>
+              <span className="text-[11px] text-white/45 tracking-widest uppercase flex items-center gap-1">
+                <span>📅</span>
+                <FormattedText
+                  content={
+                    content?.bannerDateText ||
+                    (days.length > 0
+                      ? `${days[0]?.dateText || "18/09"} – ${days[days.length - 1]?.dateText || "20/09/2026"}`
+                      : "18 – 20 / 09 / 2026")
+                  }
+                  as="span"
+                />
+              </span>
               <div className="hidden sm:block w-px h-3 bg-white/20" />
-              <span className="text-[11px] text-white/35 tracking-widest uppercase">📍 May Plaza Hotel, Thái Nguyên</span>
+              <span className="text-[11px] text-white/45 tracking-widest uppercase flex items-center gap-1">
+                <span>📍</span>
+                <FormattedText
+                  content={content?.bannerLocationText || activeDay?.location || "May Plaza Hotel, Thái Nguyên"}
+                  as="span"
+                />
+              </span>
             </motion.div>
           </div>
         </motion.div>
 
         {/* Day Tabs Switcher */}
-        <div className="flex flex-col sm:flex-row justify-center p-1.5 sm:p-2 bg-white rounded-2xl sm:rounded-3xl border border-emerald-200 shadow-sm max-w-4xl mx-auto gap-2">
+        <div className="flex flex-wrap justify-center p-1.5 sm:p-2 bg-white rounded-2xl sm:rounded-3xl border border-emerald-200 shadow-sm max-w-4xl mx-auto gap-2">
           {days.map((dayItem, idx) => (
             <button
               key={dayItem.dayNumber || idx}
               onClick={() => setActiveTab(idx)}
-              className={`flex-1 py-3 px-3 sm:px-5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 flex flex-col items-center justify-center text-center gap-1 cursor-pointer ${
-                activeTab === idx
+              className={`flex-1 min-w-[120px] py-3 px-3 sm:px-5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 flex flex-col items-center justify-center text-center gap-1 cursor-pointer ${
+                safeTab === idx
                   ? "bg-[#0D3B2E] text-white shadow-md"
                   : "text-slate-700 hover:text-[#0D3B2E] hover:bg-slate-50"
               }`}
             >
-              <span className="leading-snug">{dayItem.dayTitle || `Ngày ${dayItem.dayNumber}`}</span>
+              <span className="leading-snug">
+                <FormattedText content={dayItem.dayTitle || `Ngày ${dayItem.dayNumber}`} as="span" />
+              </span>
               <span
                 className={`text-[11px] font-medium tracking-wide ${
-                  activeTab === idx ? "text-[#F59E0B]" : "text-slate-400"
+                  safeTab === idx ? "text-[#F59E0B]" : "text-slate-400"
                 }`}
               >
-                {dayItem.dateText}
+                <FormattedText content={dayItem.dateText} as="span" />
               </span>
             </button>
           ))}
@@ -340,7 +376,7 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
 
         {/* Active Schedule Panel */}
         <motion.div
-          key={activeTab}
+          key={safeTab}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
@@ -350,19 +386,21 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
           <div className="pb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <span className="text-xs font-bold text-[#22C55E] uppercase tracking-wider">
-                {activeDay?.dayTitle || `Ngày ${activeDay?.dayNumber}`} — {activeDay?.dateText}
+                <FormattedText content={activeDay?.dayTitle || `Ngày ${activeDay?.dayNumber}`} as="span" /> —{" "}
+                <FormattedText content={activeDay?.dateText} as="span" />
               </span>
               {activeDay?.subTitle && (
                 <h3
                   className="text-xl sm:text-2xl font-extrabold text-[#0D3B2E] mt-1"
                   style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                 >
-                  {activeDay.subTitle}
+                  <FormattedText content={activeDay.subTitle} as="span" />
                 </h3>
               )}
             </div>
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-900 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg w-fit">
-              <MapPin className="w-4 h-4 text-[#F59E0B]" /> {activeDay?.location || "May Plaza Hotel Thái Nguyên"}
+              <MapPin className="w-4 h-4 text-[#F59E0B]" />
+              <FormattedText content={activeDay?.location || "May Plaza Hotel Thái Nguyên"} as="span" />
             </div>
           </div>
 
@@ -385,7 +423,8 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="inline-flex items-center gap-1 text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#0D3B2E]">
-                        <Clock className="w-3.5 h-3.5" /> {item.timeSlot}
+                        <Clock className="w-3.5 h-3.5" />
+                        <FormattedText content={item.timeSlot} as="span" />
                       </span>
                       {item.highlight && (
                         <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
@@ -394,12 +433,12 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
                       )}
                       {item.speaker && (
                         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-                          👤 {item.speaker}
+                          👤 <FormattedText content={item.speaker} as="span" />
                         </span>
                       )}
                       {item.location && (
                         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-                          📍 {item.location}
+                          📍 <FormattedText content={item.location} as="span" />
                         </span>
                       )}
                     </div>
@@ -407,12 +446,14 @@ export default function Timeline({ content }: { content?: TimelineContent }) {
                       className="text-lg font-bold text-[#0D3B2E] pt-1"
                       style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
                     >
-                      {item.title}
+                      <FormattedText content={item.title} as="span" />
                     </h4>
                     {item.description && (
-                      <p className="text-sm text-slate-600 leading-relaxed">
-                        {item.description}
-                      </p>
+                      <FormattedText
+                        content={item.description}
+                        as="p"
+                        className="text-sm text-slate-600 leading-relaxed"
+                      />
                     )}
                   </div>
                 </div>

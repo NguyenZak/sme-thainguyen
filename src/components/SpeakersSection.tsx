@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Mic, Award, Sparkles, Building2, X, CheckCircle2 } from "lucide-react";
 import { DEFAULT_SPEAKERS, SpeakersContent, SpeakerItem } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 export default function SpeakersSection({ content }: { content?: SpeakersContent }) {
   const [selectedSpeaker, setSelectedSpeaker] = useState<SpeakerItem | null>(null);
@@ -34,9 +35,11 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
           >
             {data.title || DEFAULT_SPEAKERS.title}
           </h2>
-          <p className="text-slate-600 text-base sm:text-lg max-w-3xl mx-auto">
-            {data.subtitle || DEFAULT_SPEAKERS.subtitle}
-          </p>
+          <FormattedText
+            content={data.subtitle || DEFAULT_SPEAKERS.subtitle}
+            as="p"
+            className="text-slate-600 text-base sm:text-lg max-w-3xl mx-auto"
+          />
         </motion.div>
 
         {/* Speakers Grid */}
@@ -95,9 +98,11 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
                       <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                       Thành tựu nổi bật
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
-                      {spk.achievements}
-                    </p>
+                    <FormattedText
+                      content={spk.achievements}
+                      as="p"
+                      className="text-xs text-slate-600 leading-relaxed line-clamp-2"
+                    />
                   </div>
                 )}
 
@@ -108,9 +113,11 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       Vì sao nên nghe
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
-                      {spk.whyListen}
-                    </p>
+                    <FormattedText
+                      content={spk.whyListen}
+                      as="p"
+                      className="text-xs text-slate-600 leading-relaxed line-clamp-2"
+                    />
                   </div>
                 )}
 
@@ -121,18 +128,22 @@ export default function SpeakersSection({ content }: { content?: SpeakersContent
                       <Mic className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       Giá trị bài nói
                     </div>
-                    <p className="text-xs text-slate-700 leading-relaxed line-clamp-2 italic">
-                      {spk.speechValue}
-                    </p>
+                    <FormattedText
+                      content={spk.speechValue}
+                      as="p"
+                      className="text-xs text-slate-700 leading-relaxed line-clamp-2 italic"
+                    />
                   </div>
                 )}
 
                 {/* Topic */}
                 {spk.topic && (
                   <div className="px-4 py-3 mt-auto">
-                    <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">
-                      🎤 &quot;{spk.topic}&quot;
-                    </p>
+                    <FormattedText
+                      content={`🎤 "${spk.topic}"`}
+                      as="p"
+                      className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium"
+                    />
                   </div>
                 )}
 

@@ -59,6 +59,7 @@ const ATTENDEE_TAGS = [
 ];
 
 import { AboutContent, DEFAULT_ABOUT } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 export default function AboutEvent({ content }: { content?: AboutContent }) {
   const data = content || DEFAULT_ABOUT;
@@ -82,9 +83,11 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
           >
             {data.title || "Diễn đàn Kết Nối Giao Thương SME Việt Nam 2026"}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto">
-            {data.descriptionParagraph1 || "Nơi hội tụ & cất cánh của cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam — Sự kiện kinh tế trọng điểm do TASME Thái Nguyên chủ trì, mang sứ mệnh tạo đột phá về kết nối cung cầu, mở rộng chuỗi cung ứng và xúc tiến đầu tư quy mô toàn quốc."}
-          </p>
+          <FormattedText
+            content={data.descriptionParagraph1 || "Nơi hội tụ & cất cánh của cộng đồng Doanh nghiệp vừa và nhỏ Việt Nam — Sự kiện kinh tế trọng điểm do TASME Thái Nguyên chủ trì, mang sứ mệnh tạo đột phá về kết nối cung cầu, mở rộng chuỗi cung ứng và xúc tiến đầu tư quy mô toàn quốc."}
+            as="p"
+            className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto"
+          />
         </motion.div>
 
         {/* Numbered Feature Cards Grid */}
@@ -111,13 +114,16 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                     <Icon className="w-5 h-5" />
                   </div>
                   <h3 className="text-lg font-bold text-[#0D3B2E]">{card.title}</h3>
-                  <p className="text-slate-600 text-xs leading-relaxed">
-                    {card.description}
-                  </p>
+                  <FormattedText
+                    content={card.description}
+                    as="p"
+                    className="text-slate-600 text-xs leading-relaxed"
+                  />
                 </div>
                 {card.footerLabel && (
                   <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0D3B2E] flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E]" /> {card.footerLabel}
+                    <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0" />
+                    <FormattedText content={card.footerLabel} as="span" />
                   </div>
                 )}
               </motion.div>
@@ -302,15 +308,19 @@ export default function AboutEvent({ content }: { content?: AboutContent }) {
                     <div className="h-px z-10 relative" style={{ background: `${accent}25` }} />
 
                     {/* Label */}
-                    <p
+                    <FormattedText
+                      content={tag.label}
+                      as="p"
                       className="font-extrabold text-[15px] leading-snug z-10 relative"
                       style={{ color: isVip ? "#FEF3C7" : isGold ? "#D1FAE5" : "#CBD5E1" }}
-                    >
-                      {tag.label}
-                    </p>
+                    />
 
                     {/* Sub */}
-                    <p className="text-white/45 text-[11.5px] leading-relaxed z-10 relative">{tag.sub}</p>
+                    <FormattedText
+                      content={tag.sub}
+                      as="p"
+                      className="text-white/45 text-[11.5px] leading-relaxed z-10 relative"
+                    />
                   </motion.div>
                 );
               })}

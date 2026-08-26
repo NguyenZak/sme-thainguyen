@@ -210,10 +210,23 @@ export interface DayInfo {
   location?: string;
 }
 
+export interface TimelineBannerStat {
+  id?: string;
+  iconName?: string;
+  value: string;
+  label: string;
+  sub: string;
+  accent?: string;
+}
+
 export interface TimelineContent {
   badge: string;
   title: string;
   subtitle: string;
+  bannerEyebrow?: string;
+  bannerDateText?: string;
+  bannerLocationText?: string;
+  bannerStats?: TimelineBannerStat[];
   days: DayInfo[];
   slots: TimelineSlot[];
 }
@@ -691,6 +704,16 @@ export const DEFAULT_TIMELINE: TimelineContent = {
   badge: "LỊCH TRÌNH CHUYÊN NGHIỆP",
   title: "Chương Trình Chi Tiết 3 Ngày Diễn Đàn",
   subtitle: "Chuỗi hoạt động phong phú gồm Triển lãm, Diễn đàn cấp cao, B2B Matching, Gala Dinner và Đại hội TASME.",
+  bannerEyebrow: "✦ Quy mô sự kiện · 3 ngày sôi động ✦",
+  bannerDateText: "18 – 20 / 09 / 2026",
+  bannerLocationText: "May Plaza Hotel, Thái Nguyên",
+  bannerStats: [
+    { id: "bs-1", iconName: "Users", value: "100+", label: "Phiên B2B", sub: "Kết nối 1:1 trực tiếp", accent: "#22C55E" },
+    { id: "bs-2", iconName: "Utensils", value: "02", label: "Gala Dinner", sub: "Đẳng cấp & nghệ thuật", accent: "#F59E0B" },
+    { id: "bs-3", iconName: "LayoutList", value: "01", label: "Diễn đàn chính", sub: "Quy mô quốc gia", accent: "#22C55E" },
+    { id: "bs-4", iconName: "BookOpen", value: "05", label: "Chuyên đề", sub: "Nội dung chuyên sâu", accent: "#F59E0B" },
+    { id: "bs-5", iconName: "Mic2", value: "20+", label: "Diễn giả", sub: "Chuyên gia hàng đầu", accent: "#22C55E" },
+  ],
   days: [
     {
       dayNumber: 1,

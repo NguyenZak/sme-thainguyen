@@ -167,11 +167,11 @@ export default function Hero({ content }: { content?: HeroContent }) {
           className="hero-title space-y-3 sm:space-y-4"
         >
           <h1
-            className="font-black text-white tracking-tight leading-snug sm:leading-tight uppercase"
+            className="font-black text-white tracking-tight leading-normal sm:leading-relaxed uppercase"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
             {data.titlePrefix !== undefined && data.titlePrefix !== "" && (
-              <span className="block text-3xl sm:text-4xl lg:text-5xl font-black">
+              <span className="block text-3xl sm:text-4xl lg:text-5xl font-black mb-1">
                 {data.titlePrefix}
               </span>
             )}
@@ -180,7 +180,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
                 {data.titleSuffix}
               </span>
             )}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-amber-300 inline-block text-3xl sm:text-5xl lg:text-6xl font-black min-h-[1.25em] py-1">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-200 to-amber-300 inline-block text-3xl sm:text-5xl lg:text-6xl font-black min-h-[1.35em] pt-3 pb-2 px-1 leading-[1.25] sm:leading-[1.25]">
               {currentText}
               <span className="text-[#F59E0B] animate-pulse font-normal ml-0.5 opacity-90">|</span>
             </span>

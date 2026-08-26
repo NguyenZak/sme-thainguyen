@@ -15,6 +15,7 @@ import {
   Move,
 } from "lucide-react";
 import { BoothsContent, DEFAULT_BOOTHS } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 const BOOTH_INCLUSIONS = [
   "Mặt bằng gian tiêu chuẩn diện tích 2m x 1,5m theo sơ đồ Ban Tổ chức",
@@ -250,9 +251,11 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
           >
             {title}
           </h2>
-          <p className="text-sm sm:text-lg text-slate-700 leading-relaxed max-w-4xl">
-            {subtitle}
-          </p>
+          <FormattedText
+            content={subtitle}
+            as="p"
+            className="text-sm sm:text-lg text-slate-700 leading-relaxed max-w-4xl"
+          />
         </div>
 
         {/* Exhibition Info Content */}
@@ -306,7 +309,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
               {boothPackageNote && (
                 <div className="p-3 bg-amber-500/10 border border-amber-400/40 rounded-xl text-amber-950 text-xs font-bold flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#F59E0B] shrink-0" />
-                  <span>{boothPackageNote}</span>
+                  <FormattedText content={boothPackageNote} as="span" />
                 </div>
               )}
               <div className="flex items-baseline gap-2 pt-1">
@@ -330,7 +333,7 @@ export default function BoothSection({ content }: { content?: BoothsContent }) {
                 {inclusions.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
-                    <span>{item}</span>
+                    <FormattedText content={item} as="span" />
                   </li>
                 ))}
               </ul>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { MapPin, Phone, Mail, Globe, ExternalLink, Move } from "lucide-react";
 
 import { FooterContent, DEFAULT_FOOTER } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 export default function Footer({ content }: { content?: FooterContent }) {
   const [isMapInteractive, setIsMapInteractive] = useState(true);
@@ -45,9 +46,11 @@ export default function Footer({ content }: { content?: FooterContent }) {
             </div>
 
             {footer.aboutText && (
-              <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed max-w-md">
-                {footer.aboutText}
-              </p>
+              <FormattedText
+                content={footer.aboutText}
+                as="p"
+                className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed max-w-md"
+              />
             )}
 
             <div className="space-y-3 text-xs text-emerald-100/90">
@@ -258,7 +261,7 @@ export default function Footer({ content }: { content?: FooterContent }) {
             <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
             <span className="text-emerald-300 font-medium">BTC đang tiếp nhận hồ sơ đăng ký tham dự &amp; tài trợ</span>
           </div>
-          <p>{footer.copyrightText}</p>
+          <FormattedText content={footer.copyrightText} as="p" />
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-950 hover:bg-emerald-900 text-emerald-200 text-[11px] font-bold border border-emerald-700/60 transition-colors cursor-pointer"

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { BenefitsContent } from "@/constants/defaultContent";
+import FormattedText from "@/components/ui/FormattedText";
 
 // ── Icon resolver (matches CMS ICON_OPTIONS) ─────────────────────────────────
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -117,9 +118,13 @@ function BenefitCard({
         className={`text-xl font-bold text-[#0D3B2E] transition-colors duration-200 ${tier.accent}`}
         style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
       >
-        {title}
+        <FormattedText content={title} as="span" />
       </h3>
-      <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
+      <FormattedText
+        content={description}
+        as="p"
+        className="text-slate-600 text-sm leading-relaxed"
+      />
 
       {/* Bottom accent line */}
       <motion.div
@@ -161,15 +166,15 @@ export default function Benefits({ content }: { content?: BenefitsContent }) {
           className="text-center max-w-5xl mx-auto space-y-4"
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider border border-emerald-200">
-            {badge}
+            <FormattedText content={badge} as="span" />
           </span>
           <h2
             className="text-3xl sm:text-4xl font-extrabold text-[#0D3B2E] tracking-tight mb-3"
             style={{ fontFamily: "var(--font-wix-display), sans-serif" }}
           >
-            {title}
+            <FormattedText content={title} as="span" />
           </h2>
-          <p className="text-slate-600 text-base sm:text-lg max-w-3xl mx-auto">{subtitle}</p>
+          <FormattedText content={subtitle} as="p" className="text-slate-600 text-base sm:text-lg max-w-3xl mx-auto" />
         </motion.div>
 
         {/* Top rows — full grid of 3 */}
