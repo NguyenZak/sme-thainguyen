@@ -23,6 +23,7 @@ import {
   Utensils,
   Calendar,
   Clock,
+  Building2,
 } from "lucide-react";
 import {
   RegistrationContent,
@@ -63,6 +64,7 @@ function cleanHtmlText(input?: string): string {
 
 const formSchema = z.object({
   intentTab: z.enum(["delegate", "sponsor", "booth"]),
+  isMember: z.boolean().optional(),
   fullName: z.string().min(2, "Vui lòng nhập họ và tên (ít nhất 2 ký tự)"),
   company: z.string().min(2, "Vui lòng nhập tên đơn vị / tổ chức"),
   position: z.string().min(1, "Vui lòng nhập chức vụ"),
@@ -103,6 +105,7 @@ export default function RegistrationForm({
   const unitPrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
 
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor">("delegate");
+  const [isMember, setIsMember] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
     open: boolean;
@@ -349,6 +352,7 @@ export default function RegistrationForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       intentTab: "delegate",
+      isMember: false,
       fullName: "",
       company: "",
       position: "",
@@ -497,35 +501,40 @@ export default function RegistrationForm({
       let typeLabel = "";
       if (values.intentTab === "delegate") {
         const lunchText = watchIncludeDay20Lunch ? ` + Ăn trưa 20/09 (+${totalLunchFee.toLocaleString("vi-VN")}đ)` : "";
+        const memberPrefix = isMember ? "[Thành viên HH DNNVV Thái Nguyên] " : "";
 
         if (extraDelegatesCount > 0) {
-          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} ĐB phát sinh (+${totalExtraFees.toLocaleString("vi-VN")}đ)${lunchText} -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
+          typeLabel = `${memberPrefix}Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ) + ${extraDelegatesCount} ĐB phát sinh (+${totalExtraFees.toLocaleString("vi-VN")}đ)${lunchText} -> Tổng ${totalDelegatesCount} ĐB: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
         } else {
-          typeLabel = `Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ)${lunchText} -> Tổng: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
+          typeLabel = `${memberPrefix}Đăng ký tham gia: ${watchPackageCount} gói chính (${totalPackageDelegates} ĐB = ${totalPackagePrice.toLocaleString("vi-VN")}đ)${lunchText} -> Tổng: ${totalCalculatedAmount.toLocaleString("vi-VN")} VNĐ`;
         }
       } else {
         typeLabel = `Nhà tài trợ: ${values.sponsorTier}`;
       }
 
-      const emailSubject =
-        values.intentTab === "delegate"
-          ? registration.delegateEmailSubject
-          : registration.sponsorEmailSubject;
+      const clientRegId = `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
 
-      const emailBody =
-        values.intentTab === "delegate"
-          ? registration.delegateEmailBody
-          : registration.sponsorEmailBody;
+      let emailSubject = "";
+      let emailBody = "";
+      if (isMember) {
+        emailSubject = `[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ HỘI VIÊN HH DNNVV THÁI NGUYÊN - ${clientRegId}`;
+        emailBody = `Kính gửi Quý Hội viên ${values.fullName},\n\nBan Tổ Chức Diễn đàn SME Việt Nam 2026 trân trọng xác nhận đã tiếp nhận thành công thông tin đăng ký tham dự của Quý Hội viên (Đơn vị: ${values.company}).\n\nQuyền lợi: Hội viên Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên được MIỄN PHÍ TRỌN GÓI tham dự sự kiện. Ban Tổ Chức sẽ chủ động liên hệ và chuẩn bị thẻ đại biểu đón tiếp Quý Hội viên chu đáo nhất.`;
+      } else if (values.intentTab === "delegate") {
+        emailSubject = registration.delegateEmailSubject || "";
+        emailBody = registration.delegateEmailBody || "";
+      } else {
+        emailSubject = registration.sponsorEmailSubject || "";
+        emailBody = registration.sponsorEmailBody || "";
+      }
 
       const emailPosterUrl =
         values.intentTab === "delegate"
-          ? registration.delegatePosterUrl
-          : registration.sponsorPosterUrl;
-
-      const clientRegId = `SME2026-${Math.floor(100000 + Math.random() * 900000)}`;
+          ? registration.delegatePosterUrl || ""
+          : registration.sponsorPosterUrl || "";
 
       const payload = {
         ...values,
+        isMember,
         packageCount: watchPackageCount,
         packageDelegatesCount: totalPackageDelegates,
         extraDelegatesCount,
@@ -544,7 +553,7 @@ export default function RegistrationForm({
         emailBody,
         emailPosterUrl,
         timestamp: new Date().toISOString(),
-        status: "Pending",
+        status: isMember ? "Confirmed" : "Pending",
       };
 
       const endpoint = "/api/register";
@@ -567,7 +576,7 @@ export default function RegistrationForm({
       const regId = responseData.registrationId || clientRegId;
 
       toast.success(
-        "Đăng ký thành công!",
+        isMember ? "Đăng ký Hội viên thành công!" : "Đăng ký thành công!",
         "Ban tổ chức đã ghi nhận thông tin & sẽ liên hệ với bạn trong 24h."
       );
 
@@ -575,7 +584,7 @@ export default function RegistrationForm({
       setReminderSecondsLeft(180);
       setReminderSent(false);
 
-      const isDelegateSepay = values.intentTab === "delegate" && config.sepayEnabled !== false;
+      const isDelegateSepay = values.intentTab === "delegate" && !isMember && config.sepayEnabled !== false;
       const initialStatus = isDelegateSepay ? "pending" : "completed";
 
       if (isDelegateSepay) {
@@ -731,6 +740,81 @@ export default function RegistrationForm({
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Question: Are you a member of Thai Nguyen SME Association? */}
+            {activeTab === "delegate" && (
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50/70 to-emerald-50 border-2 border-emerald-300 shadow-sm space-y-3">
+                <div className="flex items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="p-2 rounded-xl bg-emerald-700 text-white shadow-xs">
+                      <Building2 className="w-5 h-5" />
+                    </span>
+                    <div>
+                      <h4 className="text-sm sm:text-base font-extrabold text-[#0D3B2E]">
+                        Bạn có phải là Thành viên HH DNNVV Thái Nguyên không?
+                      </h4>
+                      <p className="text-[11.5px] sm:text-xs text-slate-600">
+                        Thành viên Hiệp hội DNNVV tỉnh Thái Nguyên được đăng ký trực tiếp và <strong className="text-emerald-700 font-bold">bỏ qua bước quét mã QR thanh toán</strong>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMember(true);
+                      setValue("isMember", true);
+                    }}
+                    className={`flex items-center justify-between p-3.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
+                      isMember
+                        ? "bg-emerald-700 text-white border-emerald-800 shadow-md ring-2 ring-emerald-400/40"
+                        : "bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${isMember ? "border-white bg-white text-emerald-700" : "border-slate-400"}`}>
+                        {isMember && <span className="w-2 h-2 rounded-full bg-emerald-700" />}
+                      </div>
+                      <div>
+                        <span className="font-bold text-xs sm:text-sm block">ĐÚNG, tôi là Thành viên</span>
+                        <span className={`text-[10px] block ${isMember ? "text-emerald-100" : "text-emerald-700 font-bold"}`}>
+                          Bỏ qua quét mã QR thanh toán
+                        </span>
+                      </div>
+                    </div>
+                    {isMember && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMember(false);
+                      setValue("isMember", false);
+                    }}
+                    className={`flex items-center justify-between p-3.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
+                      !isMember
+                        ? "bg-slate-900 text-white border-slate-950 shadow-md ring-2 ring-slate-400/30"
+                        : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!isMember ? "border-white bg-white text-slate-900" : "border-slate-400"}`}>
+                        {!isMember && <span className="w-2 h-2 rounded-full bg-slate-900" />}
+                      </div>
+                      <div>
+                        <span className="font-bold text-xs sm:text-sm block">KHÔNG PHẢI Thành viên</span>
+                        <span className={`text-[10px] block ${!isMember ? "text-slate-300" : "text-slate-500"}`}>
+                          Quét mã QR thanh toán SePay
+                        </span>
+                      </div>
+                    </div>
+                    {!isMember && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Dynamic Specific Selector */}
             {activeTab === "sponsor" && (
               <div className="space-y-2">
@@ -1146,16 +1230,24 @@ export default function RegistrationForm({
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
             {(() => {
               const tab = successModal.data?.intentTab || "delegate";
-              const isDelegateSepay = tab === "delegate" && config?.sepayEnabled !== false;
-              const isCompleted = successModal.status === "completed";
+              const isMemberReg = Boolean(
+                successModal.data?.isMember ||
+                successModal.data?.registrationType?.includes("Thành viên")
+              );
+              const isDelegateSepay = tab === "delegate" && !isMemberReg && config?.sepayEnabled !== false;
+              const isCompleted = successModal.status === "completed" || isMemberReg;
 
-              let modalTitle = isDelegateSepay
+              let modalTitle = isMemberReg
+                ? "Xác Nhận Đăng Ký Hội Viên HH DNNVV Thái Nguyên Thành Công!"
+                : isDelegateSepay
                 ? isCompleted
                   ? "Thanh Toán Thành Công & Đã Xác Nhận!"
                   : "Đơn Đăng Ký Đã Lưu — Chờ Thanh Toán"
                 : "Ghi nhận Đăng ký Thành Công!";
 
-              let cardTagline = "THẺ THAM GIA DỰ HỘI NGHỊ & B2B MATCHING";
+              let cardTagline = isMemberReg
+                ? "THẺ ĐẠI BIỂU HỘI VIÊN HH DNNVV THÁI NGUYÊN"
+                : "THẺ THAM GIA DỰ HỘI NGHỊ & B2B MATCHING";
               let cardBg = "bg-[#0D3B2E] border-emerald-800 text-white";
               let accentText = "text-emerald-300";
               let detailLabel = "Số lượng vé";
@@ -1198,11 +1290,15 @@ export default function RegistrationForm({
                     </h3>
                     <div className="flex items-center justify-center gap-2">
                       <span className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${
-                        isDelegateSepay && !isCompleted
+                        isMemberReg
+                          ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                          : isDelegateSepay && !isCompleted
                           ? "bg-amber-100 text-amber-900 border-amber-300"
                           : "bg-emerald-100 text-emerald-900 border-emerald-300"
                       }`}>
-                        {isDelegateSepay
+                        {isMemberReg
+                          ? "🏛️ TRẠNG THÁI: HỘI VIÊN HH DNNVV THÁI NGUYÊN"
+                          : isDelegateSepay
                           ? isCompleted
                             ? "🟢 TRẠNG THÁI: ĐÃ THANH TOÁN (SEPAY VERIFIED)"
                             : "⏳ TRẠNG THÁI: GIAO DỊCH TREO (CHỜ THANH TOÁN)"
@@ -1211,9 +1307,9 @@ export default function RegistrationForm({
                     </div>
                   </div>
 
-                  {/* Conditional Layout: 2-Column for Delegate (VietQR/Ticket), Single Column for Sponsor & Booth */}
-                  <div className={`grid grid-cols-1 ${tab === "delegate" ? "md:grid-cols-2" : ""} gap-5 items-stretch`}>
-                    {/* Left Column: Electronic Ticket Card */}
+                  {/* Conditional Layout: 2-Column when Payment QR needed, Single Column for Completed / Member / Sponsor / Booth */}
+                  <div className={`grid grid-cols-1 ${tab === "delegate" && isDelegateSepay && !isCompleted ? "md:grid-cols-2" : "max-w-2xl mx-auto"} gap-5 items-stretch w-full`}>
+                    {/* Electronic Ticket Card */}
                     <div className={`${cardBg} rounded-2xl p-5 border space-y-4 relative overflow-hidden shadow-lg flex flex-col justify-between w-full`}>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between border-b border-white/20 pb-3">
@@ -1256,14 +1352,20 @@ export default function RegistrationForm({
                         </div>
                       </div>
 
-                      {/* Info Notice for Sponsor & Booth */}
-                      {tab !== "delegate" ? (
+                      {/* Info Notice for Sponsor, Booth, Member & Completed Delegates */}
+                      {tab !== "delegate" || isMemberReg || isCompleted ? (
                         <div className="pt-3 border-t border-white/20 text-xs space-y-1.5 bg-black/20 p-3 rounded-xl mt-auto">
                           <span className="text-amber-300 font-extrabold uppercase text-[11px] block flex items-center gap-1">
                             ℹ️ THÔNG BÁO TỪ BAN TỔ CHỨC:
                           </span>
                           <p className="text-white/90 text-xs leading-relaxed">
-                            Cảm ơn Quý đơn vị đã đăng ký! Bộ phận Thư ký Ban Tổ Chức sẽ chủ động liên hệ trực tiếp qua số điện thoại <b>{successModal.data?.phone}</b> trong vòng 24 giờ làm việc để trao đổi thủ tục & hợp đồng chính thức.
+                            {isMemberReg ? (
+                              <>Cảm ơn Quý Hội viên đã đăng ký! Ban Tổ Chức đã ghi nhận thông tin và sẽ chủ động liên hệ qua số điện thoại <b>{successModal.data?.phone}</b> để đón tiếp và phục vụ chu đáo nhất.</>
+                            ) : tab !== "delegate" ? (
+                              <>Cảm ơn Quý đơn vị đã đăng ký! Bộ phận Thư ký Ban Tổ Chức sẽ chủ động liên hệ trực tiếp qua số điện thoại <b>{successModal.data?.phone}</b> trong vòng 24 giờ làm việc để trao đổi thủ tục & hợp đồng chính thức.</>
+                            ) : (
+                              <>Cảm ơn Quý khách đã đăng ký! Ban Tổ Chức đã ghi nhận thông tin đăng ký của bạn.</>
+                            )}
                           </p>
                         </div>
                       ) : (
@@ -1278,114 +1380,96 @@ export default function RegistrationForm({
                       )}
                     </div>
 
-                    {/* Right Column: Only rendered for Delegate Form */}
-                    {tab === "delegate" && (
-                      <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
-                        {isDelegateSepay && !isCompleted ? (() => {
-                          const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
-                          const amountFormatted = amountVal.toLocaleString("vi-VN");
-                          const bankCode = config?.sepayBankCode || "VCB";
-                          const accountNumber = config?.sepayAccountNumber || "1230446868";
-                          const accountName = config?.sepayAccountName || "HIEP HOI DNNVV THAI NGUYEN";
-                          const qrCodeUrl = config?.customQrImage || `https://qr.sepay.vn/img?bank=${bankCode}&acc=${accountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
+                    {/* Right Column: Only rendered when Payment VietQR is needed */}
+                    {tab === "delegate" && isDelegateSepay && !isCompleted && (() => {
+                      const amountVal = successModal.data?.totalCalculatedAmount || totalCalculatedAmount;
+                      const amountFormatted = amountVal.toLocaleString("vi-VN");
+                      const bankCode = config?.sepayBankCode || "VCB";
+                      const accountNumber = config?.sepayAccountNumber || "1230446868";
+                      const accountName = config?.sepayAccountName || "HIEP HOI DNNVV THAI NGUYEN";
+                      const qrCodeUrl = config?.customQrImage || `https://qr.sepay.vn/img?bank=${bankCode}&acc=${accountNumber}&template=compact2&amount=${amountVal}&des=${successModal.registrationId}`;
 
-                          return (
-                            <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
-                              <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
-                                <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                                  💳 Thanh Toán VietQR SePay
-                                </span>
-                                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30 font-mono">
-                                  ⏳ Chờ chuyển khoản
-                                </span>
-                              </div>
-
-                              {/* Prominent Payment Countdown Timer Banner */}
-                              <div className="w-full bg-slate-950 border border-amber-500/40 p-3 rounded-2xl text-center space-y-1.5 shadow-inner">
-                                <div className="text-[11px] font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                                  <Clock className="w-4 h-4 text-amber-400 animate-spin" />
-                                  <span>Thời gian giữ vé & tự động gửi Email:</span>
-                                </div>
-                                <div className="text-2xl font-black text-amber-300 font-mono tracking-widest flex items-center justify-center gap-1">
-                                  <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
-                                    {Math.floor(reminderSecondsLeft / 60).toString().padStart(2, "0")}
-                                  </span>
-                                  <span className="animate-pulse text-amber-400 font-sans">:</span>
-                                  <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
-                                    {(reminderSecondsLeft % 60).toString().padStart(2, "0")}
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-amber-200/90 leading-tight">
-                                  {reminderSent
-                                    ? "✉️ Đã tự động gửi Email hóa đơn & VietQR tới hộp thư của bạn."
-                                    : "Sau khi đếm ngược kết thúc, hệ thống sẽ tự động gửi Email đính kèm Hóa Đơn & Mã QR."}
-                                </p>
-                              </div>
-
-                              <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
-                                <img
-                                  src={qrCodeUrl}
-                                  alt="VietQR SePay Payment"
-                                  className="w-48 h-auto object-contain mx-auto"
-                                />
-                              </div>
-
-                              <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
-                                <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{bankCode}</b></div>
-                                <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{accountNumber}</b></div>
-                                <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{accountName}</b></div>
-                                <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
-                                <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
-                              </div>
-
-                              {/* Prominent Confirm Paid Button */}
-                              <button
-                                type="button"
-                                onClick={handleUserConfirmPaid}
-                                disabled={userConfirmedPaid}
-                                className={`w-full py-3 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
-                                  userConfirmedPaid
-                                    ? "bg-slate-800 text-emerald-300 border border-emerald-500/40 cursor-default opacity-90"
-                                    : "bg-emerald-600 hover:bg-emerald-700 text-white animate-pulse"
-                                }`}
-                              >
-                                <CheckCircle2 className="w-4 h-4" />
-                                <span>
-                                  {userConfirmedPaid
-                                    ? "✅ ĐÃ GỬI XÁC NHẬN CHUYỂN KHOẢN (ĐANG ĐỐI SOÁT)"
-                                    : "XÁC NHẬN ĐÃ THANH TOÁN"}
-                                </span>
-                              </button>
-
-                              <div className="w-full bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-xl text-[11px] text-emerald-300 font-medium text-center space-y-0.5 shadow-sm">
-                                <div className="font-bold flex items-center justify-center gap-1 text-emerald-300 text-xs">
-                                  <span>✉️ TỰ ĐỘNG GỬI EMAIL XÁC NHẬN</span>
-                                </div>
-                                <p className="text-[10px] text-emerald-200/90 leading-relaxed">
-                                  Sau khi thanh toán thành công, hệ thống sẽ tự động gửi Email xác nhận vé & mã QR check-in tới <b>{successModal.data?.email || "Email đăng ký"}</b>.
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })() : (
-                          /* Verified Check-in QR Right Column for Delegate */
-                          <div className="flex flex-col items-center justify-center text-center h-full space-y-4 py-4">
-                            <div className="w-24 h-24 bg-white p-3 rounded-2xl flex items-center justify-center border border-slate-200 shadow-md">
-                              <QrCode className="w-20 h-20 text-slate-900" />
-                            </div>
-                            <div className="space-y-1">
-                              <span className="text-xs font-bold text-white uppercase tracking-wider block">QR Code Check-in Sự kiện</span>
-                              <span className="text-xs font-bold text-emerald-400 block bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
-                                Trạng thái: Đã Xác Nhận Chính Thức
+                      return (
+                        <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
+                          <div className="space-y-3 flex flex-col items-center text-center h-full justify-between">
+                            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2.5">
+                              <span className="text-xs font-bold uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                                💳 Thanh Toán VietQR SePay
+                              </span>
+                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30 font-mono">
+                                ⏳ Chờ chuyển khoản
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-400 italic max-w-xs">
-                              🎉 Giao dịch đã hoàn tất! Vui lòng lưu thông tin hoặc xuất thẻ điện tử để trình diện khi tham dự sự kiện.
-                            </p>
+
+                            {/* Prominent Payment Countdown Timer Banner */}
+                            <div className="w-full bg-slate-950 border border-amber-500/40 p-3 rounded-2xl text-center space-y-1.5 shadow-inner">
+                              <div className="text-[11px] font-extrabold text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                                <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                                <span>Thời gian giữ vé & tự động gửi Email:</span>
+                              </div>
+                              <div className="text-2xl font-black text-amber-300 font-mono tracking-widest flex items-center justify-center gap-1">
+                                <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
+                                  {Math.floor(reminderSecondsLeft / 60).toString().padStart(2, "0")}
+                                </span>
+                                <span className="animate-pulse text-amber-400 font-sans">:</span>
+                                <span className="bg-amber-950 px-3 py-1 rounded-xl border border-amber-500/40 shadow-sm">
+                                  {(reminderSecondsLeft % 60).toString().padStart(2, "0")}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-amber-200/90 leading-tight">
+                                {reminderSent
+                                  ? "✉️ Đã tự động gửi Email hóa đơn & VietQR tới hộp thư của bạn."
+                                  : "Sau khi đếm ngược kết thúc, hệ thống sẽ tự động gửi Email đính kèm Hóa Đơn & Mã QR."}
+                              </p>
+                            </div>
+
+                            <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block shadow-md">
+                              <img
+                                src={qrCodeUrl}
+                                alt="VietQR SePay Payment"
+                                className="w-48 h-auto object-contain mx-auto"
+                              />
+                            </div>
+
+                            <div className="w-full text-left bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-[11px]">
+                              <div className="flex justify-between"><span className="text-slate-400">Ngân hàng:</span> <b className="text-white font-bold">{bankCode}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Số tài khoản:</span> <b className="font-mono text-emerald-400">{accountNumber}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Chủ tài khoản:</span> <b className="uppercase text-white truncate max-w-[150px]">{accountName}</b></div>
+                              <div className="flex justify-between"><span className="text-slate-400">Số tiền:</span> <b className="text-amber-300 font-mono">{amountFormatted} VNĐ</b></div>
+                              <div className="flex justify-between items-center pt-1 border-t border-slate-800"><span className="text-slate-400">Nội dung CK:</span> <b className="font-mono text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">{successModal.registrationId}</b></div>
+                            </div>
+
+                            {/* Prominent Confirm Paid Button */}
+                            <button
+                              type="button"
+                              onClick={handleUserConfirmPaid}
+                              disabled={userConfirmedPaid}
+                              className={`w-full py-3 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
+                                userConfirmedPaid
+                                  ? "bg-slate-800 text-emerald-300 border border-emerald-500/40 cursor-default opacity-90"
+                                  : "bg-emerald-600 hover:bg-emerald-700 text-white animate-pulse"
+                              }`}
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>
+                                {userConfirmedPaid
+                                  ? "✅ ĐÃ GỬI XÁC NHẬN CHUYỂN KHOẢN (ĐANG ĐỐI SOÁT)"
+                                  : "XÁC NHẬN ĐÃ THANH TOÁN"}
+                              </span>
+                            </button>
+
+                            <div className="w-full bg-emerald-950/60 border border-emerald-500/30 p-2.5 rounded-xl text-[11px] text-emerald-300 font-medium text-center space-y-0.5 shadow-sm">
+                              <div className="font-bold flex items-center justify-center gap-1 text-emerald-300 text-xs">
+                                <span>✉️ TỰ ĐỘNG GỬI EMAIL XÁC NHẬN</span>
+                              </div>
+                              <p className="text-[10px] text-emerald-200/90 leading-relaxed">
+                                Sau khi thanh toán thành công, hệ thống sẽ tự động gửi Email xác nhận vé tới <b>{successModal.data?.email || "Email đăng ký"}</b>.
+                              </p>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    )}
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {config.sepayMode === "gateway" && isDelegateSepay && !isCompleted && (

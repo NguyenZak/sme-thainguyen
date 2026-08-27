@@ -70,9 +70,10 @@ export default function RegistrationDetailModal({
   if (!record) return null;
 
   const ticketTypeStr = record.ticket_type || "";
-  const isSponsor = ticketTypeStr.toLowerCase().includes("sponsor") || ticketTypeStr.toLowerCase().includes("tài trợ");
-  const isBooth = ticketTypeStr.toLowerCase().includes("booth") || ticketTypeStr.toLowerCase().includes("gian hàng");
-  const isDelegate = !isSponsor && !isBooth;
+  const isMember = ticketTypeStr.toLowerCase().includes("thành viên") || ticketTypeStr.toLowerCase().includes("hội viên") || ticketTypeStr.toLowerCase().includes("hh dnnvv thái nguyên");
+  const isSponsor = !isMember && (ticketTypeStr.toLowerCase().includes("sponsor") || ticketTypeStr.toLowerCase().includes("tài trợ"));
+  const isBooth = !isMember && (ticketTypeStr.toLowerCase().includes("booth") || ticketTypeStr.toLowerCase().includes("gian hàng"));
+  const isDelegate = !isMember && !isSponsor && !isBooth;
 
   // Extract / Parse information from ticket_type string or fields
   const cleanPhone = record.phone ? record.phone.replace(/[^0-9]/g, "") : "";
@@ -228,6 +229,12 @@ export default function RegistrationDetailModal({
             <h3 className="font-bold text-emerald-950 text-xs uppercase tracking-wider flex items-center gap-1.5 border-b border-emerald-200/80 pb-2">
               <PackageCheck className="w-4 h-4 text-emerald-700" /> Nội Dung Đăng Ký Chi Tiết
             </h3>
+            {isMember && (
+              <div className="p-3 bg-emerald-100/90 border border-emerald-300 rounded-xl text-emerald-950 text-xs font-bold flex items-center gap-2">
+                <span className="text-base">🏛️</span>
+                <span>Hội viên Hiệp hội DNNVV tỉnh Thái Nguyên (Đăng ký trực tiếp, bỏ qua bước quét mã QR).</span>
+              </div>
+            )}
             <div className="p-3 bg-white rounded-xl border border-emerald-200 font-semibold text-emerald-950 text-xs shadow-xs">
               {record.ticket_type}
             </div>

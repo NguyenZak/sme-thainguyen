@@ -126,8 +126,9 @@ export async function POST(request: Request) {
     const registrationCode = getCanonicalRegistrationCode(record || clientRecord, regId);
 
     // Helper to identify form category
-    function getFormCategory(tType: string): "delegate" | "sponsor" | "booth" {
+    function getFormCategory(tType: string): "member" | "delegate" | "sponsor" | "booth" {
       const t = (tType || "").toLowerCase();
+      if (t.includes("thành viên") || t.includes("hội viên") || t.includes("hh dnnvv thái nguyên") || t.includes("dnnvv thái nguyên")) return "member";
       if (t.includes("sponsor") || t.includes("tài trợ") || t.includes("gói tài trợ")) return "sponsor";
       if (t.includes("booth") || t.includes("gian hàng") || t.includes("gian")) return "booth";
       return "delegate";
@@ -138,7 +139,11 @@ export async function POST(request: Request) {
     let paymentBody = "";
     let posterUrl = "";
 
-    if (category === "sponsor") {
+    if (category === "member") {
+      emailSubject = `[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ HỘI VIÊN HH DNNVV THÁI NGUYÊN - ${registrationCode}`;
+      paymentBody = `Kính gửi Quý Hội viên ${fullName},\n\nBan Tổ Chức Diễn đàn SME Việt Nam 2026 trân trọng xác nhận đã tiếp nhận thành công thông tin đăng ký tham dự của Quý Hội viên (Đơn vị: ${company || "Hiệp hội DNNVV Thái Nguyên"}).\n\nQuyền lợi: Hội viên Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên được MIỄN PHÍ TRỌN GÓI tham dự sự kiện. Ban Tổ Chức sẽ chủ động liên hệ và chuẩn bị thẻ đại biểu đón tiếp Quý Hội viên chu đáo nhất.`;
+      posterUrl = registrationContent.delegatePosterUrl || "";
+    } else if (category === "sponsor") {
       emailSubject = registrationContent.sponsorEmailSubject || `[SME VIỆT NAM 2026] XÁC NHẬN ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỐI TÁC - ${registrationCode}`;
       paymentBody = registrationContent.sponsorEmailBody || "Trân trọng cảm ơn Quý Doanh nghiệp đã đăng ký đồng hành cùng Diễn đàn SME Việt Nam 2026. Ban Thư ký sẽ liên hệ trao đổi chi tiết về các quyền lợi tài trợ & hiện diện thương hiệu.";
       posterUrl = registrationContent.sponsorPosterUrl || "";

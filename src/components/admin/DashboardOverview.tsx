@@ -86,11 +86,13 @@ export default function DashboardOverview({
   ).length;
 
   // Categories breakdown
+  const memberRegs = registrations.filter((r) => getFormCategory(r.ticket_type) === "member").length;
   const delegateRegs = registrations.filter((r) => getFormCategory(r.ticket_type) === "delegate").length;
   const sponsorRegs = registrations.filter((r) => getFormCategory(r.ticket_type) === "sponsor").length;
   const boothRegs = registrations.filter((r) => getFormCategory(r.ticket_type) === "booth").length;
 
   // Percentages
+  const memberPercent = totalRegs > 0 ? Math.round((memberRegs / totalRegs) * 100) : 0;
   const delegatePercent = totalRegs > 0 ? Math.round((delegateRegs / totalRegs) * 100) : 0;
   const sponsorPercent = totalRegs > 0 ? Math.round((sponsorRegs / totalRegs) * 100) : 0;
   const boothPercent = totalRegs > 0 ? Math.round((boothRegs / totalRegs) * 100) : 0;
@@ -340,7 +342,9 @@ export default function DashboardOverview({
                     {recentRegistrations.map((reg) => {
                       const category = getFormCategory(reg.ticket_type);
                       const label =
-                        category === "delegate"
+                        category === "member"
+                          ? "Hội viên Thái Nguyên"
+                          : category === "delegate"
                           ? "Đăng ký tham gia"
                           : category === "sponsor"
                           ? "Tài trợ"

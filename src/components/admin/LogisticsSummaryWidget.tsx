@@ -29,7 +29,7 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
 
     registrations.forEach((r) => {
       const category = getFormCategory(r.ticket_type);
-      if (category === "delegate") delegateFormCount++;
+      if (category === "member" || category === "delegate") delegateFormCount++;
       if (category === "sponsor") sponsorFormCount++;
       if (category === "booth") boothFormCount++;
 

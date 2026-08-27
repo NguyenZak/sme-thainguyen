@@ -17,6 +17,7 @@ import {
   Send,
   Mail,
   Eye,
+  Building2,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 import RegistrationDetailModal from "./RegistrationDetailModal";
@@ -35,10 +36,13 @@ export interface RegistrationRecord {
   created_at: string;
 }
 
-export type FormCategory = "all" | "delegate" | "sponsor" | "booth";
+export type FormCategory = "all" | "member" | "delegate" | "sponsor" | "booth";
 
-export function getFormCategory(ticketType: string): "delegate" | "sponsor" | "booth" {
+export function getFormCategory(ticketType: string): "member" | "delegate" | "sponsor" | "booth" {
   const t = (ticketType || "").toLowerCase();
+  if (t.includes("thành viên") || t.includes("hội viên") || t.includes("hh dnnvv thái nguyên") || t.includes("dnnvv thái nguyên")) {
+    return "member";
+  }
   if (t.includes("sponsor") || t.includes("tài trợ") || t.includes("gói tài trợ")) {
     return "sponsor";
   }
@@ -48,8 +52,13 @@ export function getFormCategory(ticketType: string): "delegate" | "sponsor" | "b
   return "delegate";
 }
 
-export function getCategoryBadge(category: "delegate" | "sponsor" | "booth") {
+export function getCategoryBadge(category: "member" | "delegate" | "sponsor" | "booth") {
   switch (category) {
+    case "member":
+      return {
+        label: "🏛️ Hội viên Thái Nguyên",
+        bg: "bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold",
+      };
     case "delegate":
       return {
         label: "🎟️ Đăng ký tham gia",
@@ -99,12 +108,12 @@ export default function RegistrationsManager() {
   const confirmPaymentManual = async (
     id: string,
     name: string,
-    category: "delegate" | "sponsor" | "booth" = "delegate",
+    category: "member" | "delegate" | "sponsor" | "booth" = "delegate",
     skipConfirm = false
   ) => {
-    const isDelegate = category === "delegate";
+    const isDelegate = category === "delegate" || category === "member";
     const promptMessage = isDelegate
-      ? `Xác nhận đã nhận tiền thanh toán về tài khoản công ty của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ THANH TOÁN và gửi Email xác nhận cho khách đăng ký.`
+      ? `Xác nhận duyệt thông tin tham dự của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ DUYỆT / HOÀN TẤT và gửi Email xác nhận cho khách đăng ký.`
       : `Xác nhận duyệt thông tin và gửi Email xác nhận cho đơn đăng ký của "${name}"?\n\nHệ thống sẽ tự động cập nhật trạng thái ĐÃ HOÀN TẤT và gửi Email phản hồi cho Quý đơn vị.`;
 
     if (!skipConfirm && !confirm(promptMessage)) return;
@@ -186,7 +195,7 @@ export default function RegistrationsManager() {
     id: string,
     newStatus: "pending" | "confirmed" | "completed" | "cancelled",
     name?: string,
-    category: "delegate" | "sponsor" | "booth" = "delegate"
+    category: "member" | "delegate" | "sponsor" | "booth" = "delegate"
   ) => {
     if (newStatus === "completed") {
       await confirmPaymentManual(id, name || "khách hàng", category, true);
@@ -238,7 +247,10 @@ export default function RegistrationsManager() {
     }
   };
 
-  // ── Thống kê theo 3 Form & Trạng thái ────────────────────────────────────
+  // ── Thống kê theo Form, Hội Viên & Trạng thái ───────────────────────────
+  const memberCount = registrations.filter(
+    (r) => getFormCategory(r.ticket_type) === "member"
+  ).length;
   const delegateCount = registrations.filter(
     (r) => getFormCategory(r.ticket_type) === "delegate"
   ).length;
@@ -269,7 +281,7 @@ export default function RegistrationsManager() {
     if (filteredList.length === 0) return;
 
     const headers = [
-      "Form Đăng Ký",
+      "Phân Loại",
       "Họ và Tên",
       "Số Điện Thoại",
       "Email",
@@ -284,7 +296,9 @@ export default function RegistrationsManager() {
     const rows = filteredList.map((r) => {
       const cat = getFormCategory(r.ticket_type);
       const catLabel =
-        cat === "delegate"
+        cat === "member"
+          ? "Hội viên HH DNNVV Thái Nguyên"
+          : cat === "delegate"
           ? "Đăng ký Tham gia"
           : cat === "sponsor"
           ? "Nhà Tài Trợ"
@@ -337,7 +351,7 @@ export default function RegistrationsManager() {
             Quản Lý Danh Sách Đăng Ký Tham Dự
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Tổng hợp & Xử lý dữ liệu từ 3 Form Đăng ký trên Landing Page (<b>Đăng ký tham gia</b>, <b>Nhà Tài Trợ</b>, <b>Gian Hàng</b>).
+            Tổng hợp & Xử lý dữ liệu từ các đối tượng đăng ký (<b>Hội viên Thái Nguyên</b>, <b>Đại biểu tham gia</b>, <b>Nhà Tài Trợ</b>, <b>Gian Hàng</b>).
           </p>
         </div>
 
@@ -363,12 +377,12 @@ export default function RegistrationsManager() {
       {/* ── Executive Logistics & Meal Catering Preparation Summary Widget ── */}
       <LogisticsSummaryWidget registrations={registrations} />
 
-      {/* ── Stat Cards Summary ────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+      {/* ── Stat Cards / Tabs Summary ─────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <button
           type="button"
           onClick={() => setCategoryFilter("all")}
-          className={`p-4 rounded-2xl border text-left transition-all shadow-sm ${
+          className={`p-4 rounded-2xl border text-left transition-all shadow-sm cursor-pointer ${
             categoryFilter === "all"
               ? "bg-slate-900 text-white border-slate-900 ring-2 ring-slate-900/20"
               : "bg-white text-slate-900 border-slate-200 hover:bg-slate-50"
@@ -387,10 +401,30 @@ export default function RegistrationsManager() {
           </div>
         </button>
 
+        {/* Tab Thành viên HH DNNVV Thái Nguyên */}
+        <button
+          type="button"
+          onClick={() => setCategoryFilter("member")}
+          className={`p-4 rounded-2xl border text-left transition-all shadow-sm cursor-pointer ${
+            categoryFilter === "member"
+              ? "bg-emerald-700 text-white border-emerald-700 ring-2 ring-emerald-700/20"
+              : "bg-white text-slate-900 border-slate-200 hover:bg-emerald-50/60"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-200">
+              🏛️ HỘI VIÊN THÁI NGUYÊN
+            </span>
+            <Building2 className="w-4 h-4 text-emerald-600" />
+          </div>
+          <div className="text-2xl font-black mt-2 text-emerald-950 dark:text-white">{memberCount}</div>
+          <p className="text-[10px] text-slate-500 mt-1">Hội viên HH DNNVV T.Nguyên</p>
+        </button>
+
         <button
           type="button"
           onClick={() => setCategoryFilter("delegate")}
-          className={`p-4 rounded-2xl border text-left transition-all shadow-sm ${
+          className={`p-4 rounded-2xl border text-left transition-all shadow-sm cursor-pointer ${
             categoryFilter === "delegate"
               ? "bg-blue-600 text-white border-blue-600 ring-2 ring-blue-600/20"
               : "bg-white text-slate-900 border-slate-200 hover:bg-blue-50/50"
@@ -398,18 +432,18 @@ export default function RegistrationsManager() {
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-200">
-              🎟️ FORM 1: ĐĂNG KÝ THAM GIA
+              🎟️ ĐĂNG KÝ THAM GIA
             </span>
             <Users className="w-4 h-4 text-blue-500" />
           </div>
           <div className="text-2xl font-black mt-2">{delegateCount}</div>
-          <p className="text-[10px] text-slate-500 mt-1">Đăng ký tham dự diễn đàn</p>
+          <p className="text-[10px] text-slate-500 mt-1">Đại biểu tham gia ngoài</p>
         </button>
 
         <button
           type="button"
           onClick={() => setCategoryFilter("sponsor")}
-          className={`p-4 rounded-2xl border text-left transition-all shadow-sm ${
+          className={`p-4 rounded-2xl border text-left transition-all shadow-sm cursor-pointer ${
             categoryFilter === "sponsor"
               ? "bg-purple-700 text-white border-purple-700 ring-2 ring-purple-700/20"
               : "bg-white text-slate-900 border-slate-200 hover:bg-purple-50/50"
@@ -417,18 +451,18 @@ export default function RegistrationsManager() {
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-200">
-              💎 FORM 2: NHÀ TÀI TRỢ
+              💎 NHÀ TÀI TRỢ
             </span>
             <Award className="w-4 h-4 text-purple-500" />
           </div>
           <div className="text-2xl font-black mt-2">{sponsorCount}</div>
-          <p className="text-[10px] text-slate-500 mt-1">Đăng ký đồng hành & tài trợ</p>
+          <p className="text-[10px] text-slate-500 mt-1">Đồng hành & tài trợ</p>
         </button>
 
         <button
           type="button"
           onClick={() => setCategoryFilter("booth")}
-          className={`p-4 rounded-2xl border text-left transition-all shadow-sm ${
+          className={`p-4 rounded-2xl border text-left transition-all shadow-sm cursor-pointer ${
             categoryFilter === "booth"
               ? "bg-amber-600 text-white border-amber-600 ring-2 ring-amber-600/20"
               : "bg-white text-slate-900 border-slate-200 hover:bg-amber-50/50"
@@ -436,12 +470,12 @@ export default function RegistrationsManager() {
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-200">
-              🎪 FORM 3: GIAN HÀNG
+              🎪 GIAN HÀNG
             </span>
             <Store className="w-4 h-4 text-amber-500" />
           </div>
           <div className="text-2xl font-black mt-2">{boothCount}</div>
-          <p className="text-[10px] text-slate-500 mt-1">Đăng ký gian hàng triển lãm</p>
+          <p className="text-[10px] text-slate-500 mt-1">Gian hàng triển lãm</p>
         </button>
       </div>
 
@@ -463,7 +497,8 @@ export default function RegistrationsManager() {
           onChange={(e) => setCategoryFilter(e.target.value as FormCategory)}
           className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none w-full sm:w-auto font-semibold shadow-sm"
         >
-          <option value="all">📂 Tất cả 3 Form ({registrations.length})</option>
+          <option value="all">📂 Tất cả danh mục ({registrations.length})</option>
+          <option value="member">🏛️ Hội viên HH DNNVV Thái Nguyên ({memberCount})</option>
           <option value="delegate">🎟️ Form 1: Đăng ký Tham gia ({delegateCount})</option>
           <option value="sponsor">💎 Form 2: Đăng ký Nhà Tài Trợ ({sponsorCount})</option>
           <option value="booth">🎪 Form 3: Đăng ký Gian Hàng ({boothCount})</option>
@@ -585,7 +620,14 @@ export default function RegistrationsManager() {
                               : "bg-amber-100 text-amber-900 border-amber-400"
                           }`}
                         >
-                          {category === "delegate" ? (
+                          {category === "member" ? (
+                            <>
+                              <option value="completed">🟢 ĐÃ XÁC NHẬN HỘI VIÊN</option>
+                              <option value="confirmed">🔵 Đã liên hệ</option>
+                              <option value="pending">⏳ Chờ xử lý</option>
+                              <option value="cancelled">🔴 Đã hủy</option>
+                            </>
+                          ) : category === "delegate" ? (
                             <>
                               <option value="pending">⏳ TREO - Chờ thanh toán</option>
                               <option value="completed">🟢 ĐÃ THANH TOÁN (Thành công)</option>
@@ -623,21 +665,27 @@ export default function RegistrationsManager() {
                               onClick={() => confirmPaymentManual(r.id, r.full_name, category)}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
                               title={
-                                category === "delegate"
+                                category === "member"
+                                  ? "Xác nhận duyệt thẻ đại biểu Hội viên & Gửi Email phản hồi"
+                                  : category === "delegate"
                                   ? "Xác nhận đã nhận tiền về tài khoản công ty & Gửi Email xác nhận cho khách đăng ký"
                                   : "Xác nhận duyệt thông tin & Gửi Email phản hồi cho Quý đơn vị"
                               }
                             >
                               {processingId === r.id ? (
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : category === "member" ? (
+                                <CheckCircle2 className="w-3.5 h-3.5" />
                               ) : category === "delegate" ? (
                                 <CreditCard className="w-3.5 h-3.5" />
                               ) : (
                                 <Send className="w-3.5 h-3.5" />
                               )}
                               <span>
-                                {category === "delegate"
-                                  ? "Xác Nhận Tiền Về (Gửi Mail)"
+                                {category === "member"
+                                  ? "Duyệt Hội Viên"
+                                  : category === "delegate"
+                                  ? "Xác Nhận Tiền Về"
                                   : "Duyệt & Gửi Mail"}
                               </span>
                             </button>
@@ -645,7 +693,7 @@ export default function RegistrationsManager() {
                             <div className="flex items-center gap-1">
                               <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2 py-1 rounded-lg">
                                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />{" "}
-                                {category === "delegate" ? "Đã Thanh Toán" : "Đã Hoàn Tất"}
+                                {category === "member" ? "Đã Xác Nhận" : category === "delegate" ? "Đã Thanh Toán" : "Đã Hoàn Tất"}
                               </span>
                               <button
                                 type="button"

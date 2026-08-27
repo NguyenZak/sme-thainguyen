@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit, getClientIp } from "@/lib/rateLimit";
 
-function getFormCategory(ticketType: string): "delegate" | "sponsor" | "booth" {
+function getFormCategory(ticketType: string): "member" | "delegate" | "sponsor" | "booth" {
   const t = (ticketType || "").toLowerCase();
+  if (t.includes("thành viên") || t.includes("hội viên") || t.includes("hh dnnvv thái nguyên") || t.includes("dnnvv thái nguyên")) return "member";
   if (t.includes("sponsor") || t.includes("tài trợ") || t.includes("gói tài trợ")) return "sponsor";
   if (t.includes("booth") || t.includes("gian hàng") || t.includes("gian")) return "booth";
   return "delegate";
@@ -77,9 +78,11 @@ export async function POST(request: Request) {
         const company = data.company || data.company_name || "N/A";
         const position = data.position || "N/A";
         const ticketType = data.registrationType || data.intentTab || "standard";
-        const initialStatus = "pending";
+        const isMember = Boolean(data.isMember || getFormCategory(ticketType) === "member");
+        const initialStatus = isMember ? "completed" : "pending";
         const userNotes = data.notes || (data.networkingNeeds ? `Nhu cầu: ${data.networkingNeeds}` : "");
-        const notes = `[Mã ĐK: ${registrationId}] ${userNotes}`.trim();
+        const memberTag = isMember ? "[Hội viên HH DNNVV Thái Nguyên] " : "";
+        const notes = `[Mã ĐK: ${registrationId}] ${memberTag}${userNotes}`.trim();
 
         const { error: insertError } = await supabase.from("registrations").insert({
           full_name: fullName,
@@ -169,7 +172,10 @@ export async function POST(request: Request) {
         let categoryTitle = "🎟️ ĐĂNG KÝ THAM GIA";
         let targetThreadIdStr = threadIdDelegate;
 
-        if (category === "sponsor") {
+        if (category === "member") {
+          categoryTitle = "🏛️ ĐĂNG KÝ HỘI VIÊN HH DNNVV THÁI NGUYÊN (MIỄN PHÍ QR)";
+          targetThreadIdStr = threadIdDelegate;
+        } else if (category === "sponsor") {
           categoryTitle = "💎 ĐĂNG KÝ NHÀ TÀI TRỢ & ĐỐI TÁC";
           targetThreadIdStr = threadIdSponsor;
         } else if (category === "booth") {
