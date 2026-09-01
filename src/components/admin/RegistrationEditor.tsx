@@ -105,7 +105,7 @@ export default function RegistrationEditor({ initialRegistration, onSaveSuccess 
       .replace(/\{\{phone\}\}/g, testUser.phone)
       .replace(/\{\{email\}\}/g, testUser.email)
       .replace(/\{\{registrationId\}\}/g, "SME2026-144380")
-      .replace(/\{\{registrationType\}\}/g, "1 gói chính (02 ĐB) + Ăn trưa 20/09")
+      .replace(/\{\{registrationType\}\}/g, "1 gói chính (02 ĐB) + Ăn trưa 19/09")
       .replace(/\{\{totalCalculatedAmount\}\}/g, "1.650.000 VNĐ");
     return content;
   };

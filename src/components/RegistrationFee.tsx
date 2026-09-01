@@ -6,7 +6,7 @@ import { CheckCircle2, Ticket, Sparkles, ArrowRight, ShieldCheck } from "lucide-
 const INCLUSIONS = [
   "1 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel (đêm 19/09)",
   "Bữa sáng Buffet cao cấp hàng ngày (Miễn phí theo phòng)",
-  "Bữa ăn trưa Ngày 20/09 (100.000đ / bữa / người)",
+  "Bữa ăn trưa Ngày 19/09 (100.000đ / bữa / người)",
   "01 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp (Tối 19/09, Miễn phí bữa tối)",
   "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
   "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
@@ -194,7 +194,7 @@ export default function RegistrationFee({ content }: { content?: TicketFeeConten
                   </div>
                   <div className="bg-white/5 p-2.5 rounded-xl border border-white/10">
                     <span className="text-emerald-300 font-bold block mb-0.5">🍽️ Ăn uống theo chương trình:</span>
-                    • Ăn trưa Ngày 20/9: <strong className="text-amber-300">{lunchPrice.toLocaleString("vi-VN")}đ</strong> / bữa / người<br />
+                    • Ăn trưa Ngày 19/9: <strong className="text-amber-300">{lunchPrice.toLocaleString("vi-VN")}đ</strong> / bữa / người<br />
                     • Bữa sáng Buffet & Tiệc Gala Dinner: <strong className="text-emerald-400">Miễn phí trọn gói</strong><br />
                     <span className="text-[10.5px] text-amber-300/90 italic font-semibold">* Giá niêm yết trên chưa bao gồm thuế VAT *</span>
                   </div>

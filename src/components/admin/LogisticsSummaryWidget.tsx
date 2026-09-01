@@ -60,14 +60,14 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
       else stay1Night += delegatesInThisRecord;
 
       // Lunch meals calculation
+      if (typeStr.includes("trưa 19") || typeStr.includes("19/09") || typeStr.includes("ăn trưa ngày 19") || (typeStr.includes("ăn trưa") && !typeStr.includes("20/09")) || (r as any).includeDay19Lunch) {
+        day19LunchMeals += delegatesInThisRecord;
+      }
       if (typeStr.includes("trưa 20") || typeStr.includes("20/09") || typeStr.includes("ăn trưa ngày 20") || (r as any).includeDay20Lunch) {
         day20LunchMeals += delegatesInThisRecord;
       }
       if (typeStr.includes("trưa 18") || typeStr.includes("18/09") || typeStr.includes("ăn trưa ngày 18") || (r as any).includeDay18Lunch) {
         day18LunchMeals += delegatesInThisRecord;
-      }
-      if (typeStr.includes("trưa 19") || typeStr.includes("19/09") || typeStr.includes("ăn trưa ngày 19") || (r as any).includeDay19Lunch) {
-        day19LunchMeals += delegatesInThisRecord;
       }
 
       // B2B Networking Needs
@@ -166,12 +166,12 @@ export default function LogisticsSummaryWidget({ registrations }: Props) {
 
           <div className="space-y-2 text-xs">
             <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl">
-              <span className="text-slate-200">🍱 Suất ăn trưa Ngày 20/09:</span>
-              <strong className="text-amber-400 text-sm">{summary.day20LunchMeals} suất</strong>
+              <span className="text-slate-200">🍱 Suất ăn trưa Ngày 19/09:</span>
+              <strong className="text-amber-400 text-sm">{summary.day19LunchMeals || summary.day20LunchMeals} suất</strong>
             </div>
-            {(summary.day18LunchMeals > 0 || summary.day19LunchMeals > 0) && (
+            {(summary.day18LunchMeals > 0 || (summary.day20LunchMeals > 0 && summary.day19LunchMeals > 0)) && (
               <div className="flex items-center justify-between bg-white/5 p-2 rounded-xl text-[11px] text-slate-300">
-                <span>(Dữ liệu cũ: Trưa 18: {summary.day18LunchMeals}, Trưa 19: {summary.day19LunchMeals})</span>
+                <span>(Dữ liệu khác: {summary.day18LunchMeals > 0 ? `Trưa 18: ${summary.day18LunchMeals}` : ""} {summary.day20LunchMeals > 0 ? `Trưa 20: ${summary.day20LunchMeals}` : ""})</span>
               </div>
             )}
             <div className="pt-1 text-[11.5px] text-emerald-200/80 space-y-0.5 font-medium">

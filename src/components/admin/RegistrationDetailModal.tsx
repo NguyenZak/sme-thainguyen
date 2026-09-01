@@ -86,8 +86,8 @@ export default function RegistrationDetailModal({
 
   // Parse lunches from string if boolean flags not saved directly
   const hasDay18Lunch = record.includeDay18Lunch ?? (ticketTypeStr.includes("18/09") || ticketTypeStr.includes("18"));
-  const hasDay19Lunch = record.includeDay19Lunch ?? (ticketTypeStr.includes("19/09") || ticketTypeStr.includes("19"));
-  const hasDay20Lunch = record.includeDay20Lunch ?? (ticketTypeStr.includes("20/09") || ticketTypeStr.includes("20"));
+  const hasDay19Lunch = record.includeDay19Lunch ?? (ticketTypeStr.includes("19/09") || ticketTypeStr.includes("trưa 19") || (ticketTypeStr.includes("ăn trưa") && !ticketTypeStr.includes("20/09")));
+  const hasDay20Lunch = record.includeDay20Lunch ?? (ticketTypeStr.includes("20/09") || ticketTypeStr.includes("trưa 20"));
 
   const handleCopyInfo = () => {
     setCopying(true);
@@ -277,14 +277,14 @@ export default function RegistrationDetailModal({
               </h4>
               <div className="space-y-1.5 text-xs text-blue-950">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-600 font-medium">• Ăn trưa Ngày 20/09:</span>
-                  <span className={`font-bold ${hasDay20Lunch ? "text-emerald-700" : "text-slate-400"}`}>
-                    {hasDay20Lunch ? "✅ Có đăng ký (+100k)" : "❌ Không đăng ký"}
+                  <span className="text-slate-600 font-medium">• Ăn trưa Ngày 19/09:</span>
+                  <span className={`font-bold ${hasDay19Lunch || hasDay20Lunch ? "text-emerald-700" : "text-slate-400"}`}>
+                    {hasDay19Lunch || hasDay20Lunch ? "✅ Có đăng ký (+100k)" : "❌ Không đăng ký"}
                   </span>
                 </div>
-                {(hasDay18Lunch || hasDay19Lunch) && (
+                {(hasDay18Lunch || hasDay20Lunch) && (
                   <div className="flex items-center justify-between text-[11px] text-slate-500 italic pt-1">
-                    <span>(Đăng ký cũ: {hasDay18Lunch ? "Trưa 18/9 " : ""}{hasDay19Lunch ? "Trưa 19/9" : ""})</span>
+                    <span>(Đăng ký khác: {hasDay18Lunch ? "Trưa 18/9 " : ""}{hasDay20Lunch ? "Trưa 20/9" : ""})</span>
                   </div>
                 )}
                 <div className="p-2.5 bg-white rounded-xl border border-blue-200/90 text-[11.5px] font-bold text-blue-900 mt-2">

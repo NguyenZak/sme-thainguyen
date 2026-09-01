@@ -252,6 +252,7 @@ export interface TicketFeeContent {
   extraDelegateSharedRoomPriceVND?: number;
   extraDelegateSingleRoomPriceVND?: number;
   extraDelegateLunchPriceVND?: number;
+  day19LunchPriceVND?: number;
   day20LunchPriceVND?: number;
   extraDelegateBreakfastNote?: string;
   extraDelegateDinnerNote?: string;
@@ -879,7 +880,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
   extraDelegateSharedRoomPriceVND: 350000,
   extraDelegateSingleRoomPriceVND: 700000,
   extraDelegateLunchPriceVND: 100000,
-  day20LunchPriceVND: 0,
+  day19LunchPriceVND: 0,
   extraDelegateBreakfastNote: "Bữa sáng miễn phí theo phòng",
   extraDelegateDinnerNote: "Bữa tối miễn phí theo Chương trình",
   earlyBirdLabel: "Đăng ký ngay",
@@ -891,7 +892,7 @@ export const DEFAULT_TICKET_FEE: TicketFeeContent = {
     "02 Thẻ Đại biểu chính thức tham dự trọn gói chuỗi sự kiện 3 ngày",
     "2 Đêm lưu trú tại Khách sạn 4-Star May Plaza Hotel (ở ghép 2 người/phòng)",
     "Bữa sáng Buffet cao cấp hàng ngày (Miễn phí theo phòng)",
-    "Bữa ăn trưa Ngày 20/09 (100.000đ / bữa / người)",
+    "Bữa ăn trưa Ngày 19/09 (100.000đ / bữa / người)",
     "02 Đêm tiệc Gala Dinner & Giao lưu nghệ thuật đẳng cấp (Miễn phí bữa tối)",
     "01 Standee giới thiệu doanh nghiệp tại sảnh Diễn đàn",
     "Quảng bá thông tin Doanh nghiệp trên Ấn phẩm Diễn đàn",
