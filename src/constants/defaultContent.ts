@@ -50,6 +50,7 @@ export interface SiteConfig {
   sepaySecretKey?: string;
   sepaySandbox?: boolean;
   hiddenSections?: string[];
+  sponsorshipEnabled?: boolean;
 }
 
 export interface HeroContent {
@@ -416,6 +417,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   sepaySecretKey: "",
   sepaySandbox: false,
   hiddenSections: [],
+  sponsorshipEnabled: false,
 };
 
 export const DEFAULT_HERO: HeroContent = {

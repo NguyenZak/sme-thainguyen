@@ -216,7 +216,14 @@ export default function DashboardOverview({
             {speakersCount} <span className="text-xs font-normal text-slate-500">Diễn giả</span>
           </div>
           <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
-            <span>Nhà tài trợ: <strong className="text-slate-700">{sponsorsCount}</strong></span>
+            <span>
+              Nhà tài trợ:{" "}
+              {data.site_config?.sponsorshipEnabled === false ? (
+                <span className="text-amber-600 font-bold">(Đã tắt)</span>
+              ) : (
+                <strong className="text-slate-700">{sponsorsCount}</strong>
+              )}
+            </span>
             <span className="text-slate-700 font-medium">Keynote</span>
           </div>
         </div>
@@ -461,9 +468,16 @@ export default function DashboardOverview({
 
               <button
                 onClick={() => onNavigateTab("sponsors")}
-                className="p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 text-left font-medium transition-colors flex items-center gap-2 cursor-pointer"
+                className="p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 text-left font-medium transition-colors flex items-center justify-between cursor-pointer"
               >
-                <Handshake className="w-4 h-4 text-slate-500" /> Tài Trợ
+                <span className="flex items-center gap-2">
+                  <Handshake className="w-4 h-4 text-slate-500" /> Tài Trợ
+                </span>
+                {data.site_config?.sponsorshipEnabled === false && (
+                  <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                    Đã tắt
+                  </span>
+                )}
               </button>
 
               <button

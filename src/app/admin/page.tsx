@@ -22,6 +22,7 @@ import DashboardOverview from "@/components/admin/DashboardOverview";
 import RegistrationsManager, { RegistrationRecord } from "@/components/admin/RegistrationsManager";
 import SessionTimeout from "@/components/admin/SessionTimeout";
 import { createClient } from "@/utils/supabase/client";
+import { updateSectionAction } from "@/app/actions/cmsActions";
 import { Loader2 } from "lucide-react";
 import {
   DEFAULT_SITE_CONFIG,
@@ -290,6 +291,7 @@ export default function AdminPage() {
           registrationsCount={registrationsCount}
           isCollapsed={sidebarCollapsed}
           onToggleSidebar={handleToggleSidebar}
+          sponsorshipEnabled={data.site_config?.sponsorshipEnabled !== false}
         />
 
         <main className="flex-1 p-6 md:p-8 bg-slate-100 min-w-0">
@@ -396,6 +398,15 @@ export default function AdminPage() {
               {activeTab === "sponsors" && (
                 <SponsorsEditor
                   initialSponsors={data.sponsors}
+                  sponsorshipEnabled={data.site_config?.sponsorshipEnabled !== false}
+                  onToggleSponsorship={async () => {
+                    const updated = {
+                      ...data.site_config,
+                      sponsorshipEnabled: true,
+                    };
+                    setData((prev) => ({ ...prev, site_config: updated }));
+                    await updateSectionAction("site_config", updated);
+                  }}
                   onSaveSuccess={(updated) => setData((prev) => ({ ...prev, sponsors: updated }))}
                 />
               )}

@@ -111,14 +111,15 @@ export default function LandingPageClient({ initialContent }: LandingPageClientP
 
   const hiddenSections = content.siteConfig?.hiddenSections || [];
   const isVisible = (key: string) => !hiddenSections.includes(key);
+  const isSponsorshipEnabled = content.siteConfig?.sponsorshipEnabled !== false;
 
   return (
     <main className="min-h-screen flex flex-col font-sans bg-[#F8FAFC]">
       {/* 1. Navigation Bar */}
-      <Navbar content={content.navbar} />
+      <Navbar content={content.navbar} sponsorshipEnabled={isSponsorshipEnabled} />
 
       {/* 2. Hero Section with Embedded Countdown */}
-      {isVisible("hero") && <Hero content={content.hero} />}
+      {isVisible("hero") && <Hero content={content.hero} sponsorshipEnabled={isSponsorshipEnabled} />}
       {isVisible("statistics") && <Statistics content={content.statistics} />}
 
       {/* 3. About Forum & Core Purpose */}
@@ -134,7 +135,7 @@ export default function LandingPageClient({ initialContent }: LandingPageClientP
       {isVisible("timeline") && <Timeline content={content.timeline} />}
 
       {/* 7. Sponsors Logo Wall & Packages */}
-      {isVisible("sponsors") && <SponsorSection content={content.sponsors} />}
+      {isVisible("sponsors") && isSponsorshipEnabled && <SponsorSection content={content.sponsors} />}
 
       {/* 8. Exhibition Booth Section */}
       {isVisible("booths") && <BoothSection content={content.booths} />}
@@ -152,13 +153,15 @@ export default function LandingPageClient({ initialContent }: LandingPageClientP
       )}
 
       {/* 11. FAQ Accordion Section */}
-      {isVisible("faq") && <FaqSection content={content.faq} />}
+      {isVisible("faq") && <FaqSection content={content.faq} sponsorshipEnabled={isSponsorshipEnabled} />}
 
       {/* 12. Footer */}
-      <Footer content={content.footer} />
+      <Footer content={content.footer} sponsorshipEnabled={isSponsorshipEnabled} />
 
       {/* 13. Mobile Floating Sticky CTA */}
-      {isVisible("registration") && <MobileStickyCTA content={content.registration} />}
+      {isVisible("registration") && (
+        <MobileStickyCTA content={content.registration} sponsorshipEnabled={isSponsorshipEnabled} />
+      )}
     </main>
   );
 }

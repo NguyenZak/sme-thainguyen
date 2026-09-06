@@ -102,9 +102,16 @@ export default function RegistrationForm({
 }) {
   const registration = content || DEFAULT_REGISTRATION;
   const config = siteConfig || DEFAULT_SITE_CONFIG;
+  const isSponsorshipEnabled = config?.sponsorshipEnabled !== false;
   const unitPrice = Number(ticketFee?.priceVND) || Number(config?.eventPriceVND) || DEFAULT_TICKET_FEE.priceVND;
 
   const [activeTab, setActiveTab] = useState<"delegate" | "sponsor">("delegate");
+
+  useEffect(() => {
+    if (!isSponsorshipEnabled && activeTab === "sponsor") {
+      setActiveTab("delegate");
+    }
+  }, [isSponsorshipEnabled, activeTab]);
   const [isMember, setIsMember] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState<{
@@ -443,6 +450,7 @@ export default function RegistrationForm({
   };
 
   const handleTabChange = (tab: "delegate" | "sponsor") => {
+    if (!isSponsorshipEnabled && tab === "sponsor") return;
     setActiveTab(tab);
     setValue("intentTab", tab);
   };
@@ -458,6 +466,10 @@ export default function RegistrationForm({
       if (!targetTab && hash) {
         if (hash.includes("sponsor") || hash.includes("booth")) targetTab = "sponsor";
         else if (hash.includes("delegate")) targetTab = "delegate";
+      }
+
+      if (!isSponsorshipEnabled && targetTab === "sponsor") {
+        targetTab = "delegate";
       }
 
       if (targetTab) {
@@ -651,46 +663,65 @@ export default function RegistrationForm({
           </p>
         </motion.div>
 
-        {/* Smart 2-Tab Intent Selector */}
-        <div className="space-y-4">
-          <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-md mx-auto gap-1 sm:gap-2">
-            <button
-              type="button"
-              onClick={() => handleTabChange("delegate")}
-              className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-                activeTab === "delegate"
-                  ? "bg-[#22C55E] text-white shadow-md"
-                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-              }`}
-            >
-              <Ticket className="w-4 h-4 shrink-0" />
-              <span className="truncate">{cleanHtmlText(registration.delegateTab)}</span>
-            </button>
+        {/* Smart Intent Selector */}
+        {isSponsorshipEnabled ? (
+          <div className="space-y-4">
+            <div className="flex p-1.5 bg-white rounded-2xl border border-emerald-200 shadow-sm max-w-md mx-auto gap-1 sm:gap-2">
+              <button
+                type="button"
+                onClick={() => handleTabChange("delegate")}
+                className={`flex-1 py-3 px-2 sm:px-3 rounded-xl text-[11px] sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                  activeTab === "delegate"
+                    ? "bg-[#22C55E] text-white shadow-md"
+                    : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+                }`}
+              >
+                <Ticket className="w-4 h-4 shrink-0" />
+                <span className="truncate">{cleanHtmlText(registration.delegateTab)}</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => handleTabChange("sponsor")}
-              className={`flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-                activeTab === "sponsor"
-                  ? "bg-[#F59E0B] text-slate-950 shadow-md"
-                  : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
-              }`}
-            >
-              <Award className="w-4 h-4 shrink-0" />
-              <span className="truncate">{cleanHtmlText(registration.sponsorTab)}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => handleTabChange("sponsor")}
+                className={`flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                  activeTab === "sponsor"
+                    ? "bg-[#F59E0B] text-slate-950 shadow-md"
+                    : "text-slate-600 hover:text-[#0D3B2E] hover:bg-slate-50"
+                }`}
+              >
+                <Award className="w-4 h-4 shrink-0" />
+                <span className="truncate">{cleanHtmlText(registration.sponsorTab)}</span>
+              </button>
+            </div>
+
+            {/* 3-Step Visual Workflow Progress Bar */}
+            <div className="flex items-center justify-center gap-1.5 sm:gap-4 max-w-xl mx-auto text-[10.5px] sm:text-xs text-slate-500 pt-1 font-medium">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-emerald-700 font-bold whitespace-nowrap shrink-0">
+                <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-[#22C55E] text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black shrink-0">1</span>
+                <span>Chọn Hạng Mục</span>
+              </div>
+              <span className="text-slate-300 text-[10px] shrink-0">➔</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 text-emerald-800 font-bold whitespace-nowrap shrink-0">
+                <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black shrink-0">2</span>
+                <span>Điền Thông Tin</span>
+              </div>
+              <span className="text-slate-300 text-[10px] shrink-0">➔</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 text-slate-400 whitespace-nowrap shrink-0">
+                <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[9px] sm:text-[10px] font-bold shrink-0">3</span>
+                <span>Nhận Xác Nhận QR</span>
+              </div>
+            </div>
           </div>
-
-          {/* 3-Step Visual Workflow Progress Bar */}
+        ) : (
           <div className="flex items-center justify-center gap-1.5 sm:gap-4 max-w-xl mx-auto text-[10.5px] sm:text-xs text-slate-500 pt-1 font-medium">
             <div className="flex items-center gap-1 sm:gap-1.5 text-emerald-700 font-bold whitespace-nowrap shrink-0">
               <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-[#22C55E] text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black shrink-0">1</span>
-              <span>Chọn Hạng Mục</span>
+              <span>Điền Thông Tin</span>
             </div>
             <span className="text-slate-300 text-[10px] shrink-0">➔</span>
             <div className="flex items-center gap-1 sm:gap-1.5 text-emerald-800 font-bold whitespace-nowrap shrink-0">
               <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black shrink-0">2</span>
-              <span>Điền Thông Tin</span>
+              <span>Tùy Chọn Dịch Vụ</span>
             </div>
             <span className="text-slate-300 text-[10px] shrink-0">➔</span>
             <div className="flex items-center gap-1 sm:gap-1.5 text-slate-400 whitespace-nowrap shrink-0">
@@ -698,7 +729,7 @@ export default function RegistrationForm({
               <span>Nhận Xác Nhận QR</span>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Form Container */}
         <motion.div

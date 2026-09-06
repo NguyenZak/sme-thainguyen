@@ -31,7 +31,8 @@
     "sepayMerchantId": "",
     "sepaySecretKey": "",
     "sepaySandbox": false,
-    "hiddenSections": []
+    "hiddenSections": [],
+    "sponsorshipEnabled": false
   },
   "timeline": {
     "badge": "LỊCH TRÌNH CHUYÊN NGHIỆP",

@@ -38,9 +38,16 @@ import Image from "next/image";
 interface SponsorsEditorProps {
   initialSponsors: SponsorsContent;
   onSaveSuccess?: (updatedSponsors: SponsorsContent) => void;
+  sponsorshipEnabled?: boolean;
+  onToggleSponsorship?: () => void;
 }
 
-export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: SponsorsEditorProps) {
+export default function SponsorsEditor({
+  initialSponsors,
+  onSaveSuccess,
+  sponsorshipEnabled = true,
+  onToggleSponsorship,
+}: SponsorsEditorProps) {
   const [sponsors, setSponsors] = useState<SponsorsContent>({
     ...DEFAULT_SPONSORS,
     ...(initialSponsors || {}),
@@ -299,6 +306,32 @@ export default function SponsorsEditor({ initialSponsors, onSaveSuccess }: Spons
           </button>
         </div>
       </div>
+
+      {/* Warning banner when sponsorship is disabled */}
+      {sponsorshipEnabled === false && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-900 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <div className="text-xs font-bold text-amber-950">
+                Tính năng Tài trợ hiện đang TẮT trên toàn bộ website
+              </div>
+              <div className="text-[11px] text-amber-800">
+                Toàn bộ nội dung chỉnh sửa tại đây đang được ẩn ngoài Trang chủ cho đến khi bạn bật lại tính năng này.
+              </div>
+            </div>
+          </div>
+          {onToggleSponsorship && (
+            <button
+              type="button"
+              onClick={onToggleSponsorship}
+              className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-sm shrink-0 cursor-pointer"
+            >
+              Bật Lại Tính Năng Ngay
+            </button>
+          )}
+        </div>
+      )}
 
       {/* 1. Header & PDF */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">

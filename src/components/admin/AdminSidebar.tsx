@@ -46,6 +46,7 @@ interface AdminSidebarProps {
   registrationsCount?: number;
   isCollapsed?: boolean;
   onToggleSidebar?: () => void;
+  sponsorshipEnabled?: boolean;
 }
 
 interface MenuGroup {
@@ -59,6 +60,7 @@ export default function AdminSidebar({
   registrationsCount = 0,
   isCollapsed = false,
   onToggleSidebar,
+  sponsorshipEnabled = true,
 }: AdminSidebarProps) {
   const menuGroups: MenuGroup[] = [
     {
@@ -209,6 +211,17 @@ export default function AdminSidebar({
                             {item.badge}
                           </span>
                         )}
+                        {item.id === "sponsors" && !sponsorshipEnabled && (
+                          <span
+                            className={`ml-2 shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                              isActive
+                                ? "bg-amber-400 text-slate-950"
+                                : "bg-amber-100 text-amber-800 border border-amber-200"
+                            }`}
+                          >
+                            Đã tắt
+                          </span>
+                        )}
                       </>
                     ) : (
                       <>
@@ -217,6 +230,9 @@ export default function AdminSidebar({
                           <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-900 border border-white text-[9px] font-extrabold text-white">
                             {item.badge > 99 ? "99+" : item.badge}
                           </span>
+                        )}
+                        {item.id === "sponsors" && !sponsorshipEnabled && (
+                          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 rounded-full bg-amber-500 border border-white" title="Tài trợ đang tắt" />
                         )}
                         {/* Tooltip on desktop hover */}
                         <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-medium rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 whitespace-nowrap hidden md:block">

@@ -28,6 +28,7 @@ import {
   Copy,
   ExternalLink,
   RefreshCw,
+  Handshake,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 
@@ -280,6 +281,31 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
     }
   };
 
+  const toggleSponsorshipMaster = async () => {
+    const nextState = config.sponsorshipEnabled === false ? true : false;
+    const updatedConfig = { ...config, sponsorshipEnabled: nextState };
+    setConfig(updatedConfig);
+
+    if (nextState) {
+      toast.info(
+        "Đã BẬT tính năng Tài trợ! 👁️",
+        "Tất cả các mục Nhà tài trợ, CTA Hero, Form tab, FAQ và Menu đã hoạt động trở lại."
+      );
+    } else {
+      toast.warning(
+        "Đã TẮT toàn bộ tính năng Tài trợ! 🙈",
+        "Tất cả nội dung, liên kết và đăng ký liên quan đến tài trợ đã được ẩn hoàn toàn trên website."
+      );
+    }
+
+    const res = await updateSectionAction("site_config", updatedConfig);
+    if (res.success) {
+      onSaveSuccess?.(updatedConfig, footer);
+    } else {
+      toast.error("Lỗi tự động lưu!", res.error || "Không thể cập nhật trạng thái tính năng tài trợ.");
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl pb-16">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
@@ -294,6 +320,107 @@ export default function GeneralEditor({ initialConfig, initialFooter, onSaveSucc
             errorMessage={errorMessage}
             onManualSave={() => saveNow()}
           />
+        </div>
+      </div>
+
+      {/* ── CARD: QUẢN LÝ TẮT / BẬT TOÀN DIỆN TÍNH NĂNG TÀI TRỢ ──────────────── */}
+      <div className={`border rounded-2xl p-5 space-y-4 shadow-sm transition-all ${
+        config.sponsorshipEnabled === false
+          ? "bg-amber-50/50 border-amber-200"
+          : "bg-white border-slate-200"
+      }`}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-xs shrink-0 ${
+              config.sponsorshipEnabled === false
+                ? "bg-amber-100 border-amber-300 text-amber-800"
+                : "bg-emerald-100 border-emerald-300 text-emerald-800"
+            }`}>
+              <Handshake className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                  TÍNH NĂNG NHÀ TÀI TRỢ &amp; GÓI QUYỀN LỢI
+                </h3>
+                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                  config.sponsorshipEnabled === false
+                    ? "bg-rose-100 text-rose-700 border border-rose-200"
+                    : "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                }`}>
+                  {config.sponsorshipEnabled === false ? "ĐANG TẮT HOÀN TOÀN" : "ĐANG BẬT HOẠT ĐỘNG"}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Chức năng 1-Click tắt/bật mọi thông tin, form đăng ký, nút bấm và liên kết tài trợ trên toàn bộ website.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={toggleSponsorshipMaster}
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer shrink-0 ${
+              config.sponsorshipEnabled === false
+                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                : "bg-rose-600 hover:bg-rose-700 text-white"
+            }`}
+          >
+            {config.sponsorshipEnabled === false ? (
+              <>
+                <Eye className="w-4 h-4" />
+                <span>Bật Lại Tính Năng Tài Trợ</span>
+              </>
+            ) : (
+              <>
+                <EyeOff className="w-4 h-4" />
+                <span>Tắt Hết Những Gì Liên Quan Đến Tài Trợ</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Checklist giải thích minh bạch */}
+        <div className="rounded-xl bg-white/80 p-3.5 border border-slate-200/80 text-xs space-y-2 text-slate-600">
+          <span className="font-bold text-slate-800 block text-[11px]">
+            {config.sponsorshipEnabled === false
+              ? "🔒 Hệ thống đang tự động ẨN HOÀN TOÀN các mục sau trên toàn bộ website:"
+              : "ℹ️ Khi bấm TẮT, hệ thống sẽ tự động vô hiệu hóa và ẩn các mục sau:"}
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Khối "Nhà tài trợ & Gói quyền lợi" trên Trang chủ</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Nút CTA "Tham khảo gói tài trợ" tại Banner Hero</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Tab chọn "Nhà Tài trợ" trong Form đăng ký trực tuyến</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Nút "Tài trợ" trên thanh Sticky CTA chân màn hình điện thoại</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Danh mục câu hỏi "Gói tài trợ" trong phần FAQ</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Menu điều hướng "Gói Tài Trợ" trên Navbar & Chân trang</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Số điện thoại "Hotline Tài trợ" tại Chân trang (Footer)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className={config.sponsorshipEnabled === false ? "text-amber-600 font-bold" : "text-emerald-600 font-bold"}>✓</span>
+              <span>Các dòng thông báo về nhà tài trợ tại Banner Hero</span>
+            </div>
+          </div>
         </div>
       </div>
 

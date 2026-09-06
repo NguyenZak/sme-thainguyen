@@ -16,9 +16,20 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP);
 }
 
-export default function Hero({ content }: { content?: HeroContent }) {
+export default function Hero({
+  content,
+  sponsorshipEnabled = true,
+}: {
+  content?: HeroContent;
+  sponsorshipEnabled?: boolean;
+}) {
   const data = content || DEFAULT_HERO;
-  const words = data.keywords && data.keywords.length > 0 ? data.keywords : DEFAULT_HERO.keywords;
+  const rawWords = data.keywords && data.keywords.length > 0 ? data.keywords : DEFAULT_HERO.keywords;
+  const words = sponsorshipEnabled
+    ? rawWords
+    : rawWords.filter(
+        (w) => !w.toLowerCase().includes("tài trợ") && !w.toLowerCase().includes("sponsor")
+      );
   const containerRef = useRef<HTMLDivElement>(null);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [wordIndex, setWordIndex] = useState(0);
@@ -26,7 +37,12 @@ export default function Hero({ content }: { content?: HeroContent }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [tickerIndex, setTickerIndex] = useState(0);
-  const tickers = data.tickerMessages && data.tickerMessages.length > 0 ? data.tickerMessages : DEFAULT_HERO.tickerMessages;
+  const rawTickers = data.tickerMessages && data.tickerMessages.length > 0 ? data.tickerMessages : DEFAULT_HERO.tickerMessages;
+  const tickers = sponsorshipEnabled
+    ? rawTickers
+    : rawTickers.filter(
+        (t) => !t.toLowerCase().includes("tài trợ") && !t.toLowerCase().includes("sponsor")
+      );
 
   useEffect(() => {
     if (!tickers || tickers.length === 0) return;
@@ -294,7 +310,7 @@ export default function Hero({ content }: { content?: HeroContent }) {
 
 
           {/* 3rd Order Tertiary CTA: Sponsor Packages Prospectus */}
-          {data.tertiaryCtaText && (
+          {sponsorshipEnabled && data.tertiaryCtaText && (
             <a
               id="cta-3"
               href={data.tertiaryCtaLink || "#sponsors"}

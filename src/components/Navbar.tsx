@@ -6,10 +6,27 @@ import Link from "next/link";
 import { Menu, X, ArrowRight, Calendar } from "lucide-react";
 import { NavbarContent, DEFAULT_NAVBAR } from "@/constants/defaultContent";
 
-export default function Navbar({ content }: { content?: NavbarContent }) {
+export default function Navbar({
+  content,
+  sponsorshipEnabled = true,
+}: {
+  content?: NavbarContent;
+  sponsorshipEnabled?: boolean;
+}) {
   const data = content || DEFAULT_NAVBAR;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = (data.navLinks || []).filter((link) => {
+    if (sponsorshipEnabled === false) {
+      const href = (link.href || "").toLowerCase();
+      const name = (link.name || "").toLowerCase();
+      if (href.includes("sponsor") || name.includes("tài trợ")) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,7 +72,7 @@ export default function Navbar({ content }: { content?: NavbarContent }) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {data.navLinks.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
@@ -106,7 +123,7 @@ export default function Navbar({ content }: { content?: NavbarContent }) {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#0B3026] border-b border-emerald-800 px-4 pt-4 pb-6 mt-3 space-y-4 shadow-2xl">
           <div className="flex flex-col gap-2">
-            {data.navLinks.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}

@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import { Award, Ticket } from "lucide-react";
 import { RegistrationContent, DEFAULT_REGISTRATION } from "@/constants/defaultContent";
 
-export default function MobileStickyCTA({ content }: { content?: RegistrationContent }) {
+export default function MobileStickyCTA({
+  content,
+  sponsorshipEnabled = true,
+}: {
+  content?: RegistrationContent;
+  sponsorshipEnabled?: boolean;
+}) {
   const data = content || DEFAULT_REGISTRATION;
   const [isVisible, setIsVisible] = useState(false);
 
@@ -44,14 +50,16 @@ export default function MobileStickyCTA({ content }: { content?: RegistrationCon
           <span className="truncate">{data.mobileDelegateLabel}</span>
         </a>
 
-        <a
-          href="#register"
-          onClick={() => handleSelectTab("sponsor")}
-          className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-xs bg-[#F59E0B] text-slate-950 shadow-md active:scale-95 transition-transform shrink-0"
-        >
-          <Award className="w-4 h-4 shrink-0" />
-          <span>{data.mobileSponsorLabel}</span>
-        </a>
+        {sponsorshipEnabled && (
+          <a
+            href="#register"
+            onClick={() => handleSelectTab("sponsor")}
+            className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-xs bg-[#F59E0B] text-slate-950 shadow-md active:scale-95 transition-transform shrink-0"
+          >
+            <Award className="w-4 h-4 shrink-0" />
+            <span>{data.mobileSponsorLabel}</span>
+          </a>
+        )}
       </div>
     </div>
   );

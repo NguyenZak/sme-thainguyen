@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FormattedText from "@/components/ui/FormattedText";
 import {
@@ -18,7 +18,13 @@ import {
 
 import { FaqItem, FaqContent, DEFAULT_FAQ_CONTENT } from "@/constants/defaultContent";
 
-export default function FaqSection({ content }: { content?: FaqContent }) {
+export default function FaqSection({
+  content,
+  sponsorshipEnabled = true,
+}: {
+  content?: FaqContent;
+  sponsorshipEnabled?: boolean;
+}) {
   const data = content || DEFAULT_FAQ_CONTENT;
   const faqList: FaqItem[] = Array.isArray(content?.items) ? content.items : DEFAULT_FAQ_CONTENT.items;
   const badge = data.badgeText || DEFAULT_FAQ_CONTENT.badgeText;
@@ -29,7 +35,18 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    if (!sponsorshipEnabled && activeCategory === "sponsor") {
+      setActiveCategory("all");
+    }
+  }, [sponsorshipEnabled, activeCategory]);
+
   const filteredFaqs = faqList.filter((item) => {
+    if (!sponsorshipEnabled) {
+      if (item.category === "sponsor") return false;
+      const q = item.question.toLowerCase();
+      if (q.includes("tài trợ") || q.includes("gói tài trợ")) return false;
+    }
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
     const matchesSearch =
       searchQuery.trim() === "" ||
@@ -75,7 +92,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
               { id: "all", label: "Tất cả câu hỏi", icon: Sparkles },
               { id: "ticket", label: "Vé tham gia", icon: Ticket },
               { id: "booth", label: "Gian hàng B2B", icon: Store },
-              { id: "sponsor", label: "Gói tài trợ", icon: Handshake },
+              ...(sponsorshipEnabled ? [{ id: "sponsor", label: "Gói tài trợ", icon: Handshake }] : []),
               { id: "general", label: "Chung & Địa điểm", icon: MapPin },
             ].map((tab) => {
               const Icon = tab.icon;
@@ -176,7 +193,7 @@ export default function FaqSection({ content }: { content?: FaqContent }) {
                                   window.dispatchEvent(
                                     new CustomEvent("selectRegistrationTab", {
                                       detail: {
-                                        tab: faq.category === "sponsor" || faq.category === "booth" ? "sponsor" : "delegate",
+                                        tab: sponsorshipEnabled && (faq.category === "sponsor" || faq.category === "booth") ? "sponsor" : "delegate",
                                       },
                                     })
                                   );

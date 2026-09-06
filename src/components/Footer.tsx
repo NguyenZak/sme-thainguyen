@@ -7,7 +7,13 @@ import { MapPin, Phone, Mail, Globe, ExternalLink, Move } from "lucide-react";
 import { FooterContent, DEFAULT_FOOTER } from "@/constants/defaultContent";
 import FormattedText from "@/components/ui/FormattedText";
 
-export default function Footer({ content }: { content?: FooterContent }) {
+export default function Footer({
+  content,
+  sponsorshipEnabled = true,
+}: {
+  content?: FooterContent;
+  sponsorshipEnabled?: boolean;
+}) {
   const [isMapInteractive, setIsMapInteractive] = useState(true);
 
   // Merge với fallback defaults để không bao giờ hiển thị trống
@@ -39,9 +45,9 @@ export default function Footer({ content }: { content?: FooterContent }) {
                 >
                   {footer.brandName || "TASME THÁI NGUYÊN"}
                 </h3>
-                <p className="text-xs text-[#F59E0B] font-semibold">
+                <span className="text-xs text-emerald-300 font-medium block">
                   {footer.brandSub || "Hiệp hội Doanh nghiệp nhỏ và vừa tỉnh Thái Nguyên"}
-                </p>
+                </span>
               </div>
             </div>
 
@@ -73,12 +79,19 @@ export default function Footer({ content }: { content?: FooterContent }) {
                 const normalized = hotlines.map((h) =>
                   typeof h === "string" ? { title: "Hotline", phone: h } : h
                 );
-                return normalized.length > 0 ? (
+                const filteredHotlines = normalized.filter((h) => {
+                  if (!sponsorshipEnabled) {
+                    const t = (h.title || "").toLowerCase();
+                    if (t.includes("tài trợ") || t.includes("sponsor")) return false;
+                  }
+                  return true;
+                });
+                return filteredHotlines.length > 0 ? (
                   <div className="flex items-start gap-2.5">
                     <Phone className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
 
-                      {normalized.map((h, i) => (
+                      {filteredHotlines.map((h, i) => (
                         <a
                           key={i}
                           href={`tel:${h.phone.replace(/[\s.]/g, "")}`}
@@ -132,11 +145,13 @@ export default function Footer({ content }: { content?: FooterContent }) {
                 </a>
               </li>
 
-              <li>
-                <a href="#sponsors" className="hover:text-white hover:translate-x-1 transition-all inline-block">
-                  Gói Nhà tài trợ
-                </a>
-              </li>
+              {sponsorshipEnabled && (
+                <li>
+                  <a href="#sponsors" className="hover:text-white hover:translate-x-1 transition-all inline-block">
+                    Gói Nhà tài trợ
+                  </a>
+                </li>
+              )}
               <li>
                 <a href="#booths" className="hover:text-white hover:translate-x-1 transition-all inline-block">
                   Đăng ký Gian hàng Triển lãm
